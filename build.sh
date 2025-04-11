@@ -3,16 +3,23 @@
 # Print all commands for debugging
 set -x
 
-# Create public directory to hold static files
+# Clean up any existing output directories
+rm -rf public api_build
+
+# Create directories
 mkdir -p public
+mkdir -p api_build
+
+# Copy API files to the api_build directory
+if [ -d "api" ]; then
+  echo "Copying API files..."
+  find api -type f \( -name "*.js" -o -name "*.ts" -o -name "*.json" \) | xargs -I{} cp {} api_build/
+fi
 
 # Copy static assets to public directory
 if [ -d attached_assets ]; then
   cp -r attached_assets/* public/
 fi
-
-# Copy api files to the root (important for Vercel serverless functions)
-cp -r api/* .
 
 # Copy client dist folder if it exists
 if [ -d client/dist ]; then
@@ -65,13 +72,44 @@ if [ ! -f "public/og.png" ] && [ -f "attached_assets/og.png" ]; then
 fi
 
 # Compile TypeScript files if they exist
-if ls api/*.ts 1> /dev/null 2>&1; then
+if ls api_build/*.ts 1> /dev/null 2>&1; then
   echo "Compiling TypeScript files..."
   npm install -g typescript
-  cd api
+  
+  # Copy tsconfig.json to api_build if it exists
+  if [ -f api/tsconfig.json ]; then
+    cp api/tsconfig.json api_build/
+  else
+    # Create a simple tsconfig.json
+    cat > api_build/tsconfig.json << 'EOL'
+{
+  "compilerOptions": {
+    "target": "ES2018",
+    "module": "commonjs",
+    "outDir": "./",
+    "strict": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "checkJs": false
+  },
+  "include": ["./*.ts"],
+  "exclude": ["node_modules"]
+}
+EOL
+  fi
+  
+  # Compile TypeScript files
+  cd api_build
   npx tsc --project tsconfig.json
   cd ..
 fi
+
+# Move api_build to api directory for Vercel
+mkdir -p api
+cp -r api_build/* api/
 
 # Verify key files exist
 echo "Verifying build contents..."
