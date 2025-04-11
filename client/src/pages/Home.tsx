@@ -8,9 +8,13 @@ import TradersTable from '@/components/TradersTable';
 import LoadingSkeleton from '@/components/LoadingSkeleton';
 import ErrorMessage from '@/components/ErrorMessage';
 import { Timeframe, Trader } from '@/lib/types';
+import { Button } from '@/components/ui/button';
+import { RefreshCw } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 const Home: React.FC = () => {
   const [timeframe, setTimeframe] = useState<Timeframe>('24h');
+  const { toast } = useToast();
 
   // Fetch traders data
   const { 
@@ -32,12 +36,30 @@ const Home: React.FC = () => {
     },
     onSuccess: () => {
       refetch();
+      toast({
+        title: "Data refreshed",
+        description: `Successfully fetched the latest ${timeframe} trading data.`,
+        duration: 3000,
+      });
     },
+    onError: (error) => {
+      toast({
+        title: "Refresh failed",
+        description: (error as Error)?.message || "Failed to fetch the latest data. Please try again.",
+        variant: "destructive",
+        duration: 3000,
+      });
+    }
   });
 
   // Handle timeframe change
   const handleTimeframeChange = (newTimeframe: Timeframe) => {
     setTimeframe(newTimeframe);
+  };
+
+  // Handle refresh button click
+  const handleRefresh = () => {
+    refreshMutation.mutate();
   };
 
   // Handle share button click
@@ -66,7 +88,20 @@ const Home: React.FC = () => {
     <div className="min-h-screen bg-[#1E3A8A] text-white">
       <div className="container mx-auto px-4 py-6 max-w-md">
         <Header />
-        <h2 className="text-xl mb-6 font-medium">Oxjudd's Top Traders</h2>
+        
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-xl font-medium">Oxjudd's Top Traders</h2>
+          <Button
+            variant="outline"
+            size="sm"
+            className="bg-white/20 text-white hover:bg-white/30"
+            onClick={handleRefresh}
+            disabled={refreshMutation.isPending}
+          >
+            <RefreshCw className={`h-4 w-4 mr-1 ${refreshMutation.isPending ? 'animate-spin' : ''}`} />
+            Refresh
+          </Button>
+        </div>
         
         <TimeframeControls 
           currentTimeframe={timeframe}
@@ -86,11 +121,14 @@ const Home: React.FC = () => {
         ) : (
           <div className="bg-[#1E3A8A] rounded-lg p-6 text-center">
             <p>No trader data available.</p>
+            <p className="text-sm text-gray-400 mt-2 mb-4">Click the Refresh button to fetch data from your followers.</p>
             <Button 
-              className="mt-4 bg-white text-[#1E3A8A] hover:bg-gray-100"
-              onClick={handleRetry}
+              className="bg-white text-[#1E3A8A] hover:bg-gray-100"
+              onClick={handleRefresh}
+              disabled={refreshMutation.isPending}
             >
-              Refresh Data
+              <RefreshCw className={`h-4 w-4 mr-1 ${refreshMutation.isPending ? 'animate-spin' : ''}`} />
+              Fetch Data
             </Button>
           </div>
         )}
@@ -100,6 +138,3 @@ const Home: React.FC = () => {
 };
 
 export default Home;
-
-// Import Button component to avoid TypeScript error
-import { Button } from '@/components/ui/button';
