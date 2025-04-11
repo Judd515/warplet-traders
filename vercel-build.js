@@ -1,45 +1,31 @@
-// This script is used during Vercel's build process to ensure proper configuration
+// This file is used by Vercel to build the project
+const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-// Create dist folder if it doesn't exist
-if (!fs.existsSync('dist')) {
-  fs.mkdirSync('dist');
+// Print environment for debugging
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('VERCEL_ENV:', process.env.VERCEL_ENV);
+
+// Function to execute shell commands
+function exec(cmd) {
+  console.log(`Executing: ${cmd}`);
+  try {
+    execSync(cmd, { stdio: 'inherit' });
+  } catch (error) {
+    console.error(`Command failed: ${cmd}`);
+    console.error(error);
+    process.exit(1);
+  }
 }
 
-// Create a simple _redirects file to handle client-side routing
-const redirects = `
-# Handle SPA routing (client-side)
-/*  /index.html  200
+// Ensure the build directory exists
+const publicDir = path.join(__dirname, 'public');
+if (!fs.existsSync(publicDir)) {
+  fs.mkdirSync(publicDir, { recursive: true });
+}
 
-# API routes
-/api/*  /api/:splat  200
-`;
+// Run the build script
+exec('bash ./build.sh');
 
-fs.writeFileSync(path.join('dist', '_redirects'), redirects);
-
-// Create simple web server for Vercel's serverless environment
-const serverCode = `
-// This file is used by Vercel to serve the static files
-const express = require('express');
-const path = require('path');
-const app = express();
-
-// Serve static files from the React app
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Handle client-side routing
-app.get('*', (req, res) => {
-  // Skip API routes
-  if (req.path.startsWith('/api/')) {
-    return;
-  }
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
-module.exports = app;
-`;
-
-fs.writeFileSync(path.join('dist', 'server.js'), serverCode);
-
-console.log('Vercel build configuration completed');
+console.log('Build completed successfully!');

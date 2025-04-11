@@ -2,7 +2,7 @@
   "version": 2,
   "buildCommand": "bash ./build.sh",
   "installCommand": "npm install",
-  "outputDirectory": "dist/public",
+  "outputDirectory": "public",
   "framework": "vite",
   "functions": {
     "api/**/*": {
