@@ -1,0 +1,38 @@
+[16:31:26.675] Cloning github.com/Judd515/warplet-top-traders (Branch: main, Commit: 381734e)
+[16:31:27.234] Cloning completed: 557.000ms
+[16:31:27.272] Found .vercelignore
+[16:31:27.278] Removed 33 ignored files defined in .vercelignore
+[16:31:28.341] Restored build cache from previous deployment (5SWnQeyoG8iBtb9c4hNFGKxquZGm)
+[16:31:28.464] Running build in Washington, D.C., USA (East) – iad1
+[16:31:28.924] Running "vercel build"
+[16:31:29.295] Vercel CLI 41.5.0
+[16:31:30.554] Running "install" command: `npm install`...
+[16:31:33.347] 
+[16:31:33.347] removed 26 packages, changed 2 packages, and audited 490 packages in 3s
+[16:31:33.347] 
+[16:31:33.347] 61 packages are looking for funding
+[16:31:33.347]   run `npm fund` for details
+[16:31:33.384] 
+[16:31:33.385] 8 moderate severity vulnerabilities
+[16:31:33.385] 
+[16:31:33.386] To address issues that do not require attention, run:
+[16:31:33.386]   npm audit fix
+[16:31:33.386] 
+[16:31:33.386] To address all issues (including breaking changes), run:
+[16:31:33.386]   npm audit fix --force
+[16:31:33.387] 
+[16:31:33.387] Run `npm audit` for details.
+[16:31:33.888] file:///vercel/path0/exclude-api-files.js:4
+[16:31:33.889] const fs = require('fs');
+[16:31:33.889]            ^
+[16:31:33.889] 
+[16:31:33.889] ReferenceError: require is not defined in ES module scope, you can use import instead
+[16:31:33.889] This file is being treated as an ES module because it has a '.js' file extension and '/vercel/path0/package.json' contains "type": "module". To treat it as a CommonJS script, rename it to use the '.cjs' file extension.
+[16:31:33.889]     at file:///vercel/path0/exclude-api-files.js:4:12
+[16:31:33.889]     at ModuleJob.run (node:internal/modules/esm/module_job:271:25)
+[16:31:33.890]     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:578:26)
+[16:31:33.890]     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:116:5)
+[16:31:33.890] 
+[16:31:33.890] Node.js v22.14.0
+[16:31:33.896] Error: Command "node exclude-api-files.js && bash ./build.sh && node restore-api-files.js" exited with 1
+[16:31:34.137] 

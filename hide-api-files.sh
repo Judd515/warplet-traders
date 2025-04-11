@@ -1,29 +1,19 @@
 #!/bin/bash
+# Script to hide API files before build (reduces serverless function count)
 
-# This script temporarily renames API files (except all-routes.js) to hide them from Vercel
-# during the build process to avoid hitting the 12 function limit on the Hobby plan
-
-# Create a backup directory
+# Create backup directory
 mkdir -p .api_backup
 
-# Print current files for verification
-echo "Current API files:"
-ls -la api/
-
-# Move/backup all files in /api except for all-routes.js
-echo "Moving API files to backup (except all-routes.js)..."
+# Move all api files to backup except all-routes.js
 for file in api/*; do
-  filename=$(basename "$file")
-  if [ "$filename" != "all-routes.js" ]; then
-    echo "Moving $filename to backup"
-    mv "$file" ".api_backup/$filename"
+  base_file=$(basename "$file")
+  if [ "$base_file" != "all-routes.js" ] && [ "$base_file" != "tsconfig.json" ]; then
+    echo "Moving $file to backup"
+    mv "$file" ".api_backup/$base_file"
   else
-    echo "Keeping $filename"
+    echo "Keeping $file"
   fi
 done
 
-# Print remaining files for verification
-echo "Remaining API files:"
-ls -la api/
-
 echo "API files successfully hidden for Vercel deployment"
+ls -la api/

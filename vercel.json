@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "node exclude-api-files.js && bash ./build.sh && node restore-api-files.js",
+  "buildCommand": "bash ./hide-api-files.sh && bash ./build.sh && bash ./restore-api-files.sh",
   "installCommand": "npm install",
   "outputDirectory": "public",
   "functions": {

@@ -1,6 +1,5 @@
 #!/bin/bash
-
-# This script restores the API files after the Vercel deployment is complete
+# Script to restore API files after build (for local development)
 
 # Check if backup directory exists
 if [ ! -d ".api_backup" ]; then
@@ -8,23 +7,15 @@ if [ ! -d ".api_backup" ]; then
   exit 0
 fi
 
-# Print current files for verification
-echo "Current API files:"
-ls -la api/
-
-# Move files back from backup
-echo "Restoring API files from backup..."
+# Move all files from backup back to api/
 for file in .api_backup/*; do
-  filename=$(basename "$file")
-  echo "Restoring $filename"
-  mv "$file" "api/$filename"
+  base_file=$(basename "$file")
+  echo "Restoring $base_file"
+  mv "$file" "api/$base_file"
 done
 
-# Remove the backup directory
+# Remove backup directory
 rmdir .api_backup
 
-# Print restored files for verification
-echo "Restored API files:"
-ls -la api/
-
 echo "API files successfully restored"
+ls -la api/
