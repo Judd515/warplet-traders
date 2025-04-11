@@ -61,17 +61,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const walletCount = Object.keys(warpletAddresses).length;
       console.log(`Extracted ${walletCount} wallet addresses from follower profiles`);
       
-      // If we couldn't find any wallet addresses, use some known traders on BASE as a fallback
+      // We'll only use the wallet addresses we found from your actual followers
       let wallets: Record<string, string> = warpletAddresses;
+      
+      // If no addresses were found, return an empty array with a message
       if (walletCount === 0) {
-        console.log('No wallet addresses found in follower profiles, using fallback addresses');
-        wallets = {
-          'dwr': '0x7E1A55EaEF29E36F592Fe3c25D8F1432fB6d700E',
-          'elonisrael': '0xD8da6BF26964aF9D7eEd9e03E53415D37aA96045',
-          'stkdeth': '0x5f6b9d042bD3F8e245c9c6d2E9e9363F626B7dfc',
-          'treycoin': '0x741AA7CFB2c7bF2A1E7D4dA2e3Df6a56cA4131F3',
-          'dingaling': '0x54BE3a794282C030b15E43aE2bB182E14c409C5e'
-        };
+        console.log('No wallet addresses found in follower profiles');
+        // Return a response indicating no addresses were found
+        return res.json([{
+          username: "No wallets found",
+          walletAddress: "",
+          topToken: null,
+          pnl24h: null,
+          pnl7d: null
+        }]);
       }
       
       // Get trading data from Dune Analytics

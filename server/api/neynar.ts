@@ -53,14 +53,31 @@ export async function fetchFollowers(fid: number, apiKey: string): Promise<Neyna
 // Fetch user details including custody address if available
 async function fetchUserDetails(fid: number, apiKey: string): Promise<any> {
   try {
-    const response = await axios.get(`https://api.neynar.com/v2/farcaster/user?fid=${fid}`, {
+    // Using the correct endpoint for the Neynar API
+    const response = await axios.get(`https://api.neynar.com/v2/farcaster/user/bulk`, {
+      params: {
+        fids: fid,
+      },
       headers: {
         'accept': 'application/json',
         'api_key': apiKey
       }
     });
     
-    return response.data?.user;
+    // Check for custody address in the response
+    if (response.data?.users && response.data.users.length > 0) {
+      const user = response.data.users[0];
+      console.log(`User data for FID ${fid}:`, JSON.stringify(user));
+      
+      // Check if custody address is available
+      if (user.custody_address) {
+        console.log(`Found custody address for FID ${fid}: ${user.custody_address}`);
+      }
+      
+      return user;
+    }
+    
+    return null;
   } catch (error) {
     console.error(`Error fetching details for user FID ${fid}:`, error);
     return null;
