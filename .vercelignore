@@ -1,0 +1,26 @@
+# Ignore all API files except all-routes.js
+/api/db.js
+/api/direct-html.js
+/api/edge.config.js
+/api/edge.js
+/api/frame-action-vercel.js
+/api/frame-action.js
+/api/health.js
+/api/index.js
+/api/minimal.js
+/api/refresh-data.js
+/api/schema.js
+/api/serverless-handler.js
+/api/serverless-storage.js
+/api/storage.js
+/api/traders.js
+/api/README.md
+
+# Backup directory
+.api_backup/
+
+# Other files not needed for production
+*.md
+*.ts
+!/api/all-routes.js
+!/api/tsconfig.json

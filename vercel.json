@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "bash ./build.sh",
+  "buildCommand": "node exclude-api-files.js && bash ./build.sh && node restore-api-files.js",
   "installCommand": "npm install",
   "outputDirectory": "public",
   "functions": {
@@ -30,5 +30,8 @@
   ],
   "env": {
     "NODE_ENV": "production"
+  },
+  "github": {
+    "silent": true
   }
 }
