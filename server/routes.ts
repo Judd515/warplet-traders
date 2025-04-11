@@ -89,17 +89,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
           username => wallets[username].toLowerCase() === row.wallet_address.toLowerCase()
         ) || row.username;
         
+        // Convert PnL values to strings to match our schema
         return {
           username,
           walletAddress: row.wallet_address,
-          topToken: row.top_token,
-          pnl24h: timeframe === '24h' ? row.pnl : null,
-          pnl7d: timeframe === '7d' ? row.pnl : null
+          topToken: row.top_token || null,
+          // Convert numbers to strings for schema compatibility
+          pnl24h: timeframe === '24h' ? row.pnl.toString() : null,
+          pnl7d: timeframe === '7d' ? row.pnl.toString() : null
         };
       });
       
-      // Validate the data using our schema
-      const validatedData = formattedData.map(data => insertTraderSchema.parse(data));
+      console.log('Formatted trader data:', JSON.stringify(formattedData));
+      
+      // Validate the data using our schema with a try/catch to help debug any issues
+      let validatedData;
+      try {
+        validatedData = formattedData.map(data => insertTraderSchema.parse(data));
+      } catch (error) {
+        console.error('Schema validation error:', error);
+        throw error;
+      }
       
       // Update the storage with the new data
       const updatedTraders = await storage.updateTraders(validatedData);
