@@ -52,8 +52,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log('Fetching followers from Neynar API...');
       
-      // Fetch followers for FID 12915 (Oxjudd)
-      const followers = await fetchFollowers(12915, neynarApiKey);
+      // Fetch followers for FID 602 (dwr) - a well-known trader with many followers
+      const followers = await fetchFollowers(602, neynarApiKey);
       console.log(`Found ${followers.length} followers`);
       
       // Extract Warplet addresses from followers (including custody addresses)

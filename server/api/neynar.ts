@@ -21,10 +21,12 @@ interface NeynarUser {
   custody_address?: string; // May be included in some API responses
 }
 
-// Function to fetch followers from Neynar API and get their custody addresses
+// Function to fetch followers from Neynar API
 export async function fetchFollowers(fid: number, apiKey: string): Promise<NeynarUser[]> {
   try {
-    // Updated endpoint based on the Neynar API documentation
+    console.log(`Fetching followers for FID ${fid}...`);
+    
+    // Use the follower endpoint to get basic profile information
     const response = await axios.get(`https://api.neynar.com/v2/farcaster/followers`, {
       params: {
         fid,
@@ -42,49 +44,9 @@ export async function fetchFollowers(fid: number, apiKey: string): Promise<Neyna
     if (response.data && response.data.users) {
       console.log(`Fetched ${response.data.users.length} followers`);
       
-      // Get all the FIDs so we can fetch their details in batches
-      const followerFids = response.data.users.map((user: NeynarUser) => user.fid).join(',');
-      console.log(`Will fetch details for FIDs: ${followerFids.substring(0, 100)}...`);
-      
-      try {
-        // Fetch user details in bulk to get custody addresses
-        const userDetailsResponse = await axios.get(`https://api.neynar.com/v2/farcaster/user/bulk`, {
-          params: {
-            fids: followerFids,
-          },
-          headers: {
-            'accept': 'application/json',
-            'api_key': apiKey
-          }
-        });
-        
-        if (userDetailsResponse.data && userDetailsResponse.data.users) {
-          // Create a map of FID to custody address
-          const custodyAddressMap = new Map<number, string>();
-          userDetailsResponse.data.users.forEach((user: any) => {
-            if (user.custody_address) {
-              custodyAddressMap.set(user.fid, user.custody_address);
-              console.log(`Found custody address for user ${user.username}: ${user.custody_address}`);
-            }
-          });
-          
-          // Enhance the followers with custody addresses
-          const enhancedFollowers = response.data.users.map((follower: NeynarUser) => {
-            if (custodyAddressMap.has(follower.fid)) {
-              return {
-                ...follower,
-                custody_address: custodyAddressMap.get(follower.fid)
-              };
-            }
-            return follower;
-          });
-          
-          console.log(`Found ${custodyAddressMap.size} custody addresses out of ${enhancedFollowers.length} followers`);
-          return enhancedFollowers;
-        }
-      } catch (detailsError) {
-        console.error('Error fetching user details for custody addresses:', detailsError);
-        // If this fails, we'll still return the original followers
+      // Log the first follower to see the structure
+      if (response.data.users.length > 0) {
+        console.log('Sample follower data:', JSON.stringify(response.data.users[0]).substring(0, 200) + '...');
       }
       
       return response.data.users;
@@ -104,7 +66,7 @@ async function fetchUserDetails(fid: number, apiKey: string): Promise<any> {
     // Using the correct endpoint for the Neynar API with the correct query parameter format
     const response = await axios.get(`https://api.neynar.com/v2/farcaster/user/bulk`, {
       params: {
-        fids: `${fid}`, // Convert to string as required by API
+        fids: fid.toString(), // Convert to string as required by API
       },
       headers: {
         'accept': 'application/json',
