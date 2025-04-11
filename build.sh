@@ -19,8 +19,9 @@ if [ -d client/dist ]; then
   cp -r client/dist/* public/
 fi
 
-# Create simple index.html if client build not available
-cat > public/index.html << 'EOL'
+# Create simple index.html if it doesn't exist
+if [ ! -f "public/index.html" ]; then
+  cat > public/index.html << 'EOL'
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -51,6 +52,7 @@ cat > public/index.html << 'EOL'
   </body>
 </html>
 EOL
+fi
 
 # Ensure we have an error.png file
 if [ ! -f "public/error.png" ] && [ -f "attached_assets/og.png" ]; then
@@ -66,7 +68,9 @@ fi
 if ls api/*.ts 1> /dev/null 2>&1; then
   echo "Compiling TypeScript files..."
   npm install -g typescript
-  npx tsc api/*.ts --outDir api/ --esModuleInterop --skipLibCheck --resolveJsonModule
+  cd api
+  npx tsc --project tsconfig.json
+  cd ..
 fi
 
 # Verify key files exist
