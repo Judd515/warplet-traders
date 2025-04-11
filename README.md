@@ -1,82 +1,62 @@
-# Warplet Top Traders
+# Warpcast Top Traders
 
-A Warpcast mini-app that transforms blockchain follower trading insights into an engaging, visually dynamic experience. Track trading performances of accounts you follow on Warpcast with intuitive, real-time interactions.
+A mini-app for Warpcast that shows the trading performance of the accounts you follow.
 
 ## Features
 
-- View top 5 traders among the accounts you follow
-- Compare 24-hour and 7-day performance
-- Achievement system with animated unlocks
-- Share results via Warpcast
+- Display PnL (Profit and Loss) for the top 5 most active traders among accounts you follow
+- Toggle between 24-hour and 7-day time periods
+- Share results via Warpcast's cast composer
+- Interactive achievement system with badges for different trading milestones
+- Beautiful crypto-themed UI with gradient backgrounds and performance indicators
 
-## Deployment on Vercel
+## Technologies Used
 
-### Prerequisites
+- React with TypeScript
+- Express.js server
+- PostgreSQL database via Neon (serverless PostgreSQL)
+- TanStack Query for data fetching
+- Shadcn UI components
+- Tailwind CSS for styling
+- Framer Motion for animations
+- Drizzle ORM for database operations
+- Neynar API for Warpcast data
+- Dune Analytics API for trading data
 
-1. Create a [Vercel](https://vercel.com) account if you don't have one
-2. Make sure you have the following API keys:
-   - Neynar API key - for Warpcast data
-   - Dune Analytics API key - for trading data
+## Environment Variables
 
-### Deployment Steps
+The application requires the following environment variables:
 
-1. **Prepare your repository**
+- `DATABASE_URL` - PostgreSQL connection string
+- `NEYNAR_API_KEY` - API key for Neynar (for fetching Warpcast data)
+- `DUNE_API_KEY` - API key for Dune Analytics (for fetching trading data)
 
-   First, create a GitHub repository and push your code to it. You can use the following commands:
+## Local Development
 
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial commit"
-   git remote add origin https://github.com/YOUR_USERNAME/warplet-top-traders.git
-   git push -u origin main
-   ```
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Add environment variables to a `.env` file in the project root
+4. Run the development server: `npm run dev`
 
-2. **Connect to Vercel**
+## Deployment
 
-   - Go to [Vercel](https://vercel.com) and sign in
-   - Click "Add New" > "Project"
-   - Select your GitHub repository
-   - Click "Import"
+See [VERCEL_DEPLOYMENT.md](./VERCEL_DEPLOYMENT.md) for detailed instructions on deploying to Vercel.
 
-3. **Configure Project Settings**
+## Architecture
 
-   In the configuration page:
-   - **Framework Preset**: Select "Other" (since we have a custom setup)
-   - **Build and Output Settings**:
-     - Build Command: `npm run build` (this is already configured in package.json)
-     - Output Directory: `dist` (already set in vercel.json)
-   - **Environment Variables**:
-     - Add `NEYNAR_API_KEY` and your Neynar API key value
-     - Add `DUNE_API_KEY` and your Dune Analytics API key value
-     - Add `SESSION_SECRET` with a random secure string
+The application is structured as follows:
 
-4. **Deploy**
+- `server/` - Express.js backend
+  - `api/` - API routes for data fetching
+  - `db.ts` - Database connection
+  - `storage.ts` - Data storage interface
+- `client/src/` - React frontend
+  - `components/` - UI components
+  - `lib/` - Utility functions and types
+  - `pages/` - Application pages
+- `shared/` - Shared types and schemas
+- `api/` - Vercel serverless functions
 
-   - Click "Deploy"
-   - Wait for the build to complete (this may take a few minutes)
-   - Vercel will provide you with a URL when deployment is successful (e.g., https://your-project.vercel.app)
+## Credits
 
-5. **Post-Deployment**
-
-   - Test that your application works correctly
-   - Add your custom domain if you have one (through Vercel's domain settings)
-
-### Troubleshooting
-
-If you encounter issues during deployment:
-
-1. Check the Vercel build logs for errors
-2. Ensure your API keys are correctly set in the Environment Variables
-3. Make sure the API routes are correctly defined in the `api` directory
-
-## Development
-
-To run this project locally:
-
-```bash
-npm install
-npm run dev
-```
-
-This will start the development server at http://localhost:3000.
+Created for Warpcast by a Replit AI assistant.
