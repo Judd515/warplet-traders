@@ -98,20 +98,41 @@ const Home: React.FC = () => {
   }, [refreshMutation]);
 
   return (
-    <div className="min-h-screen bg-[#1E3A8A] text-white">
-      <div className="container mx-auto px-4 py-6 max-w-md">
+    <div className="min-h-screen bg-gradient-to-b from-indigo-950 via-indigo-900 to-purple-900 text-white relative">
+      {/* Background pattern */}
+      <div className="absolute inset-0 z-0 opacity-10 overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_20%,rgba(120,50,255,0.4)_0%,rgba(0,0,0,0)_50%)]"></div>
+        <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(circle_at_70%_80%,rgba(60,100,255,0.4)_0%,rgba(0,0,0,0)_50%)]"></div>
+        <div className="grid grid-cols-12 grid-rows-12 h-full w-full">
+          {Array.from({ length: 24 }).map((_, i) => (
+            <div 
+              key={i} 
+              className="border-[0.5px] border-indigo-500/5"
+            />
+          ))}
+        </div>
+      </div>
+      
+      {/* Content */}
+      <div className="container mx-auto px-4 py-8 max-w-lg relative z-10">
         <Header />
         
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-medium">Top BASE Traders</h2>
+          <div className="flex items-center">
+            <div className="h-8 w-1 bg-indigo-500 rounded-full mr-3"></div>
+            <h2 className="text-xl font-medium text-white">
+              BASE Leaderboard
+            </h2>
+          </div>
+          
           <Button
             variant="outline"
             size="sm"
-            className="bg-white/20 text-white hover:bg-white/30"
+            className="bg-white/10 text-white border border-white/20 hover:bg-white/20 rounded-xl"
             onClick={handleRefresh}
             disabled={refreshMutation.isPending}
           >
-            <RefreshCw className={`h-4 w-4 mr-1 ${refreshMutation.isPending ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`h-4 w-4 mr-1.5 ${refreshMutation.isPending ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
         </div>
@@ -123,7 +144,15 @@ const Home: React.FC = () => {
         />
         
         {isLoading || refreshMutation.isPending ? (
-          <LoadingSkeleton />
+          <div className="relative">
+            <LoadingSkeleton />
+            <div className="absolute inset-0 flex items-center justify-center bg-indigo-950/50 backdrop-blur-sm rounded-xl">
+              <div className="flex flex-col items-center">
+                <RefreshCw className="h-8 w-8 animate-spin text-indigo-400 mb-3" />
+                <p className="text-indigo-200 text-sm">Loading trader data...</p>
+              </div>
+            </div>
+          </div>
         ) : isError ? (
           <ErrorMessage 
             message={(error as Error)?.message || 'Something went wrong. Please try again.'} 
@@ -132,22 +161,32 @@ const Home: React.FC = () => {
         ) : traders && traders.length > 0 ? (
           <TradersTable traders={traders} timeframe={timeframe} />
         ) : (
-          <div className="bg-[#1E3A8A] rounded-lg p-6 text-center">
-            <p>No trader data available.</p>
-            <p className="text-sm text-gray-400 mt-2 mb-4">
-              Click the Refresh button to analyze your followers' trading activity.
-              <br/>Note: We look for wallet addresses in profile bios.
-            </p>
-            <Button 
-              className="bg-white text-[#1E3A8A] hover:bg-gray-100"
-              onClick={handleRefresh}
-              disabled={refreshMutation.isPending}
-            >
-              <RefreshCw className={`h-4 w-4 mr-1 ${refreshMutation.isPending ? 'animate-spin' : ''}`} />
-              Fetch Data
-            </Button>
+          <div className="bg-indigo-950/30 rounded-xl p-8 text-center border border-indigo-900/50 backdrop-blur-sm">
+            <div className="flex flex-col items-center">
+              <div className="w-16 h-16 rounded-full bg-indigo-900/50 flex items-center justify-center mb-4">
+                <RefreshCw className="h-6 w-6 text-indigo-400" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">No trader data available</h3>
+              <p className="text-sm text-indigo-300 mb-6">
+                Click the Refresh button to analyze trading activity for accounts you follow.
+                <br/>Note: We look for custody addresses in profile information.
+              </p>
+              <Button 
+                className="bg-indigo-600 text-white hover:bg-indigo-700 rounded-xl"
+                onClick={handleRefresh}
+                disabled={refreshMutation.isPending}
+              >
+                <RefreshCw className={`h-4 w-4 mr-2 ${refreshMutation.isPending ? 'animate-spin' : ''}`} />
+                Fetch Data
+              </Button>
+            </div>
           </div>
         )}
+        
+        {/* Footer */}
+        <div className="mt-10 text-center text-indigo-400/60 text-xs">
+          <p>Powered by BASE & Warpcast • Data refreshed every 5 minutes</p>
+        </div>
       </div>
     </div>
   );
