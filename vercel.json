@@ -11,10 +11,11 @@
   },
   "rewrites": [
     { "source": "/", "destination": "/index.html" },
-    { "source": "/api", "destination": "/api/index.js" },
-    { "source": "/api/frame-action", "destination": "/api/frame-action.js" },
-    { "source": "/api/health", "destination": "/api/health.js" },
-    { "source": "/api/direct-html", "destination": "/api/direct-html.js" }
+    { "source": "/api", "destination": "/api/minimal.js" },
+    { "source": "/api/minimal", "destination": "/api/minimal.js" },
+    { "source": "/api/frame-action", "destination": "/api/minimal.js" },
+    { "source": "/api/edge", "destination": "/api/edge.js" },
+    { "source": "/api/health", "destination": "/api/health.js" }
   ],
   "headers": [
     {
