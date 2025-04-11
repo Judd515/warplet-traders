@@ -101,12 +101,48 @@
       <p>Discover which people you follow are the top traders on BASE using their warplets. Track real-time performance with 24-hour and 7-day views, and easily share results with your followers.</p>
       
       <div class="buttons">
-        <button class="button" onclick="window.location.href='/api/frame-action'">View Top Traders</button>
+        <button class="button" id="viewTraders">View Top Traders</button>
       </div>
       
       <div class="credits">
         <p>This app uses data from <a href="https://dune.com" target="_blank">Dune Analytics</a> and <a href="https://neynar.com" target="_blank">Neynar</a> to bring you real-time trading insights.</p>
       </div>
     </div>
+    
+    <script>
+      // Direct iframe embedding for Warpcast Frame
+      document.addEventListener('DOMContentLoaded', function() {
+        const container = document.querySelector('.container');
+        
+        // Create iframe container
+        const frameContainer = document.createElement('div');
+        frameContainer.style.display = 'none';
+        frameContainer.style.marginTop = '2rem';
+        frameContainer.style.width = '100%';
+        frameContainer.style.maxWidth = '600px';
+        frameContainer.style.height = '500px';
+        frameContainer.style.border = '1px solid #3b82f6';
+        frameContainer.style.borderRadius = '0.5rem';
+        frameContainer.style.overflow = 'hidden';
+        
+        // Create iframe
+        const iframe = document.createElement('iframe');
+        iframe.src = '/api/frame-action';
+        iframe.style.width = '100%';
+        iframe.style.height = '100%';
+        iframe.style.border = 'none';
+        
+        // Add iframe to container
+        frameContainer.appendChild(iframe);
+        container.appendChild(frameContainer);
+        
+        // Handle button click
+        const viewButton = document.getElementById('viewTraders');
+        viewButton.addEventListener('click', function() {
+          frameContainer.style.display = frameContainer.style.display === 'none' ? 'block' : 'none';
+          viewButton.textContent = frameContainer.style.display === 'none' ? 'View Top Traders' : 'Hide Top Traders';
+        });
+      });
+    </script>
   </body>
 </html>
