@@ -119,7 +119,7 @@ ls -la api/
 echo "Public directory:"
 ls -la public/
 
-# Install dependencies for API
-npm install winston @neondatabase/serverless drizzle-orm ws axios express express-session typescript --save
+# Install only the absolutely necessary dependencies for API
+npm install express --save
 
 echo "Build completed successfully!"
