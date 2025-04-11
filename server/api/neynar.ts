@@ -41,19 +41,79 @@ export async function fetchFollowers(fid: number, apiKey: string): Promise<Neyna
     console.log('Neynar API response status:', response.status);
     
     // Check if the API response contains the expected data
-    if (response.data && response.data.users) {
-      console.log(`Fetched ${response.data.users.length} followers`);
+    // Log more details about the response structure to debug
+    console.log('Response structure:', Object.keys(response.data).join(', '));
+    
+    // Handle both possible response formats from Neynar API
+    let users: NeynarUser[] = [];
+    
+    // The Neynar API response format for followers is different from what we expect
+    // It has a structure like: { users: [ { object: "follow", user: { ... user data ... } } ] }
+    if (response.data && response.data.users && Array.isArray(response.data.users)) {
+      console.log('Found "users" array in response with', response.data.users.length, 'items');
       
-      // Log the first follower to see the structure
-      if (response.data.users.length > 0) {
-        console.log('Sample follower data:', JSON.stringify(response.data.users[0]).substring(0, 200) + '...');
-      }
-      
-      return response.data.users;
+      // Extract the user object from each follower entry
+      users = response.data.users
+        .map((follow: any) => {
+          if (follow && follow.user) {
+            // Most common format - user object nested inside follow object
+            return follow.user;
+          } else if (follow && follow.object === 'user') {
+            // Alternative format - user object directly
+            return follow;
+          } else if (follow && follow.fid && follow.username) {
+            // Minimal format - direct user properties
+            return follow;
+          }
+          return null;
+        })
+        .filter(Boolean);
+        
+      console.log('Extracted user objects from followers:', users.length);
+    } else if (response.data && response.data.result && response.data.result.users) {
+      // Alternative API format - result > users array
+      console.log('Found result.users array in response');
+      users = response.data.result.users.map((follow: any) => {
+        return follow.user || follow;
+      }).filter(Boolean);
     } else {
-      console.log('Unexpected Neynar API response format:', JSON.stringify(response.data));
-      return [];
+      // Completely different format - log it for debugging
+      console.log('Unknown API response format, logging first 500 chars:');
+      console.log(JSON.stringify(response.data).substring(0, 500) + '...');
+      
+      // Try to extract users from any object that has a list of users
+      for (const key in response.data) {
+        if (Array.isArray(response.data[key])) {
+          console.log(`Found array in response.data.${key} with ${response.data[key].length} items`);
+          const sampleItem = response.data[key][0];
+          console.log('Sample item:', JSON.stringify(sampleItem).substring(0, 200));
+          
+          // Check if this array contains user objects or objects with user property
+          if (sampleItem && (sampleItem.username || (sampleItem.user && sampleItem.user.username))) {
+            users = response.data[key].map((item: any) => item.user || item).filter(Boolean);
+            console.log(`Extracted ${users.length} user objects from ${key} array`);
+            break;
+          }
+        }
+      }
     }
+    
+    console.log(`Extracted ${users.length} followers from API response`);
+    
+    // Log the first follower to see the structure
+    if (users.length > 0) {
+      console.log('Sample follower data:', JSON.stringify(users[0]).substring(0, 200) + '...');
+      
+      // Check if we have valid FIDs
+      const validUsers = users.filter((u: NeynarUser) => u.fid !== undefined && u.fid !== null);
+      console.log(`Found ${validUsers.length} followers with valid FIDs`);
+      
+      if (validUsers.length > 0) {
+        console.log(`First follower FID: ${validUsers[0].fid}`);
+      }
+    }
+    
+    return users;
   } catch (error) {
     console.error('Error fetching followers from Neynar API:', error);
     throw new Error('Failed to fetch followers from Neynar API');

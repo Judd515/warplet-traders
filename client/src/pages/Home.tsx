@@ -83,6 +83,19 @@ const Home: React.FC = () => {
   useEffect(() => {
     refetch();
   }, [timeframe, refetch]);
+  
+  // Create ref outside of useEffect
+  const hasAutoFetched = React.useRef(false);
+  
+  // Auto-fetch data from API on initial load - only once when component mounts
+  useEffect(() => {
+    if (!hasAutoFetched.current) {
+      console.log('Initial load, automatically fetching trader data...');
+      refreshMutation.mutate();
+      hasAutoFetched.current = true;
+    }
+  // Include refreshMutation in dependencies
+  }, [refreshMutation]);
 
   return (
     <div className="min-h-screen bg-[#1E3A8A] text-white">
