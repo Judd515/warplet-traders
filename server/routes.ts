@@ -6,6 +6,8 @@ import axios from 'axios';
 import { fetchFollowing, extractWarpletAddresses } from "./api/neynar";
 import { fetchTradingData } from "./api/dune";
 import { insertTraderSchema } from "@shared/schema";
+import * as fs from 'fs';
+import * as path from 'path';
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Endpoint to get top traders with PnL data for a specific timeframe
@@ -170,6 +172,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error refreshing data:", error);
       res.status(500).json({ error: "Failed to refresh trader data" });
+    }
+  });
+
+  // Add a route to download the project ZIP file
+  app.get('/download/project', (req, res) => {
+    const zipPath = path.resolve('/home/runner/workspace/warplet-top-traders.zip');
+    
+    if (fs.existsSync(zipPath)) {
+      res.download(zipPath, 'warplet-top-traders.zip', (err) => {
+        if (err) {
+          console.error('Error downloading file:', err);
+          res.status(500).send('Error downloading the project file');
+        }
+      });
+    } else {
+      res.status(404).send('Project file not found');
     }
   });
 
