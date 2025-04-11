@@ -80,12 +80,23 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Export the serverless handler
-// For Vercel, we need to export specific HTTP methods
-module.exports = app;
+// Create a serverless handler specifically for Vercel
+const handler = (req, res) => {
+  // Log incoming requests
+  logger.info(`Serverless handler received ${req.method} request to ${req.url}`, {
+    path: req.url,
+    method: req.method,
+    headers: req.headers
+  });
+  
+  return app(req, res);
+};
+
+// Export the handler as the default export for Vercel
+module.exports = handler;
 
 // Export individual HTTP methods for Vercel
-module.exports.get = (req, res) => app(req, res);
-module.exports.post = (req, res) => app(req, res);
-module.exports.put = (req, res) => app(req, res);
-module.exports.delete = (req, res) => app(req, res);
+module.exports.GET = handler;
+module.exports.POST = handler;
+module.exports.PUT = handler;
+module.exports.DELETE = handler;

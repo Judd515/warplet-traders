@@ -6,12 +6,17 @@ set -x
 # Create public directory to hold static files
 mkdir -p public
 
-# Create api directory for API functions
-mkdir -p api
-
 # Copy static assets to public directory
 if [ -d attached_assets ]; then
   cp -r attached_assets/* public/
+fi
+
+# Copy api files to the root (important for Vercel serverless functions)
+cp -r api/* .
+
+# Copy client dist folder if it exists
+if [ -d client/dist ]; then
+  cp -r client/dist/* public/
 fi
 
 # Create simple index.html if client build not available
@@ -57,6 +62,13 @@ if [ ! -f "public/og.png" ] && [ -f "attached_assets/og.png" ]; then
   cp attached_assets/og.png public/og.png
 fi
 
+# Compile TypeScript files if they exist
+if ls api/*.ts 1> /dev/null 2>&1; then
+  echo "Compiling TypeScript files..."
+  npm install -g typescript
+  npx tsc api/*.ts --outDir api/ --esModuleInterop --skipLibCheck --resolveJsonModule
+fi
+
 # Verify key files exist
 echo "Verifying build contents..."
 ls -la
@@ -66,6 +78,6 @@ echo "Public directory:"
 ls -la public/
 
 # Install dependencies for API
-npm install winston @neondatabase/serverless drizzle-orm ws axios express express-session --save
+npm install winston @neondatabase/serverless drizzle-orm ws axios express express-session typescript --save
 
 echo "Build completed successfully!"

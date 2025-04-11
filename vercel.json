@@ -4,18 +4,17 @@
   "installCommand": "npm install",
   "outputDirectory": "public",
   "functions": {
-    "api/**/*": {
+    "api/*.js": {
       "memory": 1024,
       "maxDuration": 10
+    },
+    "*.js": {
+      "memory": 1024,
+      "maxDuration": 10 
     }
   },
   "rewrites": [
-    { "source": "/api/traders", "destination": "/api/serverless-handler.js" },
-    { "source": "/api/refresh-data", "destination": "/api/serverless-handler.js" },
-    { "source": "/api/frame-action", "destination": "/api/serverless-handler.js" },
-    { "source": "/api/og-image", "destination": "/api/serverless-handler.js" },
-    { "source": "/api/health", "destination": "/api/serverless-handler.js" },
-    { "source": "/api/(.*)", "destination": "/api/serverless-handler.js" },
+    { "source": "/api/(.*)", "destination": "/serverless-handler.js" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
