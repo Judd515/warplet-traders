@@ -3,23 +3,19 @@
 # Print all commands for debugging
 set -x
 
-# Create build directory structure
-mkdir -p build/api
-mkdir -p build/public
+# Create public directory to hold static files
+mkdir -p public
 
-# Copy API files
-cp -r api/* build/api/
-
-# Copy server files
-cp server-vercel.js build/
+# Create api directory for API functions
+mkdir -p api
 
 # Copy static assets to public directory
 if [ -d attached_assets ]; then
-  cp -r attached_assets/* build/public/
+  cp -r attached_assets/* public/
 fi
 
 # Create simple index.html if client build not available
-cat > build/public/index.html << 'EOL'
+cat > public/index.html << 'EOL'
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -51,25 +47,25 @@ cat > build/public/index.html << 'EOL'
 </html>
 EOL
 
-# Create a basic error page
-cat > build/public/error.png << 'EOL'
-<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
-  <rect width="800" height="600" fill="#1e1e2e" />
-  <text x="400" y="300" font-family="Arial" font-size="32" fill="#ff5555" text-anchor="middle">Error loading data</text>
-</svg>
-EOL
+# Ensure we have an error.png file
+if [ ! -f "public/error.png" ] && [ -f "attached_assets/og.png" ]; then
+  cp attached_assets/og.png public/error.png
+fi
+
+# Ensure we have an og.png file
+if [ ! -f "public/og.png" ] && [ -f "attached_assets/og.png" ]; then
+  cp attached_assets/og.png public/og.png
+fi
 
 # Verify key files exist
 echo "Verifying build contents..."
-ls -la build/
+ls -la
 echo "API directory:"
-ls -la build/api/
+ls -la api/
 echo "Public directory:"
-ls -la build/public/
+ls -la public/
 
-# Install dependencies in build directory
-cd build
-npm init -y
-npm install winston @neondatabase/serverless drizzle-orm ws axios express express-session
+# Install dependencies for API
+npm install winston @neondatabase/serverless drizzle-orm ws axios express express-session --save
 
 echo "Build completed successfully!"

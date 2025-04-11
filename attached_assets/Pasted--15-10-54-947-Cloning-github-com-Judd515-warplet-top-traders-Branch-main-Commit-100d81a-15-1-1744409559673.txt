@@ -1,0 +1,80 @@
+[15:10:54.947] Cloning github.com/Judd515/warplet-top-traders (Branch: main, Commit: 100d81a)
+[15:10:54.965] Skipping build cache, deployment was triggered without cache.
+[15:10:55.742] Cloning completed: 794.000ms
+[15:10:56.179] Running build in Washington, D.C., USA (East) – iad1
+[15:10:56.376] Running "vercel build"
+[15:10:56.736] Vercel CLI 41.5.0
+[15:10:57.432] Running "install" command: `npm install`...
+[15:11:01.718] npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+[15:11:01.742] npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+[15:11:07.007] 
+[15:11:07.007] added 489 packages, and audited 490 packages in 9s
+[15:11:07.008] 
+[15:11:07.008] 61 packages are looking for funding
+[15:11:07.008]   run `npm fund` for details
+[15:11:07.040] 
+[15:11:07.041] 8 moderate severity vulnerabilities
+[15:11:07.041] 
+[15:11:07.041] To address issues that do not require attention, run:
+[15:11:07.041]   npm audit fix
+[15:11:07.041] 
+[15:11:07.041] To address all issues (including breaking changes), run:
+[15:11:07.042]   npm audit fix --force
+[15:11:07.042] 
+[15:11:07.042] Run `npm audit` for details.
+[15:11:07.283] npm warn config production Use `--omit=dev` instead.
+[15:11:55.534] 
+[15:11:55.535] added 388 packages, and audited 389 packages in 48s
+[15:11:55.535] 
+[15:11:55.536] 53 packages are looking for funding
+[15:11:55.536]   run `npm fund` for details
+[15:11:55.536] 
+[15:11:55.538] found 0 vulnerabilities
+[15:11:59.588] npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+[15:11:59.641] npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+[15:12:01.329] 
+[15:12:01.330] added 125 packages, and audited 514 packages in 6s
+[15:12:01.330] 
+[15:12:01.331] 65 packages are looking for funding
+[15:12:01.331]   run `npm fund` for details
+[15:12:01.351] 
+[15:12:01.352] 5 moderate severity vulnerabilities
+[15:12:01.352] 
+[15:12:01.352] To address all issues (including breaking changes), run:
+[15:12:01.352]   npm audit fix --force
+[15:12:01.353] 
+[15:12:01.353] Run `npm audit` for details.
+[15:12:01.374] cp: cannot stat '../client/dist/*': No such file or directory
+[15:12:01.376] Verifying build contents...
+[15:12:01.398] total 332
+[15:12:01.398] drwxr-xr-x   6 root root    134 Apr 11 22:12 .
+[15:12:01.398] drwx------   1 root root     98 Apr 11 22:11 ..
+[15:12:01.398] drwxr-xr-x   2 root root    200 Apr 11 22:11 api
+[15:12:01.398] drwxr-xr-x   2 root root      6 Apr 11 22:12 client
+[15:12:01.398] drwxr-xr-x 351 root root  12288 Apr 11 22:12 node_modules
+[15:12:01.399] -rw-r--r--   1 root root 313442 Apr 11 22:12 package-lock.json
+[15:12:01.399] -rw-r--r--   1 root root   3543 Apr 11 22:12 package.json
+[15:12:01.399] drwxr-xr-x   2 root root     20 Apr 11 22:12 public
+[15:12:01.399] -rw-r--r--   1 root root    596 Apr 11 22:11 server-vercel.js
+[15:12:01.399] API directory:
+[15:12:01.400] total 60
+[15:12:01.400] drwxr-xr-x 2 root root  200 Apr 11 22:11 .
+[15:12:01.401] drwxr-xr-x 6 root root  134 Apr 11 22:12 ..
+[15:12:01.401] -rw-r--r-- 1 root root 1173 Apr 11 22:11 README.md
+[15:12:01.401] -rw-r--r-- 1 root root 3112 Apr 11 22:11 db.js
+[15:12:01.401] -rw-r--r-- 1 root root 4363 Apr 11 22:11 dune.ts
+[15:12:01.401] -rw-r--r-- 1 root root 2978 Apr 11 22:11 frame-action.js
+[15:12:01.401] -rw-r--r-- 1 root root 8587 Apr 11 22:11 index.js
+[15:12:01.401] -rw-r--r-- 1 root root 8935 Apr 11 22:11 neynar.ts
+[15:12:01.401] -rw-r--r-- 1 root root  795 Apr 11 22:11 schema.js
+[15:12:01.401] -rw-r--r-- 1 root root 2314 Apr 11 22:11 serverless-handler.js
+[15:12:01.401] -rw-r--r-- 1 root root 1943 Apr 11 22:11 serverless-storage.js
+[15:12:01.401] -rw-r--r-- 1 root root 2144 Apr 11 22:11 storage.js
+[15:12:01.402] Public directory:
+[15:12:01.406] total 1608
+[15:12:01.406] drwxr-xr-x 2 root root      20 Apr 11 22:12 .
+[15:12:01.406] drwxr-xr-x 6 root root     134 Apr 11 22:12 ..
+[15:12:01.406] -rw-r--r-- 1 root root 1643530 Apr 11 22:12 og.png
+[15:12:01.417] Error: No Output Directory named "public" found after the Build completed. You can configure the Output Directory in your Project Settings.
+[15:12:01.418] Learn More: https://vercel.link/missing-public-directory
+[15:12:01.775] 
