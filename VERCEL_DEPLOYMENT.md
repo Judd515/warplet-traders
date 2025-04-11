@@ -9,6 +9,15 @@ This document provides detailed steps to successfully deploy your Warpcast Top T
 3. Neynar API key
 4. Dune Analytics API key
 
+## Important Files for Deployment
+
+We've prepared several files specifically for Vercel deployment:
+
+1. `vercel.json` - Contains routing rules and build configuration
+2. `build.sh` - Custom build script to copy files to the right locations
+3. `server-vercel.js` - Express server for Vercel's serverless environment
+4. `api/serverless-handler.js` - Handler for API routes on Vercel
+
 ## Environment Variables
 
 Set up the following environment variables in your Vercel project settings:
@@ -20,50 +29,62 @@ Set up the following environment variables in your Vercel project settings:
 
 ## Deployment Steps
 
-1. Push this codebase to your GitHub repository
+1. **Download the project**: 
+   - Use Replit's "Download as ZIP" feature from the Files menu (three dots)
+   - Extract the ZIP on your computer
 
-2. Create a new project in Vercel and link it to your GitHub repository
+2. **Push to GitHub**:
+   - Create a new repository or use your existing one
+   - Push all the files to your GitHub repository
 
-3. Configure the environment variables in your Vercel project settings under "Settings" > "Environment Variables"
+3. **Create a Vercel project**:
+   - Go to https://vercel.com/new
+   - Import your GitHub repository
+   - The framework preset should be "Vite"
 
-4. Set up the build configuration (should be auto-detected):
-   - Build Command: `npm run build`
-   - Output Directory: `dist`
-   - Install Command: `npm install`
+4. **Configure environment variables**:
+   - Go to "Settings" > "Environment Variables" in your Vercel project
+   - Add all required environment variables listed above
 
-5. Deploy your project by clicking "Deploy"
+5. **Deploy**:
+   - Click "Deploy" at the bottom of the page
+   - Vercel will use our custom build script to handle deployment
+
+## PostgreSQL Database Setup
+
+You need a Postgres database for your deployment. Two good options:
+
+1. **Neon Database (Free Tier)**:
+   - Go to https://neon.tech
+   - Sign up and create a new project
+   - Get the connection string from the dashboard
+
+2. **Vercel Postgres**:
+   - In your Vercel project dashboard
+   - Go to Storage tab
+   - Create a new Postgres database
 
 ## Troubleshooting
 
-If your deployment shows a blank screen:
+If you encounter issues with deployment:
 
-1. Check the Vercel function logs for errors
-2. Verify that all environment variables are correctly set
-3. Make sure your database is accessible from Vercel's servers
-4. Check that the API routes are correctly configured in vercel.json
+1. **Check build logs**: 
+   - Look for errors in the Vercel build logs
+   - Make sure the build.sh script is executing properly
 
-## Database Migration
+2. **Verify API access**:
+   - Test API endpoints directly (e.g., https://yourdomain.vercel.app/api/traders)
+   - Check environment variables are set correctly
 
-This project uses Drizzle ORM. To set up your database schema:
-
-1. Clone the repository locally
-2. Configure the DATABASE_URL in your local .env file
-3. Run `npm run db:push` to push the schema to your database
-
-## API Endpoints
-
-The project uses two main API endpoints:
-
-- `GET /api/traders` - Retrieves trader data
-- `POST /api/refresh-data` - Refreshes trader data from Neynar and Dune
-
-These endpoints are already configured in vercel.json to use the serverless handler.
+3. **Database connectivity**:
+   - Make sure your DATABASE_URL is correct and accessible from Vercel
+   - Run npm run db:push locally to set up the schema first
 
 ## Testing the Deployment
 
-After deployment:
+After successful deployment:
 
 1. Visit your deployed site
-2. Click the "Refresh" button to fetch fresh data
-3. Toggle between 24h and 7d views to verify timeframe functionality
-4. Test the Share button to ensure Warpcast sharing works correctly
+2. The app should automatically fetch data on load
+3. Test switching between 24h and 7d timeframes
+4. Try the Share button to ensure Warpcast sharing works

@@ -1,39 +1,33 @@
 {
   "version": 2,
-  "buildCommand": "npm run build",
+  "buildCommand": "bash ./build.sh",
   "installCommand": "npm install",
-  "outputDirectory": "dist",
+  "outputDirectory": "dist/public",
+  "framework": "vite",
   "functions": {
     "api/**/*": {
       "memory": 1024,
       "maxDuration": 10
     }
   },
-  "routes": [
+  "rewrites": [
+    { "source": "/api/traders", "destination": "/api/serverless-handler.js" },
+    { "source": "/api/refresh-data", "destination": "/api/serverless-handler.js" },
+    { "source": "/api/(.*)", "destination": "/api/serverless-handler.js" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
+  "headers": [
     {
-      "src": "/api/traders",
-      "dest": "/api/serverless-handler.js",
-      "methods": ["GET"]
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
     },
     {
-      "src": "/api/refresh-data",
-      "dest": "/api/serverless-handler.js",
-      "methods": ["POST"]
-    },
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/serverless-handler.js"
-    },
-    {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/assets/(.*)",
-      "dest": "/assets/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "source": "/assets/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
     }
   ],
   "env": {
