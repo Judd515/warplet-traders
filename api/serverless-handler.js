@@ -1,4 +1,8 @@
 // Enhanced serverless handler with robust error handling
+// First load the serverless storage which contains fallbacks
+require('./serverless-storage');
+
+// Then load the app which will use the enhanced storage
 const app = require('./index');
 
 // Import necessary modules

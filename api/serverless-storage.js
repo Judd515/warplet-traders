@@ -1,52 +1,72 @@
-// Serverless-compatible storage for Vercel deployment
-class ServerlessStorage {
+// Enhanced storage interface with fallback for production
+const { storage } = require('./storage');
+
+// Memory-based backup storage for emergency use
+class FallbackStorage {
   constructor() {
-    // In serverless functions, memory isn't preserved between invocations
-    // This class exists just to provide the same interface as the memory storage
-    this.tradersData = [];
+    this.traders = [
+      {
+        id: 1,
+        username: "Server Error",
+        walletAddress: "0x0000000000000000000000000000000000000000",
+        topToken: "API",
+        pnl24h: "Error",
+        pnl7d: "Error",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    ];
+    console.log('FallbackStorage initialized');
   }
 
   async getTraders() {
-    // Since we can't persist data between serverless invocations,
-    // if the storage is empty, we'll return a placeholder to indicate
-    // the user should refresh the data
-    if (this.tradersData.length === 0) {
-      return [{
-        id: 1,
-        username: "Click Refresh",
-        walletAddress: "0x0000000000000000000000000000000000000000",
-        topToken: "DATA",
-        pnl24h: "0",
-        pnl7d: null
-      }];
-    }
-    return this.tradersData;
+    console.log('Using fallback storage for getTraders');
+    return this.traders;
   }
 
-  async updateTraders(tradersList) {
-    // Store the new traders with IDs
-    this.tradersData = tradersList.map((trader, index) => ({
-      ...trader,
-      id: index + 1
-    }));
-    return this.tradersData;
+  async updateTraders(traders) {
+    console.log('Using fallback storage for updateTraders (no-op)');
+    return this.traders;
   }
 
-  // User methods (stub implementations for compatibility)
-  async getUser() {
-    return undefined;
-  }
-
-  async getUserByUsername() {
-    return undefined;
-  }
-
-  async createUser(user) {
-    return { ...user, id: 1 };
+  // User methods (stubs)
+  async getUser() { return null; }
+  async getUserByUsername() { return null; }
+  async createUser() { 
+    throw new Error('Operation not supported in fallback mode');
   }
 }
 
-// Export singleton instance
-module.exports = {
-  storage: new ServerlessStorage()
-};
+// Setup wrapped storage with error handling
+const wrappedStorage = new Proxy(storage, {
+  get: function(target, prop) {
+    const originalMethod = target[prop];
+    
+    // If it's not a function, just return it
+    if (typeof originalMethod !== 'function') {
+      return originalMethod;
+    }
+    
+    // Return a wrapped function
+    return async function(...args) {
+      try {
+        // Attempt to use the real storage
+        return await originalMethod.apply(target, args);
+      } catch (error) {
+        console.error(`Error in storage method ${prop}:`, error);
+        
+        // If database operation fails, use fallback for read operations
+        const fallback = new FallbackStorage();
+        
+        if (prop === 'getTraders') {
+          return await fallback.getTraders();
+        }
+        
+        // For other operations, rethrow the error
+        throw error;
+      }
+    };
+  }
+});
+
+module.exports = { storage: wrappedStorage };

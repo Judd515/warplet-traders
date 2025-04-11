@@ -28,8 +28,19 @@ function initDb() {
     }
 
     // Configure the connection pool with serverless-appropriate settings
+    // Special workaround for Neon serverless + Vercel edge functions
+    // The connection string may need to be modified for pooling to work properly
+    let connectionString = process.env.DATABASE_URL;
+    
+    // Add pooling params if not present
+    if (connectionString && !connectionString.includes('pooling=')) {
+      connectionString += connectionString.includes('?') 
+        ? '&pooling=true'
+        : '?pooling=true';
+    }
+    
     pool = new Pool({
-      connectionString: process.env.DATABASE_URL,
+      connectionString,
       max: 1, // Limit connections for serverless environment
       idleTimeoutMillis: 120000, // Close idle connections after 2 minutes
       connectionTimeoutMillis: 5000, // Timeout after 5 seconds
