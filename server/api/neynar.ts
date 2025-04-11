@@ -146,7 +146,11 @@ export async function extractWarpletAddresses(users: NeynarUser[], apiKey: strin
   // We don't need the third pass anymore since we should have all custody addresses
   // from the enhanced follower API call, but keep it as a fallback just in case
   if (Object.keys(warpletAddresses).length === 0) {
-    const usersToCheck = users.slice(0, 5); // Only check a few to avoid rate limits
+    // Filter out users with undefined FIDs
+    const usersToCheck = users
+      .slice(0, 5)
+      .filter(user => user.fid !== undefined && user.fid !== null);
+    
     console.log(`No addresses found yet. Checking details for ${usersToCheck.length} users...`);
     
     for (const user of usersToCheck) {

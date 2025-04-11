@@ -53,27 +53,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log('Fetching followers from Neynar API...');
       
-      // Fetch followers for FID 12915 (original user's FID)
-      const followers = await fetchFollowers(12915, neynarApiKey);
+      // Fetch followers for FID 602 (dwr) - a well-known trader with many followers
+      const followers = await fetchFollowers(602, neynarApiKey);
       console.log(`Found ${followers.length} followers`);
       
       // Direct fetch of users with their custody addresses
       console.log('Directly fetching user details for better custody address discovery...');
       
       // Get up to 5 FIDs to fetch details for (to avoid rate limits)
-      const fidsToCheck = followers.slice(0, 5).map(f => f.fid);
+      const fidsToCheck = followers
+        .slice(0, 5)
+        .map(f => f.fid)
+        .filter(fid => fid !== undefined && fid !== null); // Filter out invalid FIDs
+      
       console.log(`Will check custody addresses for these FIDs: ${fidsToCheck.join(', ')}`);
       
-      // Direct API call to get user details with custody addresses
-      const userDetailsResponse = await axios.get(`https://api.neynar.com/v2/farcaster/user/bulk`, {
-        params: {
-          fids: fidsToCheck.join(','),
-        },
-        headers: {
-          'accept': 'application/json',
-          'api_key': neynarApiKey
-        }
-      });
+      // Only make the API call if we have valid FIDs
+      let userDetailsResponse: any = { data: { users: [] } };
+      
+      if (fidsToCheck.length > 0) {
+        // Direct API call to get user details with custody addresses
+        userDetailsResponse = await axios.get(`https://api.neynar.com/v2/farcaster/user/bulk`, {
+          params: {
+            fids: fidsToCheck.join(','),
+          },
+          headers: {
+            'accept': 'application/json',
+            'api_key': neynarApiKey
+          }
+        });
+        
+        console.log('API response status:', userDetailsResponse.status);
+      } else {
+        console.log('No valid FIDs found to check for custody addresses');
+      }
       
       // Extract custody addresses
       const warpletAddresses: Record<string, string> = {};
