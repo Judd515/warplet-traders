@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
 import axios from 'axios';
-import { fetchFollowers, extractWarpletAddresses } from "./api/neynar";
+import { fetchFollowing, extractWarpletAddresses } from "./api/neynar";
 import { fetchTradingData } from "./api/dune";
 import { insertTraderSchema } from "@shared/schema";
 
@@ -51,20 +51,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(500).json({ error: "API keys not configured" });
       }
       
-      console.log('Fetching followers from Neynar API...');
+      console.log('Fetching users you are following from Neynar API...');
       
-      // Fetch followers for FID 12915 (your FID)
-      const followers = await fetchFollowers(12915, neynarApiKey);
-      console.log(`Found ${followers.length} followers`);
+      // Fetch users that FID 12915 (your FID) is following
+      const following = await fetchFollowing(12915, neynarApiKey);
+      console.log(`Found ${following.length} accounts you are following`);
       
       // Direct fetch of users with their custody addresses
       console.log('Directly fetching user details for better custody address discovery...');
       
       // Get up to 5 FIDs to fetch details for (to avoid rate limits)
-      const fidsToCheck = followers
+      const fidsToCheck = following
         .slice(0, 5)
-        .map(f => f.fid)
-        .filter(fid => fid !== undefined && fid !== null); // Filter out invalid FIDs
+        .map((f: any) => f.fid)
+        .filter((fid: any) => fid !== undefined && fid !== null); // Filter out invalid FIDs
       
       console.log(`Will check custody addresses for these FIDs: ${fidsToCheck.join(', ')}`);
       
@@ -103,19 +103,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // If no custody addresses were found, fall back to searching profile text
       if (Object.keys(warpletAddresses).length === 0) {
         console.log('No custody addresses found, checking profile text...');
-        const textAddresses = await extractWarpletAddresses(followers, neynarApiKey);
+        const textAddresses = await extractWarpletAddresses(following, neynarApiKey);
         Object.assign(warpletAddresses, textAddresses);
       }
       
       const walletCount = Object.keys(warpletAddresses).length;
       console.log(`Extracted ${walletCount} wallet addresses total`);
       
-      // We'll only use the wallet addresses we found from your actual followers
+      // We'll only use the wallet addresses we found from accounts you're following
       let wallets: Record<string, string> = warpletAddresses;
       
       // If no addresses were found, return an empty array with a message
       if (walletCount === 0) {
-        console.log('No wallet addresses found in follower profiles');
+        console.log('No wallet addresses found in profiles of accounts you follow');
         // Return a response indicating no addresses were found
         return res.json([{
           username: "No wallets found",

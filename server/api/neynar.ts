@@ -22,12 +22,12 @@ interface NeynarUser {
 }
 
 // Function to fetch followers from Neynar API
-export async function fetchFollowers(fid: number, apiKey: string): Promise<NeynarUser[]> {
+export async function fetchFollowing(fid: number, apiKey: string): Promise<NeynarUser[]> {
   try {
-    console.log(`Fetching followers for FID ${fid}...`);
+    console.log(`Fetching users that FID ${fid} is following...`);
     
-    // Use the follower endpoint to get basic profile information
-    const response = await axios.get(`https://api.neynar.com/v2/farcaster/followers`, {
+    // Use the following endpoint to get basic profile information
+    const response = await axios.get(`https://api.neynar.com/v2/farcaster/following`, {
       params: {
         fid,
         limit: 100,
@@ -98,25 +98,25 @@ export async function fetchFollowers(fid: number, apiKey: string): Promise<Neyna
       }
     }
     
-    console.log(`Extracted ${users.length} followers from API response`);
+    console.log(`Extracted ${users.length} accounts from API response`);
     
-    // Log the first follower to see the structure
+    // Log the first account to see the structure
     if (users.length > 0) {
-      console.log('Sample follower data:', JSON.stringify(users[0]).substring(0, 200) + '...');
+      console.log('Sample account data:', JSON.stringify(users[0]).substring(0, 200) + '...');
       
       // Check if we have valid FIDs
       const validUsers = users.filter((u: NeynarUser) => u.fid !== undefined && u.fid !== null);
-      console.log(`Found ${validUsers.length} followers with valid FIDs`);
+      console.log(`Found ${validUsers.length} accounts with valid FIDs`);
       
       if (validUsers.length > 0) {
-        console.log(`First follower FID: ${validUsers[0].fid}`);
+        console.log(`First account FID: ${validUsers[0].fid}`);
       }
     }
     
     return users;
   } catch (error) {
-    console.error('Error fetching followers from Neynar API:', error);
-    throw new Error('Failed to fetch followers from Neynar API');
+    console.error('Error fetching accounts from Neynar API:', error);
+    throw new Error('Failed to fetch accounts from Neynar API');
   }
 }
 
@@ -165,10 +165,10 @@ async function fetchUserDetails(fid: number, apiKey: string): Promise<any> {
 export async function extractWarpletAddresses(users: NeynarUser[], apiKey: string): Promise<Record<string, string>> {
   const warpletAddresses: Record<string, string> = {};
   
-  console.log(`Examining ${users.length} followers for wallet addresses...`);
+  console.log(`Examining ${users.length} accounts for wallet addresses...`);
   
   // First check: look for custody_address directly in the user object
-  // This will be present if our enhanced follower API call worked
+  // This will be present if our enhanced API call worked
   users.forEach(user => {
     if (user.custody_address) {
       warpletAddresses[user.username] = user.custody_address;
@@ -204,7 +204,7 @@ export async function extractWarpletAddresses(users: NeynarUser[], apiKey: strin
   });
   
   // We don't need the third pass anymore since we should have all custody addresses
-  // from the enhanced follower API call, but keep it as a fallback just in case
+  // from the enhanced API call, but keep it as a fallback just in case
   if (Object.keys(warpletAddresses).length === 0) {
     // Filter out users with undefined FIDs
     const usersToCheck = users
@@ -229,7 +229,7 @@ export async function extractWarpletAddresses(users: NeynarUser[], apiKey: strin
   
   const walletCount = Object.keys(warpletAddresses).length;
   const percentage = users.length > 0 ? (walletCount / users.length * 100).toFixed(1) : '0';
-  console.log(`Found ${walletCount} wallet addresses (${percentage}% of followers)`);
+  console.log(`Found ${walletCount} wallet addresses (${percentage}% of accounts you follow)`);
   
   return warpletAddresses;
 }
