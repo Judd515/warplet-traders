@@ -23,7 +23,8 @@ interface NeynarUser {
 // Function to fetch followers from Neynar API
 export async function fetchFollowers(fid: number, apiKey: string): Promise<NeynarUser[]> {
   try {
-    const response = await axios.get(`https://api.neynar.com/v2/farcaster/user/followers`, {
+    // Updated endpoint based on the Neynar API documentation
+    const response = await axios.get(`https://api.neynar.com/v2/farcaster/followers`, {
       params: {
         fid,
         limit: 100,
@@ -34,7 +35,15 @@ export async function fetchFollowers(fid: number, apiKey: string): Promise<Neyna
       }
     });
     
-    return response.data.users || [];
+    console.log('Neynar API response status:', response.status);
+    
+    // Check if the API response contains the expected data
+    if (response.data && response.data.users) {
+      return response.data.users;
+    } else {
+      console.log('Unexpected Neynar API response format:', JSON.stringify(response.data));
+      return [];
+    }
   } catch (error) {
     console.error('Error fetching followers from Neynar API:', error);
     throw new Error('Failed to fetch followers from Neynar API');
