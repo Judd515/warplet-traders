@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
+import axios from 'axios';
 import { fetchFollowers, extractWarpletAddresses } from "./api/neynar";
 import { fetchTradingData } from "./api/dune";
 import { insertTraderSchema } from "@shared/schema";
@@ -52,14 +53,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log('Fetching followers from Neynar API...');
       
-      // Fetch followers for FID 602 (dwr) - a well-known trader with many followers
-      const followers = await fetchFollowers(602, neynarApiKey);
+      // Fetch followers for FID 12915 (original user's FID)
+      const followers = await fetchFollowers(12915, neynarApiKey);
       console.log(`Found ${followers.length} followers`);
       
-      // Extract Warplet addresses from followers (including custody addresses)
-      const warpletAddresses = await extractWarpletAddresses(followers, neynarApiKey);
+      // Direct fetch of users with their custody addresses
+      console.log('Directly fetching user details for better custody address discovery...');
+      
+      // Get up to 5 FIDs to fetch details for (to avoid rate limits)
+      const fidsToCheck = followers.slice(0, 5).map(f => f.fid);
+      console.log(`Will check custody addresses for these FIDs: ${fidsToCheck.join(', ')}`);
+      
+      // Direct API call to get user details with custody addresses
+      const userDetailsResponse = await axios.get(`https://api.neynar.com/v2/farcaster/user/bulk`, {
+        params: {
+          fids: fidsToCheck.join(','),
+        },
+        headers: {
+          'accept': 'application/json',
+          'api_key': neynarApiKey
+        }
+      });
+      
+      // Extract custody addresses
+      const warpletAddresses: Record<string, string> = {};
+      
+      if (userDetailsResponse.data?.users) {
+        userDetailsResponse.data.users.forEach((user: any) => {
+          if (user.custody_address) {
+            warpletAddresses[user.username] = user.custody_address;
+            console.log(`Found custody address for ${user.username}: ${user.custody_address}`);
+          }
+        });
+      }
+      
+      // If no custody addresses were found, fall back to searching profile text
+      if (Object.keys(warpletAddresses).length === 0) {
+        console.log('No custody addresses found, checking profile text...');
+        const textAddresses = await extractWarpletAddresses(followers, neynarApiKey);
+        Object.assign(warpletAddresses, textAddresses);
+      }
+      
       const walletCount = Object.keys(warpletAddresses).length;
-      console.log(`Extracted ${walletCount} wallet addresses from follower profiles`);
+      console.log(`Extracted ${walletCount} wallet addresses total`);
       
       // We'll only use the wallet addresses we found from your actual followers
       let wallets: Record<string, string> = warpletAddresses;
