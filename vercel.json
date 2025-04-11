@@ -5,13 +5,24 @@
   "outputDirectory": "dist",
   "functions": {
     "api/**/*": {
-      "memory": 1024
+      "memory": 1024,
+      "maxDuration": 10
     }
   },
   "routes": [
     {
+      "src": "/api/traders",
+      "dest": "/api/serverless-handler.js",
+      "methods": ["GET"]
+    },
+    {
+      "src": "/api/refresh-data",
+      "dest": "/api/serverless-handler.js",
+      "methods": ["POST"]
+    },
+    {
       "src": "/api/(.*)",
-      "dest": "/api/$1"
+      "dest": "/api/serverless-handler.js"
     },
     {
       "src": "/(.*)",

@@ -93,9 +93,20 @@ export class MemStorage implements IStorage {
     
     // Add new traders
     const updatedTraders: Trader[] = [];
+    
     tradersList.forEach((trader) => {
       const id = this.traderCurrentId++;
-      const newTrader: Trader = { ...trader, id };
+      
+      // Create new trader with proper types
+      const newTrader: Trader = {
+        id,
+        username: trader.username,
+        walletAddress: trader.walletAddress,
+        topToken: trader.topToken === undefined ? null : trader.topToken,
+        pnl24h: trader.pnl24h === undefined ? null : trader.pnl24h,
+        pnl7d: trader.pnl7d === undefined ? null : trader.pnl7d
+      };
+      
       this.traders.set(id, newTrader);
       updatedTraders.push(newTrader);
     });

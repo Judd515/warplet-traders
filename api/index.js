@@ -1,8 +1,8 @@
 // Serverless Express API for Vercel
 const express = require('express');
 const session = require('express-session');
-// Use serverless-compatible storage instead of memory storage
-const { storage } = require('./serverless-storage');
+// Use database storage implementation
+const { storage } = require('./storage');
 const axios = require('axios');
 
 // Create Express app
