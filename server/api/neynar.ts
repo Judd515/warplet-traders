@@ -54,18 +54,34 @@ export async function fetchFollowers(fid: number, apiKey: string): Promise<Neyna
 export function extractWarpletAddresses(users: NeynarUser[]): Record<string, string> {
   const warpletAddresses: Record<string, string> = {};
   
+  console.log(`Examining ${users.length} followers for wallet addresses...`);
+  
   users.forEach(user => {
-    // Assuming Warplet addresses might be mentioned in bio
-    // This is a simplified approach - in a real app, we'd need a more robust way to get these
+    // Check multiple places for Ethereum addresses
+    // 1. Look in bio
     const bioText = user.profile?.bio?.text || '';
+    // 2. Look in display name
+    const displayName = user.display_name || '';
+    // 3. Look in username (sometimes people append their address)
+    const username = user.username || '';
     
-    // Basic regex to find Ethereum addresses in bio
-    const addressMatch = bioText.match(/0x[a-fA-F0-9]{40}/);
+    // Combine all text fields to search for addresses
+    const combinedText = `${bioText} ${displayName} ${username}`;
     
-    if (addressMatch && addressMatch[0]) {
-      warpletAddresses[user.username] = addressMatch[0];
+    // Basic regex to find Ethereum addresses
+    const ethAddressRegex = /0x[a-fA-F0-9]{40}/gi;
+    const matches = combinedText.match(ethAddressRegex);
+    
+    if (matches && matches.length > 0) {
+      // Take the first address found
+      warpletAddresses[user.username] = matches[0];
+      console.log(`Found wallet address for @${user.username}: ${matches[0]}`);
     }
   });
+  
+  const walletCount = Object.keys(warpletAddresses).length;
+  const percentage = users.length > 0 ? (walletCount / users.length * 100).toFixed(1) : '0';
+  console.log(`Found ${walletCount} wallet addresses (${percentage}% of followers)`);
   
   return warpletAddresses;
 }

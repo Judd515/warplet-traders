@@ -121,7 +121,10 @@ const Home: React.FC = () => {
         ) : (
           <div className="bg-[#1E3A8A] rounded-lg p-6 text-center">
             <p>No trader data available.</p>
-            <p className="text-sm text-gray-400 mt-2 mb-4">Click the Refresh button to fetch data from your followers.</p>
+            <p className="text-sm text-gray-400 mt-2 mb-4">
+              Click the Refresh button to analyze your followers' trading activity.
+              <br/>Note: We look for wallet addresses in profile bios.
+            </p>
             <Button 
               className="bg-white text-[#1E3A8A] hover:bg-gray-100"
               onClick={handleRefresh}
