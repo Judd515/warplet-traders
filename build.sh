@@ -10,10 +10,14 @@ rm -rf public api_build
 mkdir -p public
 mkdir -p api_build
 
-# Copy API files to the api_build directory
+# Copy only the essential API file to the api_build directory
 if [ -d "api" ]; then
   echo "Copying API files..."
-  find api -type f \( -name "*.js" -o -name "*.ts" -o -name "*.json" \) | xargs -I{} cp {} api_build/
+  if [ -f "api/all-routes.js" ]; then
+    cp api/all-routes.js api_build/
+  fi
+  # Copy JSON files if any
+  find api -type f -name "*.json" | xargs -I{} cp {} api_build/ 2>/dev/null || true
 fi
 
 # Copy static assets to public directory
@@ -49,12 +53,12 @@ if [ ! -f "public/index.html" ]; then
     <meta property="fc:frame:button:1" content="24 Hours" />
     <meta property="fc:frame:button:2" content="7 Days" />
     <meta property="fc:frame:button:3" content="Share Results" />
-    <meta property="fc:frame:post_url" content="https://topwarplettraders.vercel.app/api/frame-action" />
+    <meta property="fc:frame:post_url" content="https://topwarplettraders.vercel.app/api/all-routes" />
   </head>
   <body>
     <div id="root">Loading Top Traders...</div>
     <script>
-      window.location.href = "/api/frame-action";
+      window.location.href = "/api/all-routes";
     </script>
   </body>
 </html>

@@ -4,18 +4,15 @@
   "installCommand": "npm install",
   "outputDirectory": "public",
   "functions": {
-    "api/**/*.js": {
+    "api/all-routes.js": {
       "memory": 1024,
       "maxDuration": 10
     }
   },
   "rewrites": [
     { "source": "/", "destination": "/index.html" },
-    { "source": "/api", "destination": "/api/minimal.js" },
-    { "source": "/api/minimal", "destination": "/api/minimal.js" },
-    { "source": "/api/frame-action", "destination": "/api/minimal.js" },
-    { "source": "/api/edge", "destination": "/api/edge.js" },
-    { "source": "/api/health", "destination": "/api/health.js" }
+    { "source": "/api", "destination": "/api/all-routes.js" },
+    { "source": "/api/(.*)", "destination": "/api/all-routes.js" }
   ],
   "headers": [
     {

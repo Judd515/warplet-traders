@@ -1,0 +1,140 @@
+[15:39:37.065] Cloning github.com/Judd515/warplet-top-traders (Branch: main, Commit: 9778264)
+[15:39:37.784] Cloning completed: 719.000ms
+[15:39:38.905] Restored build cache from previous deployment (5SWnQeyoG8iBtb9c4hNFGKxquZGm)
+[15:39:39.016] Running build in Washington, D.C., USA (East) – iad1
+[15:39:39.463] Running "vercel build"
+[15:39:39.835] Vercel CLI 41.5.0
+[15:39:40.683] Running "install" command: `npm install`...
+[15:39:43.744] 
+[15:39:43.745] removed 26 packages, changed 2 packages, and audited 490 packages in 3s
+[15:39:43.745] 
+[15:39:43.745] 61 packages are looking for funding
+[15:39:43.745]   run `npm fund` for details
+[15:39:43.781] 
+[15:39:43.781] 8 moderate severity vulnerabilities
+[15:39:43.782] 
+[15:39:43.782] To address issues that do not require attention, run:
+[15:39:43.782]   npm audit fix
+[15:39:43.783] 
+[15:39:43.783] To address all issues (including breaking changes), run:
+[15:39:43.783]   npm audit fix --force
+[15:39:43.783] 
+[15:39:43.784] Run `npm audit` for details.
+[15:39:43.938] + rm -rf public api_build
+[15:39:43.940] + mkdir -p public
+[15:39:43.942] + mkdir -p api_build
+[15:39:43.943] + '[' -d api ']'
+[15:39:43.944] + echo 'Copying API files...'
+[15:39:43.944] Copying API files...
+[15:39:43.944] + xargs '-I{}' cp '{}' api_build/
+[15:39:43.944] + find api -type f '(' -name '*.js' -o -name '*.ts' -o -name '*.json' ')'
+[15:39:43.972] + '[' -d attached_assets ']'
+[15:39:43.973] + cp -r attached_assets/Pasted--15-01-06-351-Cloning-github-com-Judd515-warplet-top-traders-Branch-main-Commit-100d81a-15-0-1744409125000.txt attached_assets/Pasted--15-10-54-947-Cloning-github-com-Judd515-warplet-top-traders-Branch-main-Commit-100d81a-15-1-1744409559673.txt attached_assets/og.png public/
+[15:39:43.976] + '[' -d client/dist ']'
+[15:39:43.976] + '[' '!' -f public/index.html ']'
+[15:39:43.977] + cat
+[15:39:43.979] + '[' '!' -f public/error.png ']'
+[15:39:43.979] + '[' -f attached_assets/og.png ']'
+[15:39:43.979] + cp attached_assets/og.png public/error.png
+[15:39:43.980] + '[' '!' -f public/og.png ']'
+[15:39:43.980] + ls 'api_build/*.ts'
+[15:39:43.984] + mkdir -p api
+[15:39:43.986] + cp -r api_build/db.js api_build/direct-html.js api_build/edge.config.js api_build/edge.js api_build/frame-action-vercel.js api_build/frame-action.js api_build/health.js api_build/index.js api_build/minimal.js api_build/refresh-data.js api_build/schema.js api_build/serverless-handler.js api_build/serverless-storage.js api_build/storage.js api_build/traders.js api_build/tsconfig.json api/
+[15:39:43.988] + echo 'Verifying build contents...'
+[15:39:43.988] + ls -la
+[15:39:43.989] Verifying build contents...
+[15:39:43.991] total 1172
+[15:39:43.991] drwx------  1 root root    127 Apr 11 22:39 .
+[15:39:43.991] drwxr-x--- 12 root root    254 Apr 11 22:39 ..
+[15:39:43.991] -rw-r--r--  1 root root    353 Apr 11 22:39 .env.example
+[15:39:43.992] drwxr-xr-x  8 root root    177 Apr 11 22:39 .git
+[15:39:43.992] -rw-r--r--  1 root root    323 Apr 11 22:39 .gitignore
+[15:39:43.992] -rw-r--r--  1 root root    866 Apr 11 22:39 .replit
+[15:39:43.992] drwxr-xr-x  2 root root     26 Apr 11 22:39 .vercel
+[15:39:43.992] -rw-r--r--  1 root root   1900 Apr 11 22:39 README.md
+[15:39:43.993] -rw-r--r--  1 root root   2918 Apr 11 22:39 VERCEL_DEPLOYMENT.md
+[15:39:43.995] drwxr-xr-x  1 root root   4096 Apr 11 22:39 api
+[15:39:43.997] drwxr-xr-x  2 root root   4096 Apr 11 22:39 api_build
+[15:39:43.998] drwxr-xr-x  2 root root    270 Apr 11 22:39 attached_assets
+[15:39:43.998] -rw-r--r--  1 root root   3501 Apr 11 22:39 build.sh
+[15:39:43.998] drwxr-xr-x  4 root root     49 Apr 11 22:39 client
+[15:39:43.998] -rw-r--r--  1 root root    325 Apr 11 22:39 drizzle.config.ts
+[15:39:43.998] -rw-r--r--  1 root root 790337 Apr 11 22:39 generated-icon.png
+[15:39:43.998] drwxr-xr-x  1 root root   4096 Apr 11 22:39 node_modules
+[15:39:43.999] -rw-r--r--  1 root root 316137 Apr 11 22:39 package-lock.json
+[15:39:43.999] -rw-r--r--  1 root root   3517 Apr 11 22:39 package.json
+[15:39:43.999] -rw-r--r--  1 root root     80 Apr 11 22:39 postcss.config.js
+[15:39:43.999] drwxr-xr-x  2 root root   4096 Apr 11 22:39 public
+[15:39:43.999] -rw-r--r--  1 root root     41 Apr 11 22:39 replit.nix
+[15:39:43.999] drwxr-xr-x  3 root root     96 Apr 11 22:39 server
+[15:39:43.999] -rw-r--r--  1 root root    596 Apr 11 22:39 server-vercel.js
+[15:39:44.000] drwxr-xr-x  2 root root     23 Apr 11 22:39 shared
+[15:39:44.000] -rw-r--r--  1 root root   2787 Apr 11 22:39 tailwind.config.ts
+[15:39:44.006] -rw-r--r--  1 root root    104 Apr 11 22:39 theme.json
+[15:39:44.006] -rw-r--r--  1 root root    657 Apr 11 22:39 tsconfig.json
+[15:39:44.006] -rw-r--r--  1 root root    821 Apr 11 22:39 vercel-build.js
+[15:39:44.006] -rw-r--r--  1 root root    271 Apr 11 22:39 vercel.dev.js
+[15:39:44.006] -rw-r--r--  1 root root    753 Apr 11 22:39 vercel.json
+[15:39:44.006] -rw-r--r--  1 root root    978 Apr 11 22:39 vite.config.ts
+[15:39:44.009] API directory:
+[15:39:44.009] total 72
+[15:39:44.009] drwxr-xr-x 1 root root 4096 Apr 11 22:39 .
+[15:39:44.010] drwx------ 1 root root  127 Apr 11 22:39 ..
+[15:39:44.011] -rw-r--r-- 1 root root 1173 Apr 11 22:39 README.md
+[15:39:44.011] -rw-r--r-- 1 root root 3112 Apr 11 22:39 db.js
+[15:39:44.011] -rw-r--r-- 1 root root 3260 Apr 11 22:39 direct-html.js
+[15:39:44.012] -rw-r--r-- 1 root root   80 Apr 11 22:39 edge.config.js
+[15:39:44.012] -rw-r--r-- 1 root root 1618 Apr 11 22:39 edge.js
+[15:39:44.012] -rw-r--r-- 1 root root 1943 Apr 11 22:39 frame-action-vercel.js
+[15:39:44.012] -rw-r--r-- 1 root root 4069 Apr 11 22:39 frame-action.js
+[15:39:44.014] -rw-r--r-- 1 root root  316 Apr 11 22:39 health.js
+[15:39:44.014] -rw-r--r-- 1 root root 1968 Apr 11 22:39 index.js
+[15:39:44.014] -rw-r--r-- 1 root root 1214 Apr 11 22:39 minimal.js
+[15:39:44.014] -rw-r--r-- 1 root root 2611 Apr 11 22:39 refresh-data.js
+[15:39:44.014] -rw-r--r-- 1 root root  795 Apr 11 22:39 schema.js
+[15:39:44.015] -rw-r--r-- 1 root root 2812 Apr 11 22:39 serverless-handler.js
+[15:39:44.015] -rw-r--r-- 1 root root 1943 Apr 11 22:39 serverless-storage.js
+[15:39:44.015] -rw-r--r-- 1 root root 2144 Apr 11 22:39 storage.js
+[15:39:44.015] -rw-r--r-- 1 root root 1286 Apr 11 22:39 traders.js
+[15:39:44.015] -rw-r--r-- 1 root root  351 Apr 11 22:39 tsconfig.json
+[15:39:44.015] Public directory:
+[15:39:44.015] total 3240
+[15:39:44.015] drwxr-xr-x 2 root root    4096 Apr 11 22:39 .
+[15:39:44.015] drwx------ 1 root root     127 Apr 11 22:39 ..
+[15:39:44.016] -rw-r--r-- 1 root root    4129 Apr 11 22:39 Pasted--15-01-06-351-Cloning-github-com-Judd515-warplet-top-traders-Branch-main-Commit-100d81a-15-0-1744409125000.txt
+[15:39:44.016] -rw-r--r-- 1 root root    4327 Apr 11 22:39 Pasted--15-10-54-947-Cloning-github-com-Judd515-warplet-top-traders-Branch-main-Commit-100d81a-15-1-1744409559673.txt
+[15:39:44.016] -rw-r--r-- 1 root root 1643530 Apr 11 22:39 error.png
+[15:39:44.016] -rw-r--r-- 1 root root    1309 Apr 11 22:39 index.html
+[15:39:44.016] -rw-r--r-- 1 root root 1643530 Apr 11 22:39 og.png
+[15:39:44.016] + echo 'API directory:'
+[15:39:44.016] + ls -la api/
+[15:39:44.016] + echo 'Public directory:'
+[15:39:44.017] + ls -la public/
+[15:39:44.017] + npm install express --save
+[15:39:45.232] 
+[15:39:45.233] up to date, audited 490 packages in 1s
+[15:39:45.233] 
+[15:39:45.233] 61 packages are looking for funding
+[15:39:45.233]   run `npm fund` for details
+[15:39:45.272] 
+[15:39:45.272] 8 moderate severity vulnerabilities
+[15:39:45.272] 
+[15:39:45.272] To address issues that do not require attention, run:
+[15:39:45.272]   npm audit fix
+[15:39:45.273] 
+[15:39:45.273] To address all issues (including breaking changes), run:
+[15:39:45.273]   npm audit fix --force
+[15:39:45.273] 
+[15:39:45.273] Run `npm audit` for details.
+[15:39:45.284] + echo 'Build completed successfully!'
+[15:39:45.285] Build completed successfully!
+[15:39:45.315] Installing dependencies...
+[15:39:46.162] 
+[15:39:46.162] up to date in 783ms
+[15:39:46.163] 
+[15:39:46.163] 61 packages are looking for funding
+[15:39:46.163]   run `npm fund` for details
+[15:39:52.756] Build Completed in /vercel/output [12s]
+[15:39:52.962] Deploying outputs...
+[15:39:55.159] Error: No more than 12 Serverless Functions can be added to a Deployment on the Hobby plan. Create a team (Pro plan) to deploy more. Learn More: https://vercel.link/function-count-limit
+[15:39:55.405] 
