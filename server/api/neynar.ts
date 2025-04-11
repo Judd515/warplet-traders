@@ -50,12 +50,30 @@ export async function fetchFollowers(fid: number, apiKey: string): Promise<Neyna
   }
 }
 
+// Fetch user details including custody address if available
+async function fetchUserDetails(fid: number, apiKey: string): Promise<any> {
+  try {
+    const response = await axios.get(`https://api.neynar.com/v2/farcaster/user?fid=${fid}`, {
+      headers: {
+        'accept': 'application/json',
+        'api_key': apiKey
+      }
+    });
+    
+    return response.data?.user;
+  } catch (error) {
+    console.error(`Error fetching details for user FID ${fid}:`, error);
+    return null;
+  }
+}
+
 // Extract Warplet addresses from user profiles
-export function extractWarpletAddresses(users: NeynarUser[]): Record<string, string> {
+export async function extractWarpletAddresses(users: NeynarUser[], apiKey: string): Promise<Record<string, string>> {
   const warpletAddresses: Record<string, string> = {};
   
   console.log(`Examining ${users.length} followers for wallet addresses...`);
   
+  // First pass: check for wallet addresses in profile text (this is fast)
   users.forEach(user => {
     // Check multiple places for Ethereum addresses
     // 1. Look in bio
@@ -75,9 +93,30 @@ export function extractWarpletAddresses(users: NeynarUser[]): Record<string, str
     if (matches && matches.length > 0) {
       // Take the first address found
       warpletAddresses[user.username] = matches[0];
-      console.log(`Found wallet address for @${user.username}: ${matches[0]}`);
+      console.log(`Found wallet address in profile for @${user.username}: ${matches[0]}`);
     }
   });
+  
+  // Second pass: For users without addresses, try fetching custody address via user details
+  // Note: We limit this to a small number to avoid excessive API calls
+  const usersToCheck = users
+    .filter(user => !warpletAddresses[user.username])
+    .slice(0, 5); // Only check the first 5 to avoid rate limits
+
+  console.log(`Checking custody addresses for ${usersToCheck.length} users...`);
+  
+  for (const user of usersToCheck) {
+    try {
+      const userDetails = await fetchUserDetails(user.fid, apiKey);
+      
+      if (userDetails && userDetails.custody_address) {
+        warpletAddresses[user.username] = userDetails.custody_address;
+        console.log(`Found custody address for @${user.username}: ${userDetails.custody_address}`);
+      }
+    } catch (error) {
+      console.error(`Error fetching details for user ${user.username}:`, error);
+    }
+  }
   
   const walletCount = Object.keys(warpletAddresses).length;
   const percentage = users.length > 0 ? (walletCount / users.length * 100).toFixed(1) : '0';

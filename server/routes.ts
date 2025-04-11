@@ -56,13 +56,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const followers = await fetchFollowers(12915, neynarApiKey);
       console.log(`Found ${followers.length} followers`);
       
-      // Extract Warplet addresses from followers
-      const warpletAddresses = extractWarpletAddresses(followers);
+      // Extract Warplet addresses from followers (including custody addresses)
+      const warpletAddresses = await extractWarpletAddresses(followers, neynarApiKey);
       const walletCount = Object.keys(warpletAddresses).length;
       console.log(`Extracted ${walletCount} wallet addresses from follower profiles`);
       
       // If we couldn't find any wallet addresses, use some known traders on BASE as a fallback
-      let wallets = warpletAddresses;
+      let wallets: Record<string, string> = warpletAddresses;
       if (walletCount === 0) {
         console.log('No wallet addresses found in follower profiles, using fallback addresses');
         wallets = {
