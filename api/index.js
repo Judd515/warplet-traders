@@ -4,12 +4,26 @@ const session = require('express-session');
 // Use database storage implementation
 const { storage } = require('./storage');
 const axios = require('axios');
+const frameActionRouter = require('./frame-action');
 
 // Create Express app
 const app = express();
 
 // Middleware
 app.use(express.json());
+
+// CORS middleware for Warpcast Frame support
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
+  next();
+});
 
 // Simpler session config for serverless environment
 // Note: In serverless functions, sessions won't persist between function executions
@@ -181,6 +195,18 @@ app.post('/api/refresh-data', async (req, res) => {
     console.error('Error refreshing trading data:', error);
     res.status(500).json({ error: 'Failed to refresh trading data' });
   }
+});
+
+// Add frame action handlers
+app.use(frameActionRouter);
+
+// Create a simple endpoint for OG image generation
+app.get('/api/og-image', (req, res) => {
+  const { timeframe = '24h', share = 'false' } = req.query;
+  
+  // Just redirect to the static OG image for now
+  // In a real implementation, this would dynamically generate an image based on the data
+  res.redirect('/og.png');
 });
 
 // Error handler
