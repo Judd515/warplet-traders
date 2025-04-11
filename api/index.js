@@ -1,7 +1,8 @@
 // Serverless Express API for Vercel
 const express = require('express');
 const session = require('express-session');
-const { storage } = require('../server/storage');
+// Use serverless-compatible storage instead of memory storage
+const { storage } = require('./serverless-storage');
 const axios = require('axios');
 
 // Create Express app
@@ -9,11 +10,17 @@ const app = express();
 
 // Middleware
 app.use(express.json());
+
+// Simpler session config for serverless environment
+// Note: In serverless functions, sessions won't persist between function executions
 app.use(session({
   secret: process.env.SESSION_SECRET || 'warpcast-top-traders-secret',
-  resave: false,
-  saveUninitialized: false,
-  cookie: { secure: process.env.NODE_ENV === 'production' }
+  resave: true,
+  saveUninitialized: true,
+  cookie: { 
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 60000 // Short lived session for serverless
+  }
 }));
 
 // API Routes
