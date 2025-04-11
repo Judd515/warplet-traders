@@ -122,11 +122,17 @@ const TradersTable: React.FC<TradersTableProps> = ({ traders, timeframe }) => {
     
     // Only show one achievement at a time to avoid overwhelming the user
     if (newAchievements.length > 0) {
-      // Pick a random achievement from the newly unlocked ones
-      const achievement = newAchievements[Math.floor(Math.random() * newAchievements.length)];
+      // Get already unlocked achievement IDs for easier lookup
+      const unlockedIds = new Set(unlockedAchievements.map(a => a.id));
       
-      // Only show it if it's not already in the unlocked list
-      if (!unlockedAchievements.some(a => a.id === achievement.id)) {
+      // Filter to get only new achievements not already unlocked
+      const notYetUnlocked = newAchievements.filter(a => !unlockedIds.has(a.id));
+      
+      if (notYetUnlocked.length > 0) {
+        // Pick a random achievement from the newly unlocked ones
+        const achievement = notYetUnlocked[Math.floor(Math.random() * notYetUnlocked.length)];
+        
+        // Add to unlocked achievements
         setUnlockedAchievements(prev => [...prev, achievement]);
         setCurrentAchievement(achievement);
         setShowAchievement(true);
@@ -223,34 +229,45 @@ const TradersTable: React.FC<TradersTableProps> = ({ traders, timeframe }) => {
       {/* Achievement Badges Display */}
       {unlockedAchievements.length > 0 && (
         <div className="absolute top-4 right-4 flex -space-x-2">
-          {unlockedAchievements.slice(0, 3).map((achievement, index) => (
-            <motion.div
-              key={achievement.id}
-              className={`rounded-full p-1.5 ${achievement.color} shadow-md border border-white/30`}
-              initial={{ scale: 0, rotate: -30 }}
-              animate={{ scale: 1, rotate: 0 }}
-              transition={{ 
-                type: 'spring',
-                bounce: 0.5,
-                delay: index * 0.1
-              }}
-              title={achievement.title}
-            >
-              {achievement.icon}
-            </motion.div>
-          ))}
+          {/* Filter out duplicates and ensure unique keys */}
+          {Array.from(new Map(unlockedAchievements.map(item => [item.id, item])).values())
+            .slice(0, 3)
+            .map((achievement, index) => (
+              <motion.div
+                key={`achievement-${achievement.id}-${index}`}
+                className={`rounded-full p-1.5 ${achievement.color} shadow-md border border-white/30`}
+                initial={{ scale: 0, rotate: -30 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ 
+                  type: 'spring',
+                  bounce: 0.5,
+                  delay: index * 0.1
+                }}
+                title={achievement.title}
+              >
+                {achievement.icon}
+              </motion.div>
+            ))}
           
-          {unlockedAchievements.length > 3 && (
-            <motion.div
-              className="rounded-full p-1.5 bg-indigo-500 shadow-md border border-white/30 flex items-center justify-center"
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.3 }}
-              title="More achievements"
-            >
-              <div className="text-white text-xs font-bold">+{unlockedAchievements.length - 3}</div>
-            </motion.div>
-          )}
+          {/* Show the +X more achievements indicator */}
+          {(() => {
+            // Get unique achievements count
+            const uniqueCount = new Map(unlockedAchievements.map(item => [item.id, item])).size;
+            if (uniqueCount > 3) {
+              return (
+                <motion.div
+                  className="rounded-full p-1.5 bg-indigo-500 shadow-md border border-white/30 flex items-center justify-center"
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.3 }}
+                  title="More achievements"
+                >
+                  <div className="text-white text-xs font-bold">+{uniqueCount - 3}</div>
+                </motion.div>
+              );
+            }
+            return null;
+          })()}
         </div>
       )}
       
