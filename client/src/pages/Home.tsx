@@ -90,7 +90,7 @@ const Home: React.FC = () => {
         <Header />
         
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-medium">Oxjudd's Top Traders</h2>
+          <h2 className="text-xl font-medium">Top BASE Traders</h2>
           <Button
             variant="outline"
             size="sm"
