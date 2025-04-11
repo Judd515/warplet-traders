@@ -1,16 +1,37 @@
 #!/bin/bash
-# This script ensures that all necessary files are copied to the correct locations during the build process
 
-# Run the standard build
-npm run build
+# Make sure the build directory exists
+mkdir -p build
 
-# Create necessary directories
-mkdir -p dist/api
+# Copy server files
+cp -r server-vercel.js build/
+cp -r server/api build/
 
-# Copy API files to the dist directory
-cp -r api/* dist/api/
+# Copy API files
+mkdir -p build/api
+cp -r api/* build/api/
 
-# Copy server file for Vercel
-cp server-vercel.js dist/index.js
+# Copy package.json and install dependencies
+cp package.json build/
+cd build
+npm install --production
+npm install winston @neondatabase/serverless drizzle-orm ws axios express express-session --save
 
-echo "Build process completed successfully"
+# Copy the client build
+mkdir -p client
+cp -r ../client/dist/* client/
+
+# Create a public directory and copy assets
+mkdir -p public
+cp -r ../client/public/* public/
+
+# Verify key files exist
+echo "Verifying build contents..."
+ls -la
+echo "API directory:"
+ls -la api/
+echo "Public directory:"
+ls -la public/
+
+# Go back to root
+cd ..

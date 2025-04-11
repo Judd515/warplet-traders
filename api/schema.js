@@ -1,21 +1,28 @@
-// Simplified schema for Vercel serverless functions
-const { pgTable, serial, text, varchar } = require('drizzle-orm/pg-core');
+// Schema definitions for serverless environment
+const { pgTable, serial, text, timestamp } = require('drizzle-orm/pg-core');
 
-// Define the traders table
+// Traders table schema
 const traders = pgTable('traders', {
   id: serial('id').primaryKey(),
-  username: varchar('username', { length: 255 }).notNull(),
-  walletAddress: varchar('wallet_address', { length: 255 }).notNull(),
-  topToken: varchar('top_token', { length: 50 }),
+  username: text('username').notNull(),
+  walletAddress: text('wallet_address').notNull(),
+  topToken: text('top_token'),
   pnl24h: text('pnl_24h'),
-  pnl7d: text('pnl_7d')
+  pnl7d: text('pnl_7d'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
 });
 
-// Define the users table (for compatibility)
+// Users table schema
 const users = pgTable('users', {
   id: serial('id').primaryKey(),
-  username: varchar('username', { length: 255 }).notNull(),
-  password: varchar('password', { length: 255 }).notNull()
+  username: text('username').notNull().unique(),
+  password: text('password').notNull(),
+  createdAt: timestamp('created_at').defaultNow()
 });
 
-module.exports = { traders, users };
+// Export all schemas
+module.exports = {
+  traders,
+  users
+};

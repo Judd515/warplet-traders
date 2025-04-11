@@ -209,6 +209,35 @@ app.get('/api/og-image', (req, res) => {
   res.redirect('/og.png');
 });
 
+// Add health check endpoints for monitoring
+app.get('/api/health', async (req, res) => {
+  try {
+    const { db } = require('./db');
+    const dbHealth = await db.checkHealth();
+    
+    // Check API keys
+    const neynarKey = !!process.env.NEYNAR_API_KEY;
+    const duneKey = !!process.env.DUNE_API_KEY;
+    
+    res.json({
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV || 'development',
+      database: dbHealth,
+      secrets: {
+        neynarApiKey: neynarKey ? 'present' : 'missing',
+        duneApiKey: duneKey ? 'present' : 'missing'
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // Error handler
 app.use((err, req, res, next) => {
   console.error('API Error:', err);

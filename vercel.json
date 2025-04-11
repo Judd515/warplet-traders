@@ -15,6 +15,7 @@
     { "source": "/api/refresh-data", "destination": "/api/serverless-handler.js" },
     { "source": "/api/frame-action", "destination": "/api/serverless-handler.js" },
     { "source": "/api/og-image", "destination": "/api/serverless-handler.js" },
+    { "source": "/api/health", "destination": "/api/serverless-handler.js" },
     { "source": "/api/(.*)", "destination": "/api/serverless-handler.js" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
