@@ -14,8 +14,9 @@ cp -r api/* build/api/
 cp server-vercel.js build/
 
 # Copy static assets to public directory
-mkdir -p client/public
-cp -r attached_assets/og.png build/public/
+if [ -d attached_assets ]; then
+  cp -r attached_assets/* build/public/
+fi
 
 # Create simple index.html if client build not available
 cat > build/public/index.html << 'EOL'

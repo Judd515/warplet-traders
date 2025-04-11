@@ -2,7 +2,7 @@
   "version": 2,
   "buildCommand": "bash ./build.sh",
   "installCommand": "npm install",
-  "outputDirectory": "public",
+  "outputDirectory": "build/public",
   "framework": "vite",
   "functions": {
     "api/**/*": {
@@ -10,13 +10,19 @@
       "maxDuration": 10
     }
   },
+  "builds": [
+    {
+      "src": "build/api/serverless-handler.js",
+      "use": "@vercel/node"
+    }
+  ],
   "rewrites": [
-    { "source": "/api/traders", "destination": "/api/serverless-handler.js" },
-    { "source": "/api/refresh-data", "destination": "/api/serverless-handler.js" },
-    { "source": "/api/frame-action", "destination": "/api/serverless-handler.js" },
-    { "source": "/api/og-image", "destination": "/api/serverless-handler.js" },
-    { "source": "/api/health", "destination": "/api/serverless-handler.js" },
-    { "source": "/api/(.*)", "destination": "/api/serverless-handler.js" },
+    { "source": "/api/traders", "destination": "/build/api/serverless-handler.js" },
+    { "source": "/api/refresh-data", "destination": "/build/api/serverless-handler.js" },
+    { "source": "/api/frame-action", "destination": "/build/api/serverless-handler.js" },
+    { "source": "/api/og-image", "destination": "/build/api/serverless-handler.js" },
+    { "source": "/api/health", "destination": "/build/api/serverless-handler.js" },
+    { "source": "/api/(.*)", "destination": "/build/api/serverless-handler.js" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
