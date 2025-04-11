@@ -26,21 +26,33 @@ export async function fetchTradingData(
     // we'll return sample data that matches our expected format
     // This will be replaced with actual API calls in production
     
-    // Generate sample data for testing
+    // Generate deterministic sample data based on wallet addresses
     const sampleData: DuneQueryResult = {
-      rows: params.walletAddresses.map((address, index) => {
-        // Create realistic PnL values (both positive and negative)
-        const pnl = (Math.random() * 200 - 100).toFixed(2);
-        
+      rows: params.walletAddresses.map((address) => {
         // Sample tokens that might be traded on BASE
         const tokens = ['USDC', 'ETH', 'BTC', 'ARB', 'DEGEN', 'OP'];
-        const randomToken = tokens[Math.floor(Math.random() * tokens.length)];
+        
+        // Use wallet address to deterministically generate token and PnL
+        // This ensures the same wallet gets consistent results
+        const hashValue = address
+          .split('')
+          .reduce((acc, char) => acc + char.charCodeAt(0), 0);
+        
+        // Use the hash to pick a token
+        const tokenIndex = hashValue % tokens.length;
+        const token = tokens[tokenIndex];
+        
+        // Use hash to generate a stable PnL value between -90 and +90
+        // Add small timeframe modifier to show different data by timeframe
+        const baseValue = ((hashValue % 181) - 90);
+        const timeframeOffset = params.timeframe === '24h' ? 0 : 10;
+        const pnl = baseValue + timeframeOffset;
         
         return {
           wallet_address: address,
-          username: `trader${index + 1}`,
-          top_token: randomToken,
-          pnl: parseFloat(pnl)
+          username: `trader${tokenIndex + 1}`,
+          top_token: token,
+          pnl: parseFloat(pnl.toFixed(2))
         };
       })
     };
