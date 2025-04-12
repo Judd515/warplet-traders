@@ -61,7 +61,9 @@ const packageJson = {
   "version": "1.0.0",
   "description": "Top Warplet Traders Frame App",
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "@neondatabase/serverless": "^0.8.1",
+    "ws": "^8.16.0"
   }
 };
 
