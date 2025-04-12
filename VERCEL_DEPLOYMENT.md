@@ -29,6 +29,7 @@ The `vercel.json` file is configured to:
   "version": 2,
   "buildCommand": "echo 'Skipping build step'",
   "installCommand": "npm ci --omit=dev",
+  "outputDirectory": "public",
   "functions": {
     "api/all-routes.js": {
       "memory": 1024,
@@ -36,7 +37,7 @@ The `vercel.json` file is configured to:
     }
   },
   "rewrites": [
-    { "source": "/", "destination": "/api/all-routes.js" },
+    { "source": "/", "destination": "/index.html" },
     { "source": "/api", "destination": "/api/all-routes.js" },
     { "source": "/api/(.*)", "destination": "/api/all-routes.js" }
   ]
