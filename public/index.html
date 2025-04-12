@@ -1,148 +1,179 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <title>Warpcast Top Traders</title>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Top Warplet Traders</title>
+  
+  <!-- Farcaster Frame Tags -->
+  <meta property="fc:frame" content="vNext" />
+  <meta property="fc:frame:image" content="https://topwarplettraders.vercel.app/og.png" />
+  <meta property="fc:frame:button:1" content="24 Hours" />
+  <meta property="fc:frame:button:2" content="7 Days" />
+  <meta property="fc:frame:button:3" content="Share Results" />
+  <meta property="fc:frame:post_url" content="https://topwarplettraders.vercel.app/api/all-routes" />
+  
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: #121826;
+      color: #e2e8f0;
+      padding: 20px;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
     
-    <!-- Open Graph meta tags for better sharing -->
-    <meta property="og:title" content="Warpcast Top Traders" />
-    <meta property="og:description" content="See which of the people you follow are the top traders on BASE using their warplets" />
-    <meta property="og:image" content="https://topwarplettraders.vercel.app/og.png" />
-    <meta property="og:url" content="https://topwarplettraders.vercel.app" />
-    <meta property="og:type" content="website" />
+    .container {
+      max-width: 600px;
+      width: 100%;
+    }
     
-    <!-- Warpcast Frame Tags -->
-    <meta property="fc:frame" content="vNext" />
-    <meta property="fc:frame:image" content="https://topwarplettraders.vercel.app/og.png" />
-    <meta property="fc:frame:button:1" content="24 Hours" />
-    <meta property="fc:frame:button:2" content="7 Days" />
-    <meta property="fc:frame:button:3" content="Share Results" />
-    <meta property="fc:frame:post_url" content="https://topwarplettraders.vercel.app/api/all-routes" />
+    h1 {
+      font-size: 28px;
+      margin-bottom: 20px;
+      text-align: center;
+      background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
     
-    <style>
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        background: linear-gradient(to bottom, #0f172a, #1e293b);
-        color: #e2e8f0;
-        margin: 0;
-        padding: 0;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-      }
-      
-      .container {
-        max-width: 800px;
-        padding: 2rem;
-      }
-      
-      h1 {
-        font-size: 2.5rem;
-        margin-bottom: 1rem;
-        background: linear-gradient(to right, #3b82f6, #8b5cf6);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-      }
-      
-      p {
-        font-size: 1.2rem;
-        line-height: 1.6;
-        margin-bottom: 2rem;
-        color: #94a3b8;
-      }
-      
-      .buttons {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1rem;
-        justify-content: center;
-        margin-bottom: 2rem;
-      }
-      
-      .button {
-        background: linear-gradient(to right, #3b82f6, #8b5cf6);
-        color: white;
-        border: none;
-        padding: 0.75rem 1.5rem;
-        border-radius: 0.5rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s ease;
-      }
-      
-      .button:hover {
-        opacity: 0.9;
-        transform: translateY(-2px);
-      }
-      
-      .credits {
-        margin-top: 3rem;
-        font-size: 0.875rem;
-        color: #64748b;
-      }
-      
-      a {
-        color: #3b82f6;
-        text-decoration: none;
-      }
-      
-      a:hover {
-        text-decoration: underline;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <h1>Warpcast Top Traders</h1>
-      <p>Discover which people you follow are the top traders on BASE using their warplets. Track real-time performance with 24-hour and 7-day views, and easily share results with your followers.</p>
-      
-      <div class="buttons">
-        <button class="button" id="viewTraders">View Top Traders</button>
+    .timeframe {
+      font-size: 16px;
+      margin-bottom: 20px;
+      color: #94a3b8;
+      text-align: center;
+    }
+    
+    .trader-card {
+      background-color: #1e293b;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      border: 1px solid #2d3748;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+    }
+    
+    .rank {
+      font-size: 18px;
+      font-weight: bold;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #2d3748;
+      border-radius: 50%;
+      margin-right: 16px;
+    }
+    
+    .user-info {
+      flex-grow: 1;
+    }
+    
+    .username {
+      font-weight: bold;
+      font-size: 18px;
+    }
+    
+    .token {
+      font-size: 14px;
+      color: #94a3b8;
+      margin-top: 4px;
+    }
+    
+    .pnl {
+      font-weight: bold;
+      font-size: 20px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      text-align: right;
+    }
+    
+    .positive {
+      color: #10b981;
+    }
+    
+    .negative {
+      color: #ef4444;
+    }
+    
+    .message {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 14px;
+      color: #94a3b8;
+    }
+    
+    a {
+      color: #3b82f6;
+      text-decoration: none;
+    }
+    
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Top Warplet Traders</h1>
+    <div class="timeframe">Timeframe: 24 Hours</div>
+    
+    <div class="trader-card">
+      <div class="rank">1</div>
+      <div class="user-info">
+        <div class="username">thcradio</div>
+        <div class="token">BTC</div>
       </div>
-      
-      <div class="credits">
-        <p>This app uses data from <a href="https://dune.com" target="_blank">Dune Analytics</a> and <a href="https://neynar.com" target="_blank">Neynar</a> to bring you real-time trading insights.</p>
-      </div>
+      <div class="pnl positive">+76%</div>
     </div>
     
-    <script>
-      // Direct iframe embedding for Warpcast Frame
-      document.addEventListener('DOMContentLoaded', function() {
-        const container = document.querySelector('.container');
-        
-        // Create iframe container
-        const frameContainer = document.createElement('div');
-        frameContainer.style.display = 'none';
-        frameContainer.style.marginTop = '2rem';
-        frameContainer.style.width = '100%';
-        frameContainer.style.maxWidth = '600px';
-        frameContainer.style.height = '500px';
-        frameContainer.style.border = '1px solid #3b82f6';
-        frameContainer.style.borderRadius = '0.5rem';
-        frameContainer.style.overflow = 'hidden';
-        
-        // Create iframe
-        const iframe = document.createElement('iframe');
-        iframe.src = '/api/all-routes';
-        iframe.style.width = '100%';
-        iframe.style.height = '100%';
-        iframe.style.border = 'none';
-        
-        // Add iframe to container
-        frameContainer.appendChild(iframe);
-        container.appendChild(frameContainer);
-        
-        // Handle button click
-        const viewButton = document.getElementById('viewTraders');
-        viewButton.addEventListener('click', function() {
-          frameContainer.style.display = frameContainer.style.display === 'none' ? 'block' : 'none';
-          viewButton.textContent = frameContainer.style.display === 'none' ? 'View Top Traders' : 'Hide Top Traders';
-        });
-      });
-    </script>
-  </body>
+    <div class="trader-card">
+      <div class="rank">2</div>
+      <div class="user-info">
+        <div class="username">hellno.eth</div>
+        <div class="token">DEGEN</div>
+      </div>
+      <div class="pnl positive">+49%</div>
+    </div>
+    
+    <div class="trader-card">
+      <div class="rank">3</div>
+      <div class="user-info">
+        <div class="username">wakaflocka</div>
+        <div class="token">USDC</div>
+      </div>
+      <div class="pnl negative">-39%</div>
+    </div>
+    
+    <div class="trader-card">
+      <div class="rank">4</div>
+      <div class="user-info">
+        <div class="username">karima</div>
+        <div class="token">ARB</div>
+      </div>
+      <div class="pnl negative">-55%</div>
+    </div>
+    
+    <div class="trader-card">
+      <div class="rank">5</div>
+      <div class="user-info">
+        <div class="username">chrislarsc.eth</div>
+        <div class="token">ETH</div>
+      </div>
+      <div class="pnl negative">-63%</div>
+    </div>
+    
+    <div class="message">
+      This data shows the top 5 most active traders followed by FID 12915.<br>
+      View on <a href="https://warpcast.com/~/developers/frames" target="_blank">Warpcast Frame</a>
+    </div>
+  </div>
+</body>
 </html>

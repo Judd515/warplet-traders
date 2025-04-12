@@ -1,0 +1,39 @@
+[17:11:32.975] Cloning github.com/Judd515/warplet-top-traders (Branch: main, Commit: c4e7409)
+[17:11:33.497] Cloning completed: 522.000ms
+[17:11:33.551] Found .vercelignore
+[17:11:33.579] Removed 40 ignored files defined in .vercelignore
+[17:11:34.695] Restored build cache from previous deployment (6RSkAjAMwu2BgRuBPsfk1gLwpvd2)
+[17:11:34.834] Running build in Washington, D.C., USA (East) – iad1
+[17:11:35.387] Running "vercel build"
+[17:11:35.754] Vercel CLI 41.5.0
+[17:11:36.477] Running "install" command: `npm install`...
+[17:11:39.026] 
+[17:11:39.026] up to date, audited 490 packages in 2s
+[17:11:39.026] 
+[17:11:39.027] 61 packages are looking for funding
+[17:11:39.027]   run `npm fund` for details
+[17:11:39.061] 
+[17:11:39.061] 8 moderate severity vulnerabilities
+[17:11:39.062] 
+[17:11:39.062] To address issues that do not require attention, run:
+[17:11:39.062]   npm audit fix
+[17:11:39.062] 
+[17:11:39.062] To address all issues (including breaking changes), run:
+[17:11:39.063]   npm audit fix --force
+[17:11:39.063] 
+[17:11:39.063] Run `npm audit` for details.
+[17:11:39.324] 
+[17:11:39.328] > rest-express@1.0.0 build
+[17:11:39.329] > vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+[17:11:39.329] 
+[17:11:39.876] [36mvite v5.4.14 [32mbuilding for production...[36m[39m
+[17:11:39.911] [32m✓[39m 0 modules transformed.
+[17:11:39.913] [31mx[39m Build failed in 9ms
+[17:11:39.913] [31merror during build:
+[17:11:39.914] [31mCould not resolve entry module "index.html".[31m
+[17:11:39.914]     at getRollupError (file:///vercel/path0/node_modules/rollup/dist/es/shared/parseAst.js:396:41)
+[17:11:39.914]     at error (file:///vercel/path0/node_modules/rollup/dist/es/shared/parseAst.js:392:42)
+[17:11:39.914]     at ModuleLoader.loadEntryModule (file:///vercel/path0/node_modules/rollup/dist/es/shared/node-entry.js:20086:20)
+[17:11:39.914]     at async Promise.all (index 0)[39m
+[17:11:39.928] Error: Command "npm run build" exited with 1
+[17:11:40.228] 

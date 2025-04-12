@@ -66,6 +66,7 @@ function handleFrame(req, res) {
     
     // Handle share action (button 3)
     if (buttonIndex === 3) {
+      // Special share view
       return res.status(200).send(`
         <!DOCTYPE html>
         <html>

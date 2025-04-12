@@ -1,34 +1,8 @@
-# Ignore all API files except all-routes.js
-api/db.js
-api/direct-html.js
-api/edge.config.js
-api/edge.js
-api/frame-action-vercel.js
-api/frame-action.js
-api/health.js
-api/index.js
-api/minimal.js
-api/refresh-data.js
-api/schema.js
-api/serverless-handler.js
-api/serverless-storage.js
-api/storage.js
-api/traders.js
-api/README.md
-
-# Script files not needed in production
-*.sh
-exclude-api-files.js
-restore-api-files.js
-deploy-minimal.js
-build.sh
-hide-api-files.sh
-restore-api-files.sh
-
-# Backup directory
-.api_backup/
-
-# Development files not needed for production
-*.md
-*.ts
+# Ignore everything by default
+*
+# Only include necessary files
 !api/all-routes.js
+!vercel.json
+!package.json
+!public/index.html
+!public/og.png
