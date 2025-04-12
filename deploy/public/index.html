@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Top Warplet Traders</title>
+  
+  <!-- Farcaster Frame Tags -->
+  <meta property="fc:frame" content="vNext" />
+  <meta property="fc:frame:image" content="https://topwarplettraders.vercel.app/og.png?v=20250412" />
+  <meta property="fc:frame:button:1" content="24 Hours" />
+  <meta property="fc:frame:button:2" content="7 Days" />
+  <meta property="fc:frame:button:3" content="Share Results" />
+  <meta property="fc:frame:post_url" content="https://topwarplettraders.vercel.app/api/all-routes" />
+  
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: #121826;
+      color: #e2e8f0;
+      padding: 20px;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 600px;
+      width: 100%;
+    }
+    
+    h1 {
+      font-size: 28px;
+      margin-bottom: 20px;
+      text-align: center;
+      background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .timeframe {
+      font-size: 16px;
+      margin-bottom: 20px;
+      color: #94a3b8;
+      text-align: center;
+    }
+    
+    .trader-card {
+      background-color: #1e293b;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      border: 1px solid #2d3748;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+    }
+    
+    .rank {
+      font-size: 18px;
+      font-weight: bold;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #2d3748;
+      border-radius: 50%;
+      margin-right: 16px;
+    }
+    
+    .user-info {
+      flex-grow: 1;
+    }
+    
+    .username {
+      font-weight: bold;
+      font-size: 18px;
+    }
+    
+    .token {
+      font-size: 14px;
+      color: #94a3b8;
+      margin-top: 4px;
+    }
+    
+    .pnl {
+      font-weight: bold;
+      font-size: 20px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      text-align: right;
+    }
+    
+    .positive {
+      color: #10b981;
+    }
+    
+    .negative {
+      color: #ef4444;
+    }
+    
+    .message {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 14px;
+      color: #94a3b8;
+    }
+    
+    a {
+      color: #3b82f6;
+      text-decoration: none;
+    }
+    
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Top Warplet Traders</h1>
+    <div class="timeframe">Timeframe: 24 Hours</div>
+    
+    <div class="trader-card">
+      <div class="rank">1</div>
+      <div class="user-info">
+        <div class="username">thcradio</div>
+        <div class="token">BTC</div>
+      </div>
+      <div class="pnl positive">+76%</div>
+    </div>
+    
+    <div class="trader-card">
+      <div class="rank">2</div>
+      <div class="user-info">
+        <div class="username">hellno.eth</div>
+        <div class="token">DEGEN</div>
+      </div>
+      <div class="pnl positive">+49%</div>
+    </div>
+    
+    <div class="trader-card">
+      <div class="rank">3</div>
+      <div class="user-info">
+        <div class="username">wakaflocka</div>
+        <div class="token">USDC</div>
+      </div>
+      <div class="pnl negative">-39%</div>
+    </div>
+    
+    <div class="trader-card">
+      <div class="rank">4</div>
+      <div class="user-info">
+        <div class="username">karima</div>
+        <div class="token">ARB</div>
+      </div>
+      <div class="pnl negative">-55%</div>
+    </div>
+    
+    <div class="trader-card">
+      <div class="rank">5</div>
+      <div class="user-info">
+        <div class="username">chrislarsc.eth</div>
+        <div class="token">ETH</div>
+      </div>
+      <div class="pnl negative">-63%</div>
+    </div>
+    
+    <div class="message">
+      This data shows the top 5 most active traders followed by FID 12915.<br>
+      View on <a href="https://warpcast.com/~/developers/frames" target="_blank">Warpcast Frame</a>
+    </div>
+  </div>
+</body>
+</html>
