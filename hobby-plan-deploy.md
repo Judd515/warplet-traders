@@ -27,7 +27,7 @@ cp vercel.json deploy/
 
 # Create a minimal package.json
 echo '{
-  "name": "warplet-top-traders",
+  "name": "warplet-traders",
   "version": "1.0.0", 
   "dependencies": { 
     "express": "^4.18.2" 

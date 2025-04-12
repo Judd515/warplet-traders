@@ -1,4 +1,4 @@
-# Minimal Warplet Top Traders Deployment
+# Minimal Warplet Traders Deployment
 
 This is a minimal deployment package created for the Vercel Hobby plan.
 It contains only the essential files needed to run the app while staying

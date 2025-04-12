@@ -77,7 +77,7 @@ fs.writeFileSync(
 );
 
 // Create a simplified README
-const readmeContent = `# Minimal Warplet Top Traders Deployment
+const readmeContent = `# Minimal Warplet Traders Deployment
 
 This is a minimal deployment package created for the Vercel Hobby plan.
 It contains only the essential files needed to run the app while staying
