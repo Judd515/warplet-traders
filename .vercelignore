@@ -1,8 +1,34 @@
-# Ignore everything by default
-*
-# Only include necessary files
-!api/all-routes.js
-!vercel.json
-!package.json
-!public/index.html
-!public/og.png
+# Ignore specific files, not everything
+api/db.js
+api/direct-html.js
+api/edge.config.js
+api/edge.js
+api/frame-action-vercel.js
+api/frame-action.js
+api/health.js
+api/index.js
+api/minimal.js
+api/refresh-data.js
+api/schema.js
+api/serverless-handler.js
+api/serverless-storage.js
+api/storage.js
+api/traders.js
+api/tsconfig.json
+
+# Script files not needed in production
+exclude-api-files.js
+restore-api-files.js
+deploy-minimal.js
+create-minimal-deploy.js
+*.sh
+
+# Other files not needed for deployment
+*.ts
+*.md
+!README.md
+!VERCEL_DEPLOYMENT.md
+!DEPLOYMENT_SUMMARY.md
+
+# Keep these files
+# api/all-routes.js is explicitly kept by not being in the ignore list

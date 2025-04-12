@@ -1,90 +1,79 @@
-# Vercel Deployment Instructions
+# Deploying to Vercel (Hobby Plan)
 
-This document provides detailed steps to successfully deploy your Warpcast Top Traders application to Vercel.
+This document explains how to deploy this application to Vercel's Hobby plan while working within the 12 serverless function limit.
 
-## Prerequisites
+## Key Strategy
 
-1. A Vercel account linked to your GitHub account
-2. A PostgreSQL database (Vercel Postgres or Neon works well)
-3. Neynar API key
-4. Dune Analytics API key
+This app uses a consolidated API approach where all endpoints are handled by a single serverless function (`api/all-routes.js`). This works around the 12-function limit on the Hobby plan by using a single entry point.
 
-## Important Files for Deployment
+## Files Required for Deployment
 
-We've prepared several files specifically for Vercel deployment:
+Only a minimal set of files is needed for deployment:
 
-1. `vercel.json` - Contains routing rules and build configuration
-2. `build.sh` - Custom build script to copy files to the right locations
-3. `server-vercel.js` - Express server for Vercel's serverless environment
-4. `api/serverless-handler.js` - Handler for API routes on Vercel
+- `api/all-routes.js` - The single serverless function that handles all API routes
+- `public/index.html` - Static HTML for the web interface
+- `public/og.png` - The OpenGraph image used by Warpcast Frame
+- `vercel.json` - Configuration for routing and function settings
+- `package.json` - Minimal dependencies
 
-## Environment Variables
+## Vercel Configuration
 
-Set up the following environment variables in your Vercel project settings:
+The `vercel.json` file is configured to:
 
-1. `DATABASE_URL` - Your PostgreSQL database connection string
-2. `NEYNAR_API_KEY` - Your Neynar API key for fetching Warpcast followers
-3. `DUNE_API_KEY` - Your Dune Analytics API key for fetching trading data
-4. `NODE_ENV` - Set to "production"
+1. Skip the standard build process (which would fail without the full codebase)
+2. Route all API requests to the single handler
+3. Configure memory and timeout settings for the function
+
+```json
+{
+  "version": 2,
+  "buildCommand": "echo 'Skipping build step'",
+  "installCommand": "npm ci --omit=dev",
+  "functions": {
+    "api/all-routes.js": {
+      "memory": 1024,
+      "maxDuration": 10
+    }
+  },
+  "rewrites": [
+    { "source": "/", "destination": "/api/all-routes.js" },
+    { "source": "/api", "destination": "/api/all-routes.js" },
+    { "source": "/api/(.*)", "destination": "/api/all-routes.js" }
+  ]
+}
+```
 
 ## Deployment Steps
 
-1. **Download the project**: 
-   - Use Replit's "Download as ZIP" feature from the Files menu (three dots)
-   - Extract the ZIP on your computer
+1. Ensure your `.vercelignore` file is properly configured to only include necessary files
+2. Push your changes to GitHub
+3. Deploy from the Vercel dashboard or CLI
 
-2. **Push to GitHub**:
-   - Create a new repository or use your existing one
-   - Push all the files to your GitHub repository
+## Deployment Scripts
 
-3. **Create a Vercel project**:
-   - Go to https://vercel.com/new
-   - Import your GitHub repository
-   - The framework preset should be "Vite"
+For manual, controlled deployments, you can use the `create-minimal-deploy.js` script to create a deployment-ready directory with only the essential files:
 
-4. **Configure environment variables**:
-   - Go to "Settings" > "Environment Variables" in your Vercel project
-   - Add all required environment variables listed above
+```bash
+node create-minimal-deploy.js
+cd deploy
+vercel
+```
 
-5. **Deploy**:
-   - Click "Deploy" at the bottom of the page
-   - Vercel will use our custom build script to handle deployment
+## Environment Variables
 
-## PostgreSQL Database Setup
+Make sure to set these environment variables in your Vercel project:
 
-You need a Postgres database for your deployment. Two good options:
+- `NEYNAR_API_KEY` - For Warpcast integration
+- `DUNE_API_KEY` - For trader data
+- `DATABASE_URL` - For data persistence
 
-1. **Neon Database (Free Tier)**:
-   - Go to https://neon.tech
-   - Sign up and create a new project
-   - Get the connection string from the dashboard
+## Debugging Deployment Issues
 
-2. **Vercel Postgres**:
-   - In your Vercel project dashboard
-   - Go to Storage tab
-   - Create a new Postgres database
+If you encounter issues:
 
-## Troubleshooting
+1. Check Vercel deployment logs for errors
+2. Verify the function limit is not being exceeded
+3. Ensure all necessary files are included (and unnecessary ones excluded)
+4. Confirm environment variables are properly set
 
-If you encounter issues with deployment:
-
-1. **Check build logs**: 
-   - Look for errors in the Vercel build logs
-   - Make sure the build.sh script is executing properly
-
-2. **Verify API access**:
-   - Test API endpoints directly (e.g., https://yourdomain.vercel.app/api/traders)
-   - Check environment variables are set correctly
-
-3. **Database connectivity**:
-   - Make sure your DATABASE_URL is correct and accessible from Vercel
-   - Run npm run db:push locally to set up the schema first
-
-## Testing the Deployment
-
-After successful deployment:
-
-1. Visit your deployed site
-2. The app should automatically fetch data on load
-3. Test switching between 24h and 7d timeframes
-4. Try the Share button to ensure Warpcast sharing works
+Remember that production logs can be viewed in the Vercel dashboard under "Functions" when debugging runtime issues.
