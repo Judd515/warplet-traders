@@ -177,10 +177,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Add a route to download the project ZIP file
   app.get('/download/project', (req, res) => {
-    const zipPath = path.resolve('/home/runner/workspace/warplet-top-traders.zip');
+    const zipPath = path.resolve('/home/runner/workspace/warplet-traders.zip');
     
     if (fs.existsSync(zipPath)) {
-      res.download(zipPath, 'warplet-top-traders.zip', (err) => {
+      res.download(zipPath, 'warplet-traders.zip', (err) => {
         if (err) {
           console.error('Error downloading file:', err);
           res.status(500).send('Error downloading the project file');

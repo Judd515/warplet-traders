@@ -49,9 +49,9 @@ fs.copyFileSync(
 
 // Create a basic package.json
 const packageJson = {
-  name: "warplet-top-traders",
+  name: "warplet-traders",
   version: "1.0.0",
-  description: "Top Warplet Traders App",
+  description: "Warplet Traders App",
   dependencies: {
     "express": "^4.18.2"
   }

@@ -61,9 +61,9 @@ fs.copyFileSync(
 
 // Create a minimal package.json
 const packageJson = {
-  "name": "warplet-top-traders",
+  "name": "warplet-traders",
   "version": "1.0.0",
-  "description": "Top Warplet Traders Frame App",
+  "description": "Warplet Traders Frame App",
   "dependencies": {
     "express": "^4.18.2",
     "@neondatabase/serverless": "^0.8.1",
