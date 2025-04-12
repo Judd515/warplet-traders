@@ -1,8 +1,5 @@
 {
   "version": 2,
-  "buildCommand": "bash ./hide-api-files.sh && bash ./build.sh && bash ./restore-api-files.sh",
-  "installCommand": "npm install",
-  "outputDirectory": "public",
   "functions": {
     "api/all-routes.js": {
       "memory": 1024,
