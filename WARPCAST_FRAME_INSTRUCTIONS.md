@@ -7,17 +7,27 @@ A dynamic Warpcast mini-app that displays which people you are following are top
 
 We've created several different frame versions to test which works best with Warpcast:
 
-1. **Simple Static Frame**: `https://your-domain.vercel.app/static.html`
-   - Just displays data with no buttons
+1. **RECOMMENDED: Redirect Frame**: `https://your-domain.vercel.app/redirect-frame.html`
+   - Uses direct post_redirect action with SVG data
+   - Contains one Share button to redirect to Warpcast composer
+   - Has the highest chance of working with Warpcast
 
-2. **Single Button Frame**: `https://your-domain.vercel.app/tiny.html`
-   - One button, minimal implementation
+2. **OG with Text Frame**: `https://your-domain.vercel.app/og-with-text.html`
+   - Uses OG tags along with frame tags
+   - Uses standard HTTP image references
+   - Includes text content for better SEO
 
-3. **Text Only Frame with Button**: `https://your-domain.vercel.app/text-only.html`
-   - Simple frame with one button and base64 encoded SVG
+3. **Frames.js.org Hosted**: `https://your-domain.vercel.app/framesjs-hosted.html`
+   - Uses frames.js.org for API handling
+   - Known to work reliably with Warpcast
 
-4. **Full Frame with Multiple Buttons**: `https://your-domain.vercel.app/fallback.html`
-   - Complete interface with three buttons (24h, 7d, Share)
+4. **Ultra Minimal**: `https://your-domain.vercel.app/super-minimal.html`
+   - Just an image and a button without server interaction
+   - Good for testing frame rendering
+
+5. **Direct Composer Action**: `https://your-domain.vercel.app/direct-action.html`
+   - Button directly links to Warpcast composer
+   - No server-side logic required
 
 ## API Endpoints
 

@@ -1,64 +1,117 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>Warplet Traders</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Warplet Traders - Frame Options</title>
   <style>
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.5;
       max-width: 800px;
       margin: 0 auto;
       padding: 20px;
-      line-height: 1.6;
+      background: #f5f5f5;
       color: #333;
     }
-    a { color: #0070f3; }
-    h1 { color: #111; }
+    h1 {
+      color: #1E293B;
+      border-bottom: 2px solid #4F46E5;
+      padding-bottom: 10px;
+    }
+    h2 {
+      color: #2D3748;
+      margin-top: 30px;
+    }
+    a {
+      color: #4F46E5;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
     .card {
-      border: 1px solid #eaeaea;
+      background: white;
       border-radius: 8px;
       padding: 20px;
       margin-bottom: 20px;
-      background: #fff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .badge {
+      display: inline-block;
+      background: #4F46E5;
+      color: white;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      margin-right: 8px;
     }
     code {
-      background: #f6f8fa;
-      padding: 3px 6px;
+      background: #EDF2F7;
+      padding: 2px 4px;
       border-radius: 4px;
       font-family: monospace;
     }
   </style>
 </head>
 <body>
-  <h1>Warplet Traders</h1>
+  <h1>Warplet Traders - Frame Options</h1>
+  
+  <p>This page lists all available frame implementations for the Warplet Traders app. Each implementation uses a different approach to handle Warpcast frame interactions.</p>
   
   <div class="card">
-    <h2>Frame URLs</h2>
-    <p>Access the Warpcast Frame at any of these URLs:</p>
-    <ul>
-      <li><a href="/text-only.html" target="_blank">/text-only.html</a> (SVG Base64 Image - TRY THIS ONE FIRST!)</li>
-      <li><a href="/bare.html" target="_blank">/bare.html</a> (Using Frames.js Official Image)</li>
-      <li><a href="/ultra.html" target="_blank">/ultra.html</a> (Twitter Image Hosting)</li>
-      <li><a href="/tiny.html" target="_blank">/tiny.html</a> (Arweave Image Hosting)</li>
-      <li><a href="/fallback.html" target="_blank">/fallback.html</a> (Imgur Image Hosting)</li>
-    </ul>
-    <p><strong>For testing in Warpcast, use:</strong> <code>https://warplet-traders.vercel.app/text-only.html</code></p>
+    <h2><span class="badge">Recommended</span>Redirect Frame</h2>
+    <p>Uses direct post_redirect action with SVG data. Contains one Share button to redirect to Warpcast composer.</p>
+    <p><a href="/redirect-frame.html" target="_blank">View Frame</a> | <a href="https://warpcast.com/~/compose?text=https://warplet-traders.vercel.app/redirect-frame.html" target="_blank">Share on Warpcast</a></p>
   </div>
   
   <div class="card">
-    <h2>How to Use</h2>
-    <p>Share the following URL in Warpcast to interact with the mini-app:</p>
-    <code>https://warplet-traders.vercel.app/text-only.html</code>
-    <p>This frame tracks which of the people the user is following are top traders on BASE using their warplet (Warpcast's built-in wallet).</p>
+    <h2>OG with Text Frame</h2>
+    <p>Uses OG tags along with frame tags. Uses standard HTTP image references. Includes text content for better SEO.</p>
+    <p><a href="/og-with-text.html" target="_blank">View Frame</a> | <a href="https://warpcast.com/~/compose?text=https://warplet-traders.vercel.app/og-with-text.html" target="_blank">Share on Warpcast</a></p>
   </div>
   
   <div class="card">
-    <h2>Features</h2>
-    <ul>
-      <li>View the top 5 most active traders among the accounts you follow</li>
-      <li>Toggle between 24-hour and 7-day timeframes</li>
-      <li>Share results via the cast composer</li>
-    </ul>
+    <h2>Frames.js.org Hosted</h2>
+    <p>Uses frames.js.org for API handling. Known to work reliably with Warpcast.</p>
+    <p><a href="/framesjs-hosted.html" target="_blank">View Frame</a> | <a href="https://warpcast.com/~/compose?text=https://warplet-traders.vercel.app/framesjs-hosted.html" target="_blank">Share on Warpcast</a></p>
   </div>
+  
+  <div class="card">
+    <h2>Ultra Minimal</h2>
+    <p>Just an image and a button without server interaction. Good for testing frame rendering.</p>
+    <p><a href="/super-minimal.html" target="_blank">View Frame</a> | <a href="https://warpcast.com/~/compose?text=https://warplet-traders.vercel.app/super-minimal.html" target="_blank">Share on Warpcast</a></p>
+  </div>
+  
+  <div class="card">
+    <h2>Direct Composer Action</h2>
+    <p>Button directly links to Warpcast composer. No server-side logic required.</p>
+    <p><a href="/direct-action.html" target="_blank">View Frame</a> | <a href="https://warpcast.com/~/compose?text=https://warplet-traders.vercel.app/direct-action.html" target="_blank">Share on Warpcast</a></p>
+  </div>
+  
+  <div class="card">
+    <h2>Static Data</h2>
+    <p>Displays static data with no buttons. Uses base64 encoded SVG.</p>
+    <p><a href="/static.html" target="_blank">View Frame</a> | <a href="https://warpcast.com/~/compose?text=https://warplet-traders.vercel.app/static.html" target="_blank">Share on Warpcast</a></p>
+  </div>
+  
+  <h2>API Endpoints</h2>
+  <p>The following API endpoints are available for testing:</p>
+  <ul>
+    <li><code>/api/minimal</code> - Ultra-simple implementation with minimal dependencies</li>
+    <li><code>/api/frame-action</code> - More advanced handler that generates dynamic SVGs</li>
+    <li><code>/api/all-routes</code> - Combined handler that can process different request types</li>
+  </ul>
+  
+  <h2>Troubleshooting</h2>
+  <p>If you're experiencing issues with button functionality in Warpcast frames, try the following:</p>
+  <ul>
+    <li>Start with the simpler implementations (super-minimal.html, static.html)</li>
+    <li>Make sure your API endpoints are returning valid FC frame headers</li>
+    <li>Check that your post_url is correctly set to your domain</li>
+    <li>Try using post_redirect actions instead of server-side interactions</li>
+  </ul>
+  
+  <p>View the <a href="https://github.com/Judd515/warplet-traders">GitHub repository</a> for more details.</p>
 </body>
 </html>
