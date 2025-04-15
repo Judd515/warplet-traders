@@ -20,8 +20,9 @@ After deploying, update all references to "warplet-traders.vercel.app" in the co
 
 ## Step 4: Test Your Deployment
 1. Once deployed, visit `https://your-domain.vercel.app` to see all the frame options
-2. Try the recommended redirect-frame.html by visiting `https://your-domain.vercel.app/redirect-frame.html`
-3. Cast this URL on Warpcast to test how the frame appears
+2. Try the recommended direct-link.html by visiting `https://your-domain.vercel.app/direct-link.html`
+3. Also test the improved redirect-frame.html which now uses direct links
+4. Cast these URLs on Warpcast to test how the frames appear and ensure buttons work correctly
 
 ## Step 5: Share on Warpcast
 Share your frame on Warpcast with a message like:
