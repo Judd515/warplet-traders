@@ -3,6 +3,8 @@
  * This is a workaround for the Vercel Hobby plan's 12 serverless function limit
  */
 
+const DEFAULT_IMAGE_URL = 'https://i.imgur.com/k9KaLKk.png'; // Backup hosted image for testing
+
 module.exports = (req, res) => {
   // Extract the path from the request
   const path = req.url.split('?')[0];
@@ -27,6 +29,11 @@ module.exports = (req, res) => {
   
   if (path === '/api/direct-html' || path === '/direct-html') {
     return handleDirectHtml(req, res);
+  }
+  
+  // Simple frame endpoint for maximum Warpcast compatibility
+  if (path === '/api/simple' || path === '/simple') {
+    return handleSimpleFrame(req, res);
   }
   
   // Default handler
@@ -279,6 +286,44 @@ function handleEdge(req, res) {
   res.setHeader('Content-Type', 'text/html');
   res.statusCode = 200;
   return res.end(html);
+}
+
+/**
+ * Super simple frame handler - absolute minimum implementation for testing
+ */
+function handleSimpleFrame(req, res) {
+  console.log('Simple frame handler called');
+  console.log('Request method:', req.method);
+  console.log('Request headers:', JSON.stringify(req.headers));
+  console.log('Request body:', JSON.stringify(req.body));
+  
+  // Extract button index if available
+  let buttonIndex = 1;
+  if (req.body && req.body.untrustedData && req.body.untrustedData.buttonIndex) {
+    buttonIndex = parseInt(req.body.untrustedData.buttonIndex, 10);
+  } else if (req.body && req.body.buttonIndex) {
+    buttonIndex = parseInt(req.body.buttonIndex, 10);
+  }
+  
+  console.log('Simple handler using buttonIndex:', buttonIndex);
+  
+  // Create a very simple frame with no extra features
+  // Use the Imgur hosted image as a fallback
+  return res.status(200).send(`
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta property="fc:frame" content="vNext" />
+        <meta property="fc:frame:image" content="${DEFAULT_IMAGE_URL}" />
+        <meta property="fc:frame:button:1" content="Option A" />
+        <meta property="fc:frame:button:2" content="Option B" />
+        <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/simple" />
+      </head>
+      <body>
+        <p>Simple frame test - button pressed: ${buttonIndex}</p>
+      </body>
+    </html>
+  `);
 }
 
 /**
