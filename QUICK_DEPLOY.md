@@ -20,32 +20,33 @@ After deploying, update all references to "warplet-traders.vercel.app" in the co
 
 ## Step 4: Test Your Deployment
 1. Once deployed, visit `https://your-domain.vercel.app` to see all the frame options
-2. Try the recommended implementation by visiting `https://your-domain.vercel.app/direct-share.html` 
-3. This page shows the 7-day timeframe data and provides pre-formatted text that can be copied
-4. When sharing, simply copy the entire text block and paste it directly into Warpcast
-5. No text modifications are needed - the frame will display automatically
+2. Try the recommended implementation by visiting `https://your-domain.vercel.app/best-frame.html` 
+3. This page shows the 7-day timeframe data with beautifully formatted share text
+4. The share button pre-formats a message with emoji-enhanced trader data
+5. Even if frame detection fails, the cast still shows all the important data
 6. Verify that the frame appears and the Share button works correctly
 
 ## Step 5: Share on Warpcast
-The most reliable way to share your frame on Warpcast is to use the copy-paste approach:
+The most reliable way to share your frame on Warpcast is to use our enhanced share format:
 
-1. Visit `https://your-domain.vercel.app/direct-share.html`
-2. Click the "Copy to Clipboard" button (or click on the text block)
-3. Open Warpcast and create a new cast
-4. Paste the copied text directly into your cast
-5. Post your cast - the frame will display automatically!
+1. Visit `https://your-domain.vercel.app/best-frame.html`
+2. Click the "Share Results" button which takes you to Warpcast with pre-formatted text
+3. The pre-formatted text includes:
+   - Emoji-formatted trader data (✅ for positive PnL, ⛔ for negative PnL)
+   - All the top traders with their performance metrics
+   - The frame URL at the end
 
-This approach provides a pre-formatted message that includes both the trader data and the frame URL:
+This approach creates a visually appealing cast that works with or without frame detection:
 
 ## Troubleshooting
 If you encounter any issues:
-- **Frame not detected**: Use the direct-share.html copy-paste approach instead of sharing a URL
-- **Copy button not working**: Try clicking directly on the text box to copy
-- **Frame doesn't load**: Make sure the full text including the URL was copied correctly
+- **Frame not rendering**: Our solution works even without frame rendering since all data is in the cast text
+- **Frame detection issue**: If Warpcast doesn't detect the frame, the emoji-formatted cast text still looks great
 - **Buttons not working**: Check that your domain is correctly set in all references
 - **No data displayed**: Make sure your API keys are set correctly in Vercel
 - **SVG not loading**: Try using a different browser or clearing your cache
 - **API errors**: Check for any CORS issues in your browser console
+- **General frame issues**: Try some of the alternate implementations on the homepage
 
 ## Need More Help?
 Check out the full documentation in WARPCAST_FRAME_INSTRUCTIONS.md for more details on the available options and how to debug common issues.
