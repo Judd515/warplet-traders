@@ -14,11 +14,24 @@ module.exports = (req, res) => {
   }
   
   if (path === '/api/frame-action' || path === '/frame-action') {
-    return handleFrame(req, res);
+    // Import and use our dedicated frame-action handler if available
+    try {
+      const frameActionHandler = require('./frame-action');
+      return frameActionHandler(req, res);
+    } catch (e) {
+      console.log('Error importing frame-action handler, using fallback:', e.message);
+      return handleFrame(req, res);
+    }
   }
   
   if (path === '/api/minimal' || path === '/minimal') {
-    return handleMinimal(req, res);
+    try {
+      const minimalHandler = require('./minimal');
+      return minimalHandler(req, res);
+    } catch (e) {
+      console.log('Error importing minimal handler, using fallback:', e.message);
+      return handleMinimal(req, res);
+    }
   }
   
   if (path === '/api/edge' || path === '/edge') {
