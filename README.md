@@ -42,6 +42,23 @@ The application requires the following environment variables:
 
 See [VERCEL_DEPLOYMENT.md](./VERCEL_DEPLOYMENT.md) for detailed instructions on deploying to Vercel.
 
+## Warpcast Frame Approaches
+
+Various approaches have been tested for compatibility with Warpcast frames:
+
+1. **Frame with URL as Last Line** - [/frame-url-last.html](https://warplet-traders.vercel.app/frame-url-last.html)
+   - The most reliable implementation for automatic frame detection.
+   - The frame URL is placed as the last line of the share text, which improves frame detection.
+   - Uses inline SVG for consistent rendering across platforms.
+
+2. **Simple 7d Frame** - [/simple-7d-frame.html](https://warplet-traders.vercel.app/simple-7d-frame.html)
+   - Simplified frame with 7-day timeframe data and a single Share button.
+   - Updated with newline handling for better compatibility.
+
+3. **Static Frame Pages** - [/final-frame.html](https://warplet-traders.vercel.app/final-frame.html) and [/7d-frame.html](https://warplet-traders.vercel.app/7d-frame.html)
+   - Static implementation with separate pages for 24h and 7d views.
+   - Updated to use inline SVG instead of remote image URLs.
+
 ## Architecture
 
 The application is structured as follows:
