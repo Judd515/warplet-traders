@@ -13,7 +13,7 @@ export default function handler(request, event) {
     <meta property="fc:frame:button:1" content="24 Hours" />
     <meta property="fc:frame:button:2" content="7 Days" />
     <meta property="fc:frame:button:3" content="Share Results" />
-    <meta property="fc:frame:post_url" content="https://topwarplettraders.vercel.app/api/edge" />
+    <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/edge" />
     <style>
       body { font-family: sans-serif; color: #333; }
       ul { list-style-type: none; padding: 0; }

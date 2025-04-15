@@ -54,7 +54,7 @@ const handler = async (req, res) => {
           <meta property="fc:frame" content="vNext" />
           <meta property="fc:frame:image" content="https://topwarplettraders.vercel.app/error.png" />
           <meta property="fc:frame:button:1" content="Try Again" />
-          <meta property="fc:frame:post_url" content="https://topwarplettraders.vercel.app/api/frame-action" />
+          <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/frame-action" />
         </head>
         <body>
           <p>Error processing frame action. Please try again.</p>
