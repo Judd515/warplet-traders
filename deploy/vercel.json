@@ -11,13 +11,18 @@
     "api/debug.js": {
       "memory": 1024,
       "maxDuration": 10
+    },
+    "api/simple.js": {
+      "memory": 1024,
+      "maxDuration": 10
     }
   },
   "rewrites": [
     { "source": "/", "destination": "/index.html" },
-    { "source": "/api", "destination": "/api/minimal-frame.js" },
+    { "source": "/api", "destination": "/api/simple.js" },
     { "source": "/api/frame", "destination": "/api/minimal-frame.js" },
-    { "source": "/api/debug", "destination": "/api/debug.js" }
+    { "source": "/api/debug", "destination": "/api/debug.js" },
+    { "source": "/api/simple", "destination": "/api/simple.js" }
   ],
   "headers": [
     {
