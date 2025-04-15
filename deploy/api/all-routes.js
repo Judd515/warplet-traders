@@ -50,12 +50,35 @@ function handleHealth(req, res) {
 function handleFrame(req, res) {
   try {
     console.log('Frame action request received');
+    console.log('Request body:', JSON.stringify(req.body));
     
     // Get button index from request if available
     let buttonIndex = 1; // Default to 24h view
     
+    // Support both Warpcast button formats
     if (req.body && req.body.untrustedData && req.body.untrustedData.buttonIndex) {
       buttonIndex = parseInt(req.body.untrustedData.buttonIndex, 10);
+    } else if (req.body && req.body.buttonIndex) {
+      buttonIndex = parseInt(req.body.buttonIndex, 10);
+    } else if (req.method === 'POST') {
+      // Log the full request to debug button issues
+      console.log('POST data received, but no buttonIndex found');
+      console.log('Headers:', JSON.stringify(req.headers));
+      console.log('Method:', req.method);
+      console.log('URL:', req.url);
+      
+      // Try to parse request body in different ways
+      if (typeof req.body === 'string') {
+        try {
+          const parsedBody = JSON.parse(req.body);
+          console.log('Parsed body from string:', JSON.stringify(parsedBody));
+          if (parsedBody.buttonIndex) {
+            buttonIndex = parseInt(parsedBody.buttonIndex, 10);
+          }
+        } catch (parseError) {
+          console.log('Failed to parse body as JSON:', parseError.message);
+        }
+      }
     }
     
     // Determine timeframe based on button
@@ -66,13 +89,13 @@ function handleFrame(req, res) {
     
     // Handle share action (button 3)
     if (buttonIndex === 3) {
-      // Special share view
+      // Special share view - add the timeframe parameter
       return res.status(200).send(`
         <!DOCTYPE html>
         <html>
           <head>
             <meta property="fc:frame" content="vNext" />
-            <meta property="fc:frame:image" content="https://warplet-traders.vercel.app/og.png?v=20250415&t=${Date.now()}" />
+            <meta property="fc:frame:image" content="https://warplet-traders.vercel.app/og.png?v=20250415&t=${Date.now()}&timeframe=${timeframe}" />
             <meta property="fc:frame:button:1" content="View Top Traders" />
             <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/all-routes" />
           </head>
@@ -109,13 +132,16 @@ function handleFrame(req, res) {
       `;
     }).join('');
     
-    // Return the complete HTML
+    // Generate a unique URL with all the necessary parameters to distinguish between timeframes
+    const dynamicImageUrl = `https://warplet-traders.vercel.app/og.png?v=20250415&t=${Date.now()}&timeframe=${timeframe}`;
+    
+    // Return the complete HTML with the dynamic image URL
     return res.status(200).send(`
       <!DOCTYPE html>
       <html>
         <head>
           <meta property="fc:frame" content="vNext" />
-          <meta property="fc:frame:image" content="https://warplet-traders.vercel.app/og.png?v=20250415&t=${Date.now()}" />
+          <meta property="fc:frame:image" content="${dynamicImageUrl}" />
           <meta property="fc:frame:button:1" content="24 Hours" />
           <meta property="fc:frame:button:2" content="7 Days" />
           <meta property="fc:frame:button:3" content="Share Results" />
