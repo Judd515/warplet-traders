@@ -35,7 +35,7 @@ module.exports = function(req, res) {
     <html>
       <head>
         <meta property="fc:frame" content="vNext" />
-        <meta property="fc:frame:image" content="https://topwarplettraders.vercel.app/og.png" />
+        <meta property="fc:frame:image" content="https://warplet-traders.vercel.app/og.png?v=20250412-1&t=${Date.now()}" />
         <meta property="fc:frame:button:1" content="24 Hours" />
         <meta property="fc:frame:button:2" content="7 Days" />
         <meta property="fc:frame:button:3" content="Share Results" />
