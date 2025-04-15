@@ -7,18 +7,26 @@
     "api/minimal-frame.js": {
       "memory": 1024,
       "maxDuration": 10
+    },
+    "api/debug.js": {
+      "memory": 1024,
+      "maxDuration": 10
     }
   },
   "rewrites": [
     { "source": "/", "destination": "/index.html" },
     { "source": "/api", "destination": "/api/minimal-frame.js" },
-    { "source": "/api/frame", "destination": "/api/minimal-frame.js" }
+    { "source": "/api/frame", "destination": "/api/minimal-frame.js" },
+    { "source": "/api/debug", "destination": "/api/debug.js" }
   ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS" },
+        { "key": "Access-Control-Allow-Headers", "value": "X-Requested-With, Content-Type, Accept" }
       ]
     },
     {
