@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Top Warplet Traders</title>
+<meta property="og:title" content="Top Warplet Traders">
+<meta property="og:description" content="See which of your follows are top traders on BASE using their Warplet">
+<meta property="og:image" content="https://i.imgur.com/0yrdcff.png">
+<meta property="fc:frame" content="vNext">
+<meta property="fc:frame:image" content="https://i.imgur.com/0yrdcff.png">
+<meta property="fc:frame:image:aspect_ratio" content="1.91:1">
+<meta property="fc:frame:button:1" content="24h Data">
+<meta property="fc:frame:button:1:action" content="post">
+<meta property="fc:frame:button:2" content="7d Data">
+<meta property="fc:frame:button:2:action" content="post">
+<meta property="fc:frame:button:3" content="Share Results">
+<meta property="fc:frame:button:3:action" content="post_redirect">
+<meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/frame-action">
+</head>
+<body>
+<!-- Simple page that displays the data -->
+<style>
+  body {
+    background-color: #1E243B;
+    color: white;
+    font-family: system-ui, -apple-system, sans-serif;
+    padding: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .subtitle {
+    color: #94A3B8;
+    margin-bottom: 2rem;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  th {
+    text-align: left;
+    color: #94A3B8;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #2E3A59;
+  }
+  td {
+    padding: 1rem 0;
+    border-bottom: 1px solid #2E3A59;
+  }
+  .positive {
+    color: #4ADE80;
+  }
+  .negative {
+    color: #EF4444;
+  }
+  .footer {
+    margin-top: 2rem;
+    color: #94A3B8;
+    font-size: 0.875rem;
+  }
+</style>
+
+<h1>TOP WARPLET TRADERS</h1>
+<p class="subtitle">Your Top Traders (24h timeframe)</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>WALLET</th>
+      <th>TOP TOKEN</th>
+      <th style="text-align: right">24h PnL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>@thcradio</td>
+      <td>BTC</td>
+      <td style="text-align: right" class="positive">+76%</td>
+    </tr>
+    <tr>
+      <td>@hellno.eth</td>
+      <td>DEGEN</td>
+      <td style="text-align: right" class="positive">+49%</td>
+    </tr>
+    <tr>
+      <td>@wakaflocka</td>
+      <td>USDC</td>
+      <td style="text-align: right" class="negative">-39%</td>
+    </tr>
+    <tr>
+      <td>@karima</td>
+      <td>ARB</td>
+      <td style="text-align: right" class="negative">-55%</td>
+    </tr>
+    <tr>
+      <td>@chrislarsc.eth</td>
+      <td>ETH</td>
+      <td style="text-align: right" class="negative">-63%</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="footer">
+  Data is refreshed hourly. Use the buttons to change timeframes or share results.
+</div>
+
+</body>
+</html>

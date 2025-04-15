@@ -3,124 +3,98 @@
  * Handles button clicks and generates dynamic responses
  */
 
-module.exports = async function handler(req, res) {
+// Required headers for Warpcast frame responses
+const headers = {
+  'Content-Type': 'text/html',
+  'Cache-Control': 'no-cache, no-store, must-revalidate',
+  'Access-Control-Allow-Origin': '*'
+};
+
+export default function handler(req, res) {
+  // Check if this is a POST request from a frame button
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
   try {
-    // Only accept POST requests
-    if (req.method !== 'POST') {
-      return res.status(405).json({ error: 'Method Not Allowed' });
-    }
+    // Get the button index from the request body
+    const buttonIndex = req.body?.untrustedData?.buttonIndex;
     
-    // Get the button index from request (default to 1 if not provided)
-    const buttonIndex = req.body?.untrustedData?.buttonIndex || 1;
-    const fid = req.body?.untrustedData?.fid;
-    
-    console.log('Frame action received:', { buttonIndex, fid });
-    
-    // Generate dynamic image based on button clicked
+    // Default to 24h view
     let timeframe = '24h';
-    let nextImage;
-    let responseButtons;
+    let showComposer = false;
     
+    // Process based on button clicked
     if (buttonIndex === 1) {
-      // 24h timeframe was selected
+      // 24h Data button
       timeframe = '24h';
-      responseButtons = [
-        { label: "24h", action: "post" },
-        { label: "7d", action: "post" },
-        { label: "Share", action: "post_redirect" }
-      ];
-      nextImage = generateSvgForTimeframe(timeframe);
     } else if (buttonIndex === 2) {
-      // 7d timeframe was selected
+      // 7d Data button
       timeframe = '7d';
-      responseButtons = [
-        { label: "24h", action: "post" },
-        { label: "7d", action: "post" },
-        { label: "Share", action: "post_redirect" }
-      ];
-      nextImage = generateSvgForTimeframe(timeframe);
     } else if (buttonIndex === 3) {
-      // Share button was clicked
-      return res.status(302).setHeader('Location', 'https://warpcast.com/~/compose?text=Check%20out%20my%20top%20traders%20on%20Warplet!%20%0A%0Ahttps://warplet-traders.vercel.app/text-only.html').end();
-    } else {
-      // Default case
-      nextImage = generateSvgForTimeframe('24h');
-      responseButtons = [
-        { label: "24h", action: "post" },
-        { label: "7d", action: "post" },
-        { label: "Share", action: "post_redirect" }
-      ];
+      // Share button - redirect to Warpcast composer
+      showComposer = true;
+      
+      // Compose message with current data
+      const composerText = encodeURIComponent(
+        `Top Warplet Traders 📊\n\n` +
+        `1. @thcradio (BTC): +76%\n` +
+        `2. @hellno.eth (DEGEN): +49%\n` +
+        `3. @wakaflocka (USDC): -39%\n` +
+        `4. @karima (ARB): -55%\n` +
+        `5. @chrislarsc.eth (ETH): -63%\n\n` +
+        `https://warplet-traders.vercel.app/integrated-frame.html`
+      );
+      
+      // Redirect to Warpcast composer
+      return res.redirect(302, `https://warpcast.com/~/compose?text=${composerText}`);
     }
     
-    // Return HTML with next frame
-    res.setHeader('Content-Type', 'text/html');
-    const html = `<!DOCTYPE html>
+    // Generate SVG based on timeframe
+    const frameSvg = generateSvgForTimeframe(timeframe);
+    
+    // Build frame response - using a different image URL for each timeframe
+    const imageUrl = timeframe === '7d' ? 
+      'https://i.imgur.com/bVG9xbJ.png' : 
+      'https://i.imgur.com/0yrdcff.png';
+      
+    const htmlResponse = `
+<!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
   <meta property="fc:frame" content="vNext">
-  <meta property="fc:frame:image" content="data:image/svg+xml;base64,${Buffer.from(nextImage).toString('base64')}">
-  <meta property="fc:frame:button:1" content="24h">
-  <meta property="fc:frame:button:2" content="7d">
-  <meta property="fc:frame:button:3" content="Share">
+  <meta property="fc:frame:image" content="${imageUrl}">
+  <meta property="fc:frame:image:aspect_ratio" content="1.91:1">
+  <meta property="fc:frame:button:1" content="24h Data">
+  <meta property="fc:frame:button:1:action" content="post">
+  <meta property="fc:frame:button:2" content="7d Data">
+  <meta property="fc:frame:button:2:action" content="post">
+  <meta property="fc:frame:button:3" content="Share Results">
+  <meta property="fc:frame:button:3:action" content="post_redirect">
   <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/frame-action">
 </head>
 <body>
-  <h1>Warplet Traders - ${timeframe} Data</h1>
+  <h1>Frame Response (${timeframe})</h1>
 </body>
 </html>`;
+
+    // Return the HTML response
+    res.setHeader('Content-Type', 'text/html');
+    return res.status(200).send(htmlResponse);
     
-    return res.status(200).send(html);
   } catch (error) {
-    console.error('Error in frame action handler:', error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    console.error('Error processing frame action:', error);
+    return res.status(500).json({ error: 'Internal server error' });
   }
 }
 
-// Function to generate SVG for different timeframes
+// Generate SVG content based on timeframe
 function generateSvgForTimeframe(timeframe) {
-  const bgColor = '#1E243B';
-  const textColor = '#FFFFFF';
-  
-  // Sample trader data (in production, this would come from a database or API)
-  const traders = [
-    { username: "thcradio", topToken: "BTC", pnl24h: "+76", pnl7d: "+124" },
-    { username: "wakaflocka", topToken: "USDC", pnl24h: "-39", pnl7d: "+82" },
-    { username: "hellno.eth", topToken: "DEGEN", pnl24h: "+49", pnl7d: "-12" },
-    { username: "karima", topToken: "ARB", pnl24h: "-55", pnl7d: "-83" },
-    { username: "chrislarsc.eth", topToken: "ETH", pnl24h: "-63", pnl7d: "+47" }
-  ];
-  
-  // Create rows for SVG table
-  let tableRows = '';
-  traders.forEach((trader, index) => {
-    const pnlValue = timeframe === '24h' ? trader.pnl24h : trader.pnl7d;
-    const pnlColor = pnlValue.startsWith('+') ? '#4ADE80' : '#EF4444';
-    
-    tableRows += `
-      <g transform="translate(0, ${120 + index * 50})">
-        <line x1="50" y1="45" x2="750" y2="45" stroke="#40516B" stroke-width="1" />
-        <text x="100" y="25" fill="${textColor}" font-family="Arial" font-size="24">@${trader.username}</text>
-        <text x="400" y="25" fill="${textColor}" font-family="Arial" font-size="24">${trader.topToken}</text>
-        <text x="650" y="25" fill="${pnlColor}" font-family="Arial" font-size="24">${pnlValue}</text>
-      </g>
-    `;
-  });
-  
-  // Create the complete SVG
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="400" viewBox="0 0 800 400" fill="none">
-    <rect width="800" height="400" fill="${bgColor}"/>
-    
-    <!-- Title -->
-    <text x="60" y="50" font-family="Arial" font-size="36" fill="${textColor}" font-weight="bold">TOP WARPLET TRADERS</text>
-    <text x="60" y="90" font-family="Arial" font-size="28" fill="${textColor}">Your Top Traders (${timeframe})</text>
-    
-    <!-- Table Headers -->
-    <text x="100" y="130" font-family="Arial" font-size="24" fill="#94A3B8">Wallet</text>
-    <text x="400" y="130" font-family="Arial" font-size="24" fill="#94A3B8">Top Token</text>
-    <text x="650" y="130" font-family="Arial" font-size="24" fill="#94A3B8">${timeframe} PnL</text>
-    
-    <!-- Trader Rows -->
-    ${tableRows}
-  </svg>`;
+  if (timeframe === '7d') {
+    // 7d data view
+    return `data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNDAwIiB2aWV3Qm94PSIwIDAgODAwIDQwMCIgZmlsbD0ibm9uZSI+PHJlY3Qgd2lkdGg9IjgwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9IiMxRTI0M0IiLz48dGV4dCB4PSIxNTAiIHk9IjgwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iNDgiIGZpbGw9IndoaXRlIj5UT1AgV0FSUExFVCBUUkFERVJTPC90ZXh0Pjx0ZXh0IHg9IjE1MCIgeT0iMTUwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5NEEzQjgiPldhbGxldDwvdGV4dD48dGV4dCB4PSI0MDAiIHk9IjE1MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjI0IiBmaWxsPSIjOTRBM0I4Ij5Ub3AgVG9rZW48L3RleHQ+PHRleHQgeD0iNjUwIiB5PSIxNTAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzk0QTNCOCIgdGV4dC1hbmNob3I9ImVuZCI+N2QgUG5MPC90ZXh0Pjx0ZXh0IHg9IjE1MCIgeT0iMjAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IndoaXRlIj5AdGhjcmFkaW88L3RleHQ+PHRleHQgeD0iNDAwIiB5PSIyMDAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiPkJUQzwvdGV4dD48dGV4dCB4PSI2NTAiIHk9IjIwMCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjI0IiBmaWxsPSIjNEFERTgwIiB0ZXh0LWFuY2hvcj0iZW5kIj4rMTI0JTwvdGV4dD48dGV4dCB4PSIxNTAiIHk9IjI0MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjI0IiBmaWxsPSJ3aGl0ZSI+QHdha2FmbG9ja2E8L3RleHQ+PHRleHQgeD0iNDAwIiB5PSIyNDAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiPlVTREM8L3RleHQ+PHRleHQgeD0iNjUwIiB5PSIyNDAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzRBREU4MCIgdGV4dC1hbmNob3I9ImVuZCI+KzgyJTwvdGV4dD48dGV4dCB4PSIxNTAiIHk9IjI4MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjI0IiBmaWxsPSJ3aGl0ZSI+QGNocmlzbGFyc2MuZXRoPC90ZXh0Pjx0ZXh0IHg9IjQwMCIgeT0iMjgwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IndoaXRlIj5FVEg8L3RleHQ+PHRleHQgeD0iNjUwIiB5PSIyODAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzRBREU4MCIgdGV4dC1hbmNob3I9ImVuZCI+KzQ3JTwvdGV4dD48dGV4dCB4PSIxNTAiIHk9IjMyMCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjI0IiBmaWxsPSJ3aGl0ZSI+QGhlbGxuby5ldGg8L3RleHQ+PHRleHQgeD0iNDAwIiB5PSIzMjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiPkRFR0VOPC90ZXh0Pjx0ZXh0IHg9IjY1MCIgeT0iMzIwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiNFRjQ0NDQiIHRleHQtYW5jaG9yPSJlbmQiPi0xMiU8L3RleHQ+PHRleHQgeD0iMTUwIiB5PSIzNjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiPkBrYXJpbWE8L3RleHQ+PHRleHQgeD0iNDAwIiB5PSIzNjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiPkFSQjwvdGV4dD48dGV4dCB4PSI2NTAiIHk9IjM2MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjI0IiBmaWxsPSIjRUY0NDQ0IiB0ZXh0LWFuY2hvcj0iZW5kIj4tODMlPC90ZXh0Pjwvc3ZnPg==`;
+  } else {
+    // Default 24h data view
+    return `data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNDAwIiB2aWV3Qm94PSIwIDAgODAwIDQwMCIgZmlsbD0ibm9uZSI+PHJlY3Qgd2lkdGg9IjgwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9IiMxRTI0M0IiLz48dGV4dCB4PSIxNTAiIHk9IjgwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iNDgiIGZpbGw9IndoaXRlIj5UT1AgV0FSUExFVCBUUkFERVJTPC90ZXh0Pjx0ZXh0IHg9IjE1MCIgeT0iMTUwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5NEEzQjgiPldhbGxldDwvdGV4dD48dGV4dCB4PSI0MDAiIHk9IjE1MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjI0IiBmaWxsPSIjOTRBM0I4Ij5Ub3AgVG9rZW48L3RleHQ+PHRleHQgeD0iNjUwIiB5PSIxNTAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzk0QTNCOCIgdGV4dC1hbmNob3I9ImVuZCI+MjRoIFBuTDwvdGV4dD48dGV4dCB4PSIxNTAiIHk9IjIwMCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjI0IiBmaWxsPSJ3aGl0ZSI+QHRoY3JhZGlvPC90ZXh0Pjx0ZXh0IHg9IjQwMCIgeT0iMjAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IndoaXRlIj5CVEM8L3RleHQ+PHRleHQgeD0iNjUwIiB5PSIyMDAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzRBREU4MCIgdGV4dC1hbmNob3I9ImVuZCI+Kzc2JTwvdGV4dD48dGV4dCB4PSIxNTAiIHk9IjI0MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjI0IiBmaWxsPSJ3aGl0ZSI+QGhlbGxuby5ldGg8L3RleHQ+PHRleHQgeD0iNDAwIiB5PSIyNDAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiPkRFR0VOPC90ZXh0Pjx0ZXh0IHg9IjY1MCIgeT0iMjQwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM0QURFODAiIHRleHQtYW5jaG9yPSJlbmQiPis0OSU8L3RleHQ+PHRleHQgeD0iMTUwIiB5PSIyODAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiPkB3YWthZmxvY2thPC90ZXh0Pjx0ZXh0IHg9IjQwMCIgeT0iMjgwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IndoaXRlIj5VU0RDPC90ZXh0Pjx0ZXh0IHg9IjY1MCIgeT0iMjgwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiNFRjQ0NDQiIHRleHQtYW5jaG9yPSJlbmQiPi0zOSU8L3RleHQ+PHRleHQgeD0iMTUwIiB5PSIzMjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiPkBrYXJpbWE8L3RleHQ+PHRleHQgeD0iNDAwIiB5PSIzMjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiPkFSQjwvdGV4dD48dGV4dCB4PSI2NTAiIHk9IjMyMCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjI0IiBmaWxsPSIjRUY0NDQ0IiB0ZXh0LWFuY2hvcj0iZW5kIj4tNTUlPC90ZXh0Pjx0ZXh0IHg9IjE1MCIgeT0iMzYwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IndoaXRlIj5AY2hyaXNsYXJzYy5ldGg8L3RleHQ+PHRleHQgeD0iNDAwIiB5PSIzNjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiPkVUSDwvdGV4dD48dGV4dCB4PSI2NTAiIHk9IjM2MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjI0IiBmaWxsPSIjRUY0NDQ0IiB0ZXh0LWFuY2hvcj0iZW5kIj4tNjMlPC90ZXh0Pjwvc3ZnPg==`;
+  }
 }
