@@ -46,11 +46,11 @@ See [VERCEL_DEPLOYMENT.md](./VERCEL_DEPLOYMENT.md) for detailed instructions on 
 
 Various approaches have been tested for compatibility with Warpcast frames:
 
-1. **Auto-Detecting Frame** - [/auto-frame.html](https://warplet-traders.vercel.app/auto-frame.html)
-   - The most reliable implementation for frame detection.
-   - Share with JUST the URL alone, then add a space or modify the text in the composer.
-   - Warpcast requires text interaction to trigger frame detection.
-   - Uses inline SVG for consistent rendering across platforms.
+1. **Direct Copy-Paste Frame** - [/direct-share.html](https://warplet-traders.vercel.app/direct-share.html)
+   - The most reliable implementation for frame detection - no modifications needed.
+   - Provides pre-formatted text that users can copy and paste directly into Warpcast.
+   - Frame will display automatically, with no need to modify text in the composer.
+   - Includes the trader data in the cast text itself for additional context.
 
 2. **Frame with URL as Last Line** - [/frame-url-last.html](https://warplet-traders.vercel.app/frame-url-last.html)
    - Alternative implementation with URL as the last line of the share text.

@@ -20,36 +20,31 @@ After deploying, update all references to "warplet-traders.vercel.app" in the co
 
 ## Step 4: Test Your Deployment
 1. Once deployed, visit `https://your-domain.vercel.app` to see all the frame options
-2. Try the recommended implementation by visiting `https://your-domain.vercel.app/auto-frame.html` 
-3. This version shows the 7-day timeframe data with a Share button that properly renders the frame
-4. When sharing, paste ONLY the URL and then make a small edit to the text
-5. Warpcast requires some interaction with the composer text to trigger frame detection
+2. Try the recommended implementation by visiting `https://your-domain.vercel.app/direct-share.html` 
+3. This page shows the 7-day timeframe data and provides pre-formatted text that can be copied
+4. When sharing, simply copy the entire text block and paste it directly into Warpcast
+5. No text modifications are needed - the frame will display automatically
 6. Verify that the frame appears and the Share button works correctly
 
 ## Step 5: Share on Warpcast
-Share your frame on Warpcast with JUST the URL for the most reliable frame detection:
-```
-https://your-domain.vercel.app/auto-frame.html
-```
+The most reliable way to share your frame on Warpcast is to use the copy-paste approach:
 
-**Important:** After pasting the URL, add a space character or make any small change to the text. Warpcast requires some interaction with the composer text to trigger frame detection.
+1. Visit `https://your-domain.vercel.app/direct-share.html`
+2. Click the "Copy to Clipboard" button (or click on the text block)
+3. Open Warpcast and create a new cast
+4. Paste the copied text directly into your cast
+5. Post your cast - the frame will display automatically!
 
-You can also add a custom message:
-```
-Check out my Top Warplet Traders app! See which of your follows are crushing it on BASE 📊
-
-https://your-domain.vercel.app/auto-frame.html
-```
-
-Remember to always make a small edit to the text after pasting to ensure the frame renders properly.
+This approach provides a pre-formatted message that includes both the trader data and the frame URL:
 
 ## Troubleshooting
 If you encounter any issues:
-- **Frame not detected**: Always make a small edit to the composer text after pasting the URL
-- **Frame doesn't appear**: Try pasting just the URL with no additional text
-- **Buttons not working**: Check that your domain is correctly set in all post_url references
+- **Frame not detected**: Use the direct-share.html copy-paste approach instead of sharing a URL
+- **Copy button not working**: Try clicking directly on the text box to copy
+- **Frame doesn't load**: Make sure the full text including the URL was copied correctly
+- **Buttons not working**: Check that your domain is correctly set in all references
 - **No data displayed**: Make sure your API keys are set correctly in Vercel
-- **SVG not loading**: Try the simpler frames first (super-minimal.html, static.html)
+- **SVG not loading**: Try using a different browser or clearing your cache
 - **API errors**: Check for any CORS issues in your browser console
 
 ## Need More Help?
