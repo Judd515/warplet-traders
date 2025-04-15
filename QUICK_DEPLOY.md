@@ -20,17 +20,17 @@ After deploying, update all references to "warplet-traders.vercel.app" in the co
 
 ## Step 4: Test Your Deployment
 1. Once deployed, visit `https://your-domain.vercel.app` to see all the frame options
-2. Try the recommended interactive frame by visiting `https://your-domain.vercel.app/integrated-frame.html` 
-3. This version handles button clicks server-side without navigating away from the frame
-4. For a simpler approach, test the static frames at `https://your-domain.vercel.app/final-frame.html` and `https://your-domain.vercel.app/7d-frame.html`
-5. Cast the URL on Warpcast to test how the frame appears and verify that all buttons work correctly
+2. Try the simplified 7d frame by visiting `https://your-domain.vercel.app/simple-7d-frame.html` 
+3. This version shows the 7-day timeframe data with a single Share button
+4. The simplified version is the most reliable for sharing and rendering in Warpcast
+5. Cast the URL on Warpcast to test how the frame appears and verify that the Share button works correctly
 
 ## Step 5: Share on Warpcast
 Share your frame on Warpcast with a message like:
 ```
 Check out my Top Warplet Traders app! See which of your follows are crushing it on BASE 📊
 
-https://your-domain.vercel.app/integrated-frame.html
+https://your-domain.vercel.app/simple-7d-frame.html
 ```
 
 ## Troubleshooting
