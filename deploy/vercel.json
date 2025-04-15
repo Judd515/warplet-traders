@@ -4,15 +4,15 @@
   "installCommand": "npm ci --omit=dev",
   "outputDirectory": "public",
   "functions": {
-    "api/all-routes.js": {
+    "api/minimal-frame.js": {
       "memory": 1024,
       "maxDuration": 10
     }
   },
   "rewrites": [
     { "source": "/", "destination": "/index.html" },
-    { "source": "/api", "destination": "/api/all-routes.js" },
-    { "source": "/api/(.*)", "destination": "/api/all-routes.js" }
+    { "source": "/api", "destination": "/api/minimal-frame.js" },
+    { "source": "/api/frame", "destination": "/api/minimal-frame.js" }
   ],
   "headers": [
     {

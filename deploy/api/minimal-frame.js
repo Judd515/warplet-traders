@@ -1,97 +1,69 @@
 /**
- * Minimal Warpcast Frame Handler
- * This is a simplified version that avoids potential issues with the main handler
+ * Ultra-minimal Warpcast Frame Handler
  */
 
-// Default image URL
-const DEFAULT_IMAGE_URL = 'https://i.imgur.com/k9KaLKk.png';
+// Image hosted on Imgur to ensure it works
+const IMAGE_URL = 'https://i.imgur.com/k9KaLKk.png';
 
 module.exports = (req, res) => {
-  console.log('Minimal frame handler request received');
-  
-  // Set proper content type
+  // Set content type
   res.setHeader('Content-Type', 'text/html');
   
-  // Get button index if available
+  // Very simple button handling
   let buttonIndex = 1;
-  
   try {
     if (req.body && req.body.untrustedData && req.body.untrustedData.buttonIndex) {
       buttonIndex = parseInt(req.body.untrustedData.buttonIndex, 10);
-    } else if (req.body && req.body.buttonIndex) {
-      buttonIndex = parseInt(req.body.buttonIndex, 10);
     }
   } catch (e) {
-    console.error('Error parsing button data:', e);
+    // Ignore errors, use default
   }
   
-  // Determine timeframe based on button
-  let timeframe = '24h';
-  if (buttonIndex === 2) {
-    timeframe = '7d';
-  }
+  // Set page title based on button index
+  const title = buttonIndex === 2 ? "7-Day View" : "24-Hour View";
   
-  // Sample data for minimal display
-  const sampleData = [
-    { username: "thcradio", topToken: "BTC", pnl: timeframe === '24h' ? 76 : 34 },
-    { username: "wakaflocka", topToken: "USDC", pnl: timeframe === '24h' ? -39 : -12 },
-    { username: "hellno.eth", topToken: "DEGEN", pnl: timeframe === '24h' ? 49 : 22 },
-    { username: "karima", topToken: "ARB", pnl: timeframe === '24h' ? -55 : -28 },
-    { username: "chrislarsc.eth", topToken: "ETH", pnl: timeframe === '24h' ? -63 : -15 }
+  // Fixed data
+  const traders = [
+    { name: "thcradio", token: "BTC", pnl24h: "+76%", pnl7d: "+34%" },
+    { name: "hellno.eth", token: "DEGEN", pnl24h: "+49%", pnl7d: "+22%" },
+    { name: "wakaflocka", token: "USDC", pnl24h: "-39%", pnl7d: "-12%" },
+    { name: "karima", token: "ARB", pnl24h: "-55%", pnl7d: "-28%" },
+    { name: "chrislarsc.eth", token: "ETH", pnl24h: "-63%", pnl7d: "-15%" }
   ];
   
-  // Generate traders list
-  const tradersList = sampleData.map((trader, index) => {
-    const pnlValue = trader.pnl;
-    const pnlColor = pnlValue >= 0 ? 'green' : 'red';
-    const pnlSign = pnlValue >= 0 ? '+' : '';
-    const pnlFormatted = `${pnlSign}${pnlValue}%`;
-    
-    return `<li>${index + 1}. ${trader.username} (${trader.topToken}): <span style="color:${pnlColor}">${pnlFormatted}</span></li>`;
-  }).join('');
-  
-  // Special case for share button
+  // Special case for share button (3)
   if (buttonIndex === 3) {
-    // Simple share view with minimal HTML
-    const html = `
+    return res.status(200).send(`
       <!DOCTYPE html>
       <html>
         <head>
           <meta property="fc:frame" content="vNext" />
-          <meta property="fc:frame:image" content="${DEFAULT_IMAGE_URL}" />
-          <meta property="fc:frame:button:1" content="Back to Traders" />
-          <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/minimal-frame" />
+          <meta property="fc:frame:image" content="${IMAGE_URL}" />
+          <meta property="fc:frame:button:1" content="Back" />
+          <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api" />
         </head>
         <body>
-          <p>Share Top Warplet Traders with your followers!</p>
+          <p>Share this with your followers!</p>
         </body>
       </html>
-    `;
-    
-    return res.status(200).send(html);
+    `);
   }
   
-  // Standard view with current timeframe
-  const html = `
+  // Return simple HTML
+  return res.status(200).send(`
     <!DOCTYPE html>
     <html>
       <head>
         <meta property="fc:frame" content="vNext" />
-        <meta property="fc:frame:image" content="${DEFAULT_IMAGE_URL}" />
+        <meta property="fc:frame:image" content="${IMAGE_URL}" />
         <meta property="fc:frame:button:1" content="24 Hours" />
         <meta property="fc:frame:button:2" content="7 Days" />
         <meta property="fc:frame:button:3" content="Share" />
-        <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/minimal-frame" />
+        <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api" />
       </head>
       <body>
-        <h1>Top Warplet Traders</h1>
-        <p>Timeframe: ${timeframe === '24h' ? '24 Hours' : '7 Days'}</p>
-        <ul>
-          ${tradersList}
-        </ul>
+        <h1>Top Warplet Traders - ${title}</h1>
       </body>
     </html>
-  `;
-  
-  return res.status(200).send(html);
+  `);
 };
