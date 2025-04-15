@@ -47,8 +47,9 @@ See [VERCEL_DEPLOYMENT.md](./VERCEL_DEPLOYMENT.md) for detailed instructions on 
 Various approaches have been tested for compatibility with Warpcast frames:
 
 1. **Auto-Detecting Frame** - [/auto-frame.html](https://warplet-traders.vercel.app/auto-frame.html)
-   - The most reliable implementation for automatic frame detection.
-   - Share with JUST the URL alone for optimal frame detection.
+   - The most reliable implementation for frame detection.
+   - Share with JUST the URL alone, then add a space or modify the text in the composer.
+   - Warpcast requires text interaction to trigger frame detection.
    - Uses inline SVG for consistent rendering across platforms.
 
 2. **Frame with URL as Last Line** - [/frame-url-last.html](https://warplet-traders.vercel.app/frame-url-last.html)

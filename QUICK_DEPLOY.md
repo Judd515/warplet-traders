@@ -22,8 +22,9 @@ After deploying, update all references to "warplet-traders.vercel.app" in the co
 1. Once deployed, visit `https://your-domain.vercel.app` to see all the frame options
 2. Try the recommended implementation by visiting `https://your-domain.vercel.app/auto-frame.html` 
 3. This version shows the 7-day timeframe data with a Share button that properly renders the frame
-4. For best automatic frame detection, share ONLY the URL with no additional text
-5. Cast the URL on Warpcast to test how the frame appears and verify that the Share button works correctly
+4. When sharing, paste ONLY the URL and then make a small edit to the text
+5. Warpcast requires some interaction with the composer text to trigger frame detection
+6. Verify that the frame appears and the Share button works correctly
 
 ## Step 5: Share on Warpcast
 Share your frame on Warpcast with JUST the URL for the most reliable frame detection:
@@ -31,19 +32,25 @@ Share your frame on Warpcast with JUST the URL for the most reliable frame detec
 https://your-domain.vercel.app/auto-frame.html
 ```
 
-Or if you want to add a message:
+**Important:** After pasting the URL, add a space character or make any small change to the text. Warpcast requires some interaction with the composer text to trigger frame detection.
+
+You can also add a custom message:
 ```
 Check out my Top Warplet Traders app! See which of your follows are crushing it on BASE 📊
 
 https://your-domain.vercel.app/auto-frame.html
 ```
 
+Remember to always make a small edit to the text after pasting to ensure the frame renders properly.
+
 ## Troubleshooting
 If you encounter any issues:
-- Make sure your API keys are set correctly in Vercel
-- Try using the simpler frames first (super-minimal.html, static.html)
-- Check for any CORS issues in your browser console
-- Verify that your domain is correctly set in all post_url references
+- **Frame not detected**: Always make a small edit to the composer text after pasting the URL
+- **Frame doesn't appear**: Try pasting just the URL with no additional text
+- **Buttons not working**: Check that your domain is correctly set in all post_url references
+- **No data displayed**: Make sure your API keys are set correctly in Vercel
+- **SVG not loading**: Try the simpler frames first (super-minimal.html, static.html)
+- **API errors**: Check for any CORS issues in your browser console
 
 ## Need More Help?
 Check out the full documentation in WARPCAST_FRAME_INSTRUCTIONS.md for more details on the available options and how to debug common issues.
