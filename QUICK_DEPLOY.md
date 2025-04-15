@@ -20,17 +20,22 @@ After deploying, update all references to "warplet-traders.vercel.app" in the co
 
 ## Step 4: Test Your Deployment
 1. Once deployed, visit `https://your-domain.vercel.app` to see all the frame options
-2. Try the recommended implementation by visiting `https://your-domain.vercel.app/frame-url-last.html` 
+2. Try the recommended implementation by visiting `https://your-domain.vercel.app/auto-frame.html` 
 3. This version shows the 7-day timeframe data with a Share button that properly renders the frame
-4. The frame URL is placed as the last line of the share text, ensuring proper frame detection
+4. For best automatic frame detection, share ONLY the URL with no additional text
 5. Cast the URL on Warpcast to test how the frame appears and verify that the Share button works correctly
 
 ## Step 5: Share on Warpcast
-Share your frame on Warpcast with a message like:
+Share your frame on Warpcast with JUST the URL for the most reliable frame detection:
+```
+https://your-domain.vercel.app/auto-frame.html
+```
+
+Or if you want to add a message:
 ```
 Check out my Top Warplet Traders app! See which of your follows are crushing it on BASE 📊
 
-https://your-domain.vercel.app/frame-url-last.html
+https://your-domain.vercel.app/auto-frame.html
 ```
 
 ## Troubleshooting
