@@ -72,7 +72,7 @@ function handleFrame(req, res) {
         <html>
           <head>
             <meta property="fc:frame" content="vNext" />
-            <meta property="fc:frame:image" content="https://warplet-traders.vercel.app/og.png?v=20250412-1&t=${Date.now()}" />
+            <meta property="fc:frame:image" content="https://warplet-traders.vercel.app/og.png?v=20250415&t=${Date.now()}" />
             <meta property="fc:frame:button:1" content="View Top Traders" />
             <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/all-routes" />
           </head>
@@ -160,7 +160,7 @@ function handleMinimal(req, res) {
     <meta charset="UTF-8">
     <title>Top Warplet Traders</title>
     <meta property="fc:frame" content="vNext" />
-    <meta property="fc:frame:image" content="https://warplet-traders.vercel.app/og.png?v=20250412-1&t=${Date.now()}" />
+    <meta property="fc:frame:image" content="https://warplet-traders.vercel.app/og.png?v=20250415&t=${Date.now()}" />
     <meta property="fc:frame:button:1" content="24 Hours" />
     <meta property="fc:frame:button:2" content="7 Days" />
     <meta property="fc:frame:button:3" content="Share Results" />
@@ -195,7 +195,7 @@ function handleEdge(req, res) {
     <meta charset="UTF-8">
     <title>Top Warplet Traders</title>
     <meta property="fc:frame" content="vNext" />
-    <meta property="fc:frame:image" content="https://warplet-traders.vercel.app/og.png?v=20250412-1&t=${Date.now()}" />
+    <meta property="fc:frame:image" content="https://warplet-traders.vercel.app/og.png?v=20250415&t=${Date.now()}" />
     <meta property="fc:frame:button:1" content="24 Hours" />
     <meta property="fc:frame:button:2" content="7 Days" />
     <meta property="fc:frame:button:3" content="Share Results" />
@@ -245,7 +245,7 @@ function handleDirectHtml(req, res) {
         
         <!-- Farcaster Frame Tags -->
         <meta property="fc:frame" content="vNext" />
-        <meta property="fc:frame:image" content="https://warplet-traders.vercel.app/og.png?v=20250412-1&t=${Date.now()}" />
+        <meta property="fc:frame:image" content="https://warplet-traders.vercel.app/og.png?v=20250415&t=${Date.now()}" />
         <meta property="fc:frame:button:1" content="24 Hours" />
         <meta property="fc:frame:button:2" content="7 Days" />
         <meta property="fc:frame:button:3" content="Share Results" />
