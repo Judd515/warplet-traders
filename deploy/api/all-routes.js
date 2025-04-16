@@ -74,7 +74,8 @@ function handleFrame(req, res) {
     // Process based on button clicked and action specified
     let timeframe = '24h';
     
-    if (action === 'check_me' && userFid) {
+    // Check for 'check_me' action from query parameter or if button 4 was clicked
+    if ((action === 'check_me' && userFid) || (buttonIndex === 4 && userFid)) {
       // User wants to check their own follows
       console.log(`Will check follows for FID ${userFid}`);
       
@@ -120,9 +121,10 @@ https://warplet-traders.vercel.app/clean-frame.html`
       
       // Redirect to Warpcast composer
       return res.redirect(302, `https://warpcast.com/~/compose?text=${composerText}`);
-    } else if (buttonIndex === 4) {
-      // New check me button 
-      action = 'check_me';
+    } else if (buttonIndex === 4 && !userFid) {
+      // Check Me button was clicked but we don't have a FID
+      // This might happen if the frame is being tested outside Warpcast
+      console.log("Check Me button clicked but no FID was provided");
       return res.status(200).send(generateCheckMeFrameHtml());
     }
     
