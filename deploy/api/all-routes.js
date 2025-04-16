@@ -8,15 +8,29 @@ const axios = require('axios');
 // Import our handlers
 const simpleFrameHandler = require('./simple-frame');
 const testHandler = require('./test');
+const debugHandler = require('./debug');
+const minimalFrameHandler = require('./minimal-frame');
 
 module.exports = (req, res) => {
+  // Log all incoming requests for debugging
+  console.log(`Request received: ${req.method} ${req.url}`);
+  console.log(`Headers: ${JSON.stringify(req.headers)}`);
+  if (req.body) {
+    console.log(`Body: ${JSON.stringify(req.body)}`);
+  }
+  
   // Extract the path from the request
   const path = req.url.split('?')[0];
-  console.log(`Request received for path: ${path}`);
+  console.log(`Request path: ${path}`);
   
   // Handle different routes based on the path
   if (path === '/api/health' || path === '/health') {
     return handleHealth(req, res);
+  }
+  
+  // Debug endpoint - provides detailed information about the request
+  if (path === '/api/debug' || path === '/debug') {
+    return debugHandler(req, res);
   }
   
   // Test endpoint - simplest possible implementation
@@ -31,6 +45,11 @@ module.exports = (req, res) => {
   
   if (path === '/api/minimal' || path === '/minimal') {
     return handleMinimal(req, res);
+  }
+  
+  // Minimal frame handler - most basic implementation
+  if (path === '/api/minimal-frame' || path === '/minimal-frame') {
+    return minimalFrameHandler(req, res);
   }
   
   if (path === '/api/edge' || path === '/edge') {
