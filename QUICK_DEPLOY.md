@@ -20,19 +20,20 @@ After deploying, update all references to "warplet-traders.vercel.app" in the co
 
 ## Step 4: Test Your Deployment
 1. Once deployed, visit `https://your-domain.vercel.app` to see all the frame options
-2. Try the recommended implementation by visiting `https://your-domain.vercel.app/best-frame.html` 
-3. This page shows the 7-day timeframe data with beautifully formatted share text
-4. The share button pre-formats a message with emoji-enhanced trader data
+2. Try the recommended implementation by visiting `https://your-domain.vercel.app/clean-frame.html` 
+3. This page shows the 7-day timeframe data with clean, numbered list format
+4. The share button pre-formats a message with trader data but avoids using emojis
 5. Even if frame detection fails, the cast still shows all the important data
 6. Verify that the frame appears and the Share button works correctly
 
 ## Step 5: Share on Warpcast
-The most reliable way to share your frame on Warpcast is to use our enhanced share format:
+The most reliable way to share your frame on Warpcast is to use our clean share format:
 
-1. Visit `https://your-domain.vercel.app/best-frame.html`
+1. Visit `https://your-domain.vercel.app/clean-frame.html`
 2. Click the "Share Results" button which takes you to Warpcast with pre-formatted text
 3. The pre-formatted text includes:
-   - Emoji-formatted trader data (✅ for positive PnL, ⛔ for negative PnL)
+   - Numbered list of traders with their tokens and PnL values
+   - Clean format without emojis (which may interfere with frame detection)
    - All the top traders with their performance metrics
    - The frame URL at the end
 
@@ -41,7 +42,8 @@ This approach creates a visually appealing cast that works with or without frame
 ## Troubleshooting
 If you encounter any issues:
 - **Frame not rendering**: Our solution works even without frame rendering since all data is in the cast text
-- **Frame detection issue**: If Warpcast doesn't detect the frame, the emoji-formatted cast text still looks great
+- **Frame detection issue**: Avoid using emojis in your share text as they may interfere with frame detection
+- **Emojis causing problems**: Try the clean-frame.html version which uses no emojis in the share text
 - **Buttons not working**: Check that your domain is correctly set in all references
 - **No data displayed**: Make sure your API keys are set correctly in Vercel
 - **SVG not loading**: Try using a different browser or clearing your cache

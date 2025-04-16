@@ -46,11 +46,11 @@ See [VERCEL_DEPLOYMENT.md](./VERCEL_DEPLOYMENT.md) for detailed instructions on 
 
 Various approaches have been tested for compatibility with Warpcast frames:
 
-1. **Enhanced Share Format** - [/best-frame.html](https://warplet-traders.vercel.app/best-frame.html)
-   - The most reliable implementation for frame detection.
-   - Uses emoji-formatted trader data in the share text.
-   - Creates a visually appealing cast that also embeds the frame.
-   - Even if frame detection fails, the cast still contains all the important data.
+1. **Clean Share Format (No Emojis)** - [/clean-frame.html](https://warplet-traders.vercel.app/clean-frame.html)
+   - The most reliable implementation for frame detection, avoiding emoji characters.
+   - Uses numbered list format without emojis in the share text.
+   - Creates a clean, data-rich cast that displays properly even without frame detection.
+   - Emojis may interfere with frame detection in Warpcast.
 
 2. **Frame with URL as Last Line** - [/frame-url-last.html](https://warplet-traders.vercel.app/frame-url-last.html)
    - Alternative implementation with URL as the last line of the share text.
