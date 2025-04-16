@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Top Warplet Traders</title>
+  
+  <!-- Farcaster Frame Tags - Simplified for reliability -->
+  <meta property="fc:frame" content="vNext">
+  <meta property="fc:frame:image" content="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNDAwIiB2aWV3Qm94PSIwIDAgODAwIDQwMCIgZmlsbD0ibm9uZSI+PHJlY3Qgd2lkdGg9IjgwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9IiMxRTI0M0IiLz48dGV4dCB4PSI0MDAiIHk9IjE4MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjM2IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+V2FycGxldCBUb3AgVHJhZGVyczwvdGV4dD48dGV4dCB4PSI0MDAiIHk9IjI0MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjI0IiBmaWxsPSIjOTRBM0I4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5TZWUgd2hvIGFtb25nIHlvdXIgZm9sbG93cyBpcyBlYXJuaW5nIHRoZSBtb3N0PC90ZXh0Pjwvc3ZnPg==">
+  <meta property="fc:frame:image:aspect_ratio" content="1.91:1">
+  <meta property="fc:frame:button:1" content="24h Data">
+  <meta property="fc:frame:button:2" content="7d Data">
+  <meta property="fc:frame:button:3" content="Share Results">
+  <meta property="fc:frame:button:3:action" content="link">
+  <meta property="fc:frame:button:3:target" content="https://warpcast.com/~/compose?text=Top%20Warplet%20Earners%20(7d)%0A%0A1.%20%40thcradio%20(BTC)%3A%20%243%2C580%20%2F%20%2442.5K%20volume%0A2.%20%40wakaflocka%20(USDC)%3A%20%242%2C940%20%2F%20%2438.7K%20volume%0A3.%20%40chrislarsc.eth%20(ETH)%3A%20%242%2C450%20%2F%20%2431.2K%20volume%0A4.%20%40hellno.eth%20(DEGEN)%3A%20%241%2C840%20%2F%20%2424.6K%20volume%0A5.%20%40karima%20(ARB)%3A%20%241%2C250%20%2F%20%2418.9K%20volume%0A%0Ahttps%3A%2F%2Fwarplet-traders.vercel.app%2Fclean-frame.html">
+  <meta property="fc:frame:button:4" content="Check My Follows">
+  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/simple-frame">
+  
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #1e293b;
+      color: white;
+      padding: 20px;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 600px;
+      width: 100%;
+    }
+    
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    
+    p {
+      margin-bottom: 2rem;
+      text-align: center;
+      color: #94a3b8;
+    }
+    
+    .trader-row {
+      display: flex;
+      margin-bottom: 1rem;
+      padding: 0.75rem;
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 0.5rem;
+      align-items: center;
+    }
+    
+    .rank {
+      width: 2rem;
+      margin-right: 0.5rem;
+      font-weight: bold;
+      text-align: center;
+    }
+    
+    .username {
+      flex-grow: 1;
+      font-weight: bold;
+    }
+    
+    .earnings {
+      text-align: right;
+      color: #4ADE80;
+      font-weight: bold;
+      margin-right: 0.5rem;
+    }
+    
+    .token {
+      width: 4rem;
+      text-align: right;
+      color: #94a3b8;
+      font-size: 0.85rem;
+    }
+    
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    
+    .button {
+      background-color: #3b82f6;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      font-weight: bold;
+      text-decoration: none;
+      transition: background-color 0.2s;
+    }
+    
+    .button:hover {
+      background-color: #2563eb;
+    }
+    
+    .check-me {
+      background-color: #10b981;
+    }
+    
+    .check-me:hover {
+      background-color: #059669;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Top Warplet Earners (7d)</h1>
+    <p>See which traders are making the most with their Warplet</p>
+    
+    <div class="trader-row">
+      <div class="rank">1</div>
+      <div class="username">@thcradio</div>
+      <div class="earnings">$3,580</div>
+      <div class="token">BTC</div>
+    </div>
+    
+    <div class="trader-row">
+      <div class="rank">2</div>
+      <div class="username">@wakaflocka</div>
+      <div class="earnings">$2,940</div>
+      <div class="token">USDC</div>
+    </div>
+    
+    <div class="trader-row">
+      <div class="rank">3</div>
+      <div class="username">@chrislarsc.eth</div>
+      <div class="earnings">$2,450</div>
+      <div class="token">ETH</div>
+    </div>
+    
+    <div class="trader-row">
+      <div class="rank">4</div>
+      <div class="username">@hellno.eth</div>
+      <div class="earnings">$1,840</div>
+      <div class="token">DEGEN</div>
+    </div>
+    
+    <div class="trader-row">
+      <div class="rank">5</div>
+      <div class="username">@karima</div>
+      <div class="earnings">$1,250</div>
+      <div class="token">ARB</div>
+    </div>
+    
+    <div class="buttons">
+      <a href="/24h-data.html" class="button">Show 24h Data</a>
+      <a href="/check-notice.html" class="button check-me">Check My Follows</a>
+    </div>
+  </div>
+  
+  <script>
+    // This script is only for the web interface - it doesn't affect the Frame
+    // Note: The buttons now navigate to the actual pages
+  </script>
+</body>
+</html>

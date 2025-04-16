@@ -3,10 +3,24 @@
  * This is a simplified version without complex logic to ensure basic reliability
  */
 
-// Generate post URL based on environment
-const postUrl = process.env.NODE_ENV === 'production' 
-  ? 'https://warplet-traders.vercel.app/api/simple-frame' 
-  : '/api/simple-frame';
+/**
+ * This helper determines whether to use absolute URLs for production or relative URLs for development
+ * Warpcast frames require absolute URLs when deployed to production
+ */
+const getFramePostUrl = () => {
+  const PRODUCTION_URL = 'https://warplet-traders.vercel.app';
+  
+  // In production (Vercel deployment), use an absolute URL
+  if (process.env.NODE_ENV === 'production' || process.env.VERCEL) {
+    return `${PRODUCTION_URL}/api/simple-frame`;
+  }
+  
+  // For local development, use a relative URL
+  return '/api/simple-frame';
+};
+
+// Get the appropriate post_url for the current environment
+const postUrl = getFramePostUrl();
 
 export default function simpleFrameHandler(req, res) {
   try {
