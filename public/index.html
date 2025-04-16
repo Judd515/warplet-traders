@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Warplet Traders - Frame Options</title>
+  <title>Warplet Traders</title>
   <style>
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -46,159 +46,65 @@
       font-size: 12px;
       margin-right: 8px;
     }
-    code {
-      background: #EDF2F7;
-      padding: 2px 4px;
+    .highlight {
+      background: #4F46E520;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .button {
+      display: inline-block;
+      background: #4F46E5;
+      color: white;
+      padding: 10px 20px;
       border-radius: 4px;
-      font-family: monospace;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .button:hover {
+      background: #3730A3;
+      text-decoration: none;
     }
   </style>
 </head>
 <body>
-  <h1>Warplet Traders - Frame Options</h1>
+  <h1>Warplet Traders</h1>
   
-  <p>This page lists all available frame implementations for the Warplet Traders app. Each implementation uses a different approach to handle Warpcast frame interactions.</p>
-  
-  <div class="card">
-    <h2><span class="badge">✓ RECOMMENDED VERSION</span>Clean Share Format (No Emojis)</h2>
-    <p>Uses numbered list format without emojis in the share text. Provides clean data while improving frame detection compatibility.</p>
-    <p><a href="/clean-frame.html" target="_blank">View Frame</a> | <a href="https://warpcast.com/~/compose?text=Top%20Warplet%20Traders%20(7d)%0A%0A1.%20@thcradio%20(BTC)%3A%20%2B124%25%0A2.%20@wakaflocka%20(USDC)%3A%20%2B82%25%0A3.%20@chrislarsc.eth%20(ETH)%3A%20%2B47%25%0A4.%20@hellno.eth%20(DEGEN)%3A%20-12%25%0A5.%20@karima%20(ARB)%3A%20-83%25%0A%0Ahttps://warplet-traders.vercel.app/clean-frame.html" target="_blank">Share on Warpcast</a></p>
-  </div>
-  
-  <div class="card">
-    <h2><span class="badge">Alternate Version</span>Enhanced Share Format (With Emojis)</h2>
-    <p>Uses emoji-formatted trader data in the share text with frame URL. Creates a visually appealing cast that also embeds the frame.</p>
-    <p><a href="/best-frame.html" target="_blank">View Frame</a> | <a href="https://warpcast.com/~/compose?text=Check%20out%20my%20Top%20Warplet%20Traders!%0A%0A@thcradio%20%E2%9C%85%20BTC%3A%20%2B124%25%0A@wakaflocka%20%E2%9C%85%20USDC%3A%20%2B82%25%0A@chrislarsc.eth%20%E2%9C%85%20ETH%3A%20%2B47%25%0A@hellno.eth%20%E2%9B%94%20DEGEN%3A%20-12%25%0A@karima%20%E2%9B%94%20ARB%3A%20-83%25%0A%0Ahttps://warplet-traders.vercel.app/best-frame.html" target="_blank">Share on Warpcast</a></p>
-  </div>
-
-  <div class="card">
-    <h2><span class="badge">Alternate Version</span>Frame with URL as Last Line</h2>
-    <p>An implementation where the frame URL is placed as the last line of the share text for better frame detection.</p>
-    <p><a href="/frame-url-last.html" target="_blank">View Frame</a> | <a href="https://warpcast.com/~/compose?text=Check%20out%20my%20top%20Warplet%20traders%20on%20BASE!%0A%0Ahttps://warplet-traders.vercel.app/frame-url-last.html" target="_blank">Share on Warpcast</a></p>
+  <div class="highlight">
+    <h2>Top Warplet Traders on BASE</h2>
+    <p>This app shows the top traders among the people you follow on Warpcast, based on their earnings using Warplet (Warpcast's built-in wallet).</p>
+    <div class="actions">
+      <a href="/clean-frame.html" class="button">View Frame</a>
+      <a href="https://warpcast.com/~/compose?text=https://warplet-traders.vercel.app/clean-frame.html" class="button">Share on Warpcast</a>
+    </div>
   </div>
   
   <div class="card">
-    <h2><span class="badge">Updated</span>Simple 7d Frame</h2>
-    <p>Simplified frame with 7-day timeframe data and a single Share button. Includes newline after URL for compatibility.</p>
-    <p><a href="/simple-7d-frame.html" target="_blank">View Frame</a> | <a href="https://warpcast.com/~/compose?text=Check%20out%20my%20top%20Warplet%20traders%20on%20BASE!%0A%0Ahttps://warplet-traders.vercel.app/simple-7d-frame.html" target="_blank">Share on Warpcast</a></p>
-  </div>
-
-  <div class="card">
-    <h2><span class="badge">Alternate Version</span>Static Frame Pages</h2>
-    <p>Static implementation with separate pages for 24h and 7d views. Uses remote image URLs for better Warpcast compatibility.</p>
-    <p><a href="/final-frame.html" target="_blank">View 24h Frame</a> | <a href="/7d-frame.html" target="_blank">View 7d Frame</a> | <a href="https://warpcast.com/~/compose?text=Check%20out%20my%20top%20Warplet%20traders%20on%20BASE!%0A%0Ahttps://warplet-traders.vercel.app/final-frame.html" target="_blank">Share on Warpcast</a></p>
-  </div>
-  
-  <div class="card">
-    <h2><span class="badge">Alternate Version</span>Direct Link Frame</h2>
-    <p>This improved version uses direct link buttons that should work reliably with Warpcast.</p>
-    <p><a href="/direct-link.html" target="_blank">View Frame</a> | <a href="https://warpcast.com/~/compose?text=https://warplet-traders.vercel.app/direct-link.html" target="_blank">Share on Warpcast</a></p>
+    <h2>How It Works</h2>
+    <p>The frame loads data about the top 5 earners among accounts you follow, showing:</p>
+    <ul>
+      <li>Username</li>
+      <li>Top token traded</li>
+      <li>Earnings (24h and 7d views available)</li>
+      <li>Trading volume</li>
+    </ul>
+    <p>You can view 24-hour or 7-day data, share results, and check who among your follows are the top traders.</p>
   </div>
   
   <div class="card">
-    <h2><span class="badge">Updated</span>Redirect Frame</h2>
-    <p>Updated to use direct link instead of post_redirect action. Contains one Share button to redirect to Warpcast composer.</p>
-    <p><a href="/redirect-frame.html" target="_blank">View Frame</a> | <a href="https://warpcast.com/~/compose?text=https://warplet-traders.vercel.app/redirect-frame.html" target="_blank">Share on Warpcast</a></p>
+    <h2>Features</h2>
+    <ul>
+      <li>24-hour and 7-day data views</li>
+      <li>Share results via Warpcast</li>
+      <li>"Check My Follows" to analyze your own follows</li>
+      <li>Real-time data from Dune Analytics</li>
+    </ul>
   </div>
-  
-  <div class="card">
-    <h2>OG with Text Frame</h2>
-    <p>Uses OG tags along with frame tags. Uses standard HTTP image references. Includes text content for better SEO.</p>
-    <p><a href="/og-with-text.html" target="_blank">View Frame</a> | <a href="https://warpcast.com/~/compose?text=https://warplet-traders.vercel.app/og-with-text.html" target="_blank">Share on Warpcast</a></p>
-  </div>
-  
-  <div class="card">
-    <h2>Frames.js.org Hosted</h2>
-    <p>Uses frames.js.org for API handling. Known to work reliably with Warpcast.</p>
-    <p><a href="/framesjs-hosted.html" target="_blank">View Frame</a> | <a href="https://warpcast.com/~/compose?text=https://warplet-traders.vercel.app/framesjs-hosted.html" target="_blank">Share on Warpcast</a></p>
-  </div>
-  
-  <div class="card">
-    <h2><span class="badge">FINAL SOLUTION</span>All Direct Links</h2>
-    <p>Final implementation that uses direct links for all buttons. Most reliable solution for Warpcast frames.</p>
-    <p><a href="/final-solution.html" target="_blank">View Frame</a> | <a href="https://warpcast.com/~/compose?text=https://warplet-traders.vercel.app/final-solution.html" target="_blank">Share on Warpcast</a></p>
-  </div>
-  
-  <div class="card">
-    <h2><span class="badge">RECOMMENDED</span>One Button Frame</h2>
-    <p>Simple frame with a single "Share" button that uses the direct link action. Most reliable option.</p>
-    <p><a href="/one-button.html" target="_blank">View Frame</a> | <a href="https://warpcast.com/~/compose?text=https://warplet-traders.vercel.app/one-button.html" target="_blank">Share on Warpcast</a></p>
-  </div>
-
-  <div class="card">
-    <h2><span class="badge">TEST</span>Two Button Frame</h2>
-    <p>Frame with two buttons: one direct Share button and one post button.</p>
-    <p><a href="/two-button.html" target="_blank">View Frame</a> | <a href="https://warpcast.com/~/compose?text=https://warplet-traders.vercel.app/two-button.html" target="_blank">Share on Warpcast</a></p>
-  </div>
-
-  <div class="card">
-    <h2><span class="badge">NEW</span>Latest Format Test</h2>
-    <p>Uses the latest format from Warpcast documentation with simplified structure.</p>
-    <p><a href="/latest-test.html" target="_blank">View Frame</a> | <a href="https://warpcast.com/~/compose?text=https://warplet-traders.vercel.app/latest-test.html" target="_blank">Share on Warpcast</a></p>
-  </div>
-
-  <div class="card">
-    <h2><span class="badge">NEW</span>Minimal Test</h2>
-    <p>Absolute minimal implementation with just one button.</p>
-    <p><a href="/minimal-test.html" target="_blank">View Frame</a> | <a href="https://warpcast.com/~/compose?text=https://warplet-traders.vercel.app/minimal-test.html" target="_blank">Share on Warpcast</a></p>
-  </div>
-
-  <div class="card">
-    <h2><span class="badge">NEW</span>Simple Test</h2>
-    <p>Simple test with minimal HTML and one button.</p>
-    <p><a href="/simple-test.html" target="_blank">View Frame</a> | <a href="https://warpcast.com/~/compose?text=https://warplet-traders.vercel.app/simple-test.html" target="_blank">Share on Warpcast</a></p>
-  </div>
-
-  <div class="card">
-    <h2><span class="badge">NEW</span>Debug Frame</h2>
-    <p>Debug frame that shows detailed request information.</p>
-    <p><a href="/debug-frame.html" target="_blank">View Frame</a> | <a href="https://warpcast.com/~/compose?text=https://warplet-traders.vercel.app/debug-frame.html" target="_blank">Share on Warpcast</a></p>
-  </div>
-
-  <div class="card">
-    <h2>Ultra Minimal</h2>
-    <p>Just an image and a button without server interaction. Good for testing frame rendering.</p>
-    <p><a href="/super-minimal.html" target="_blank">View Frame</a> | <a href="https://warpcast.com/~/compose?text=https://warplet-traders.vercel.app/super-minimal.html" target="_blank">Share on Warpcast</a></p>
-  </div>
-  
-  <div class="card">
-    <h2>Direct Composer Action</h2>
-    <p>Button directly links to Warpcast composer. No server-side logic required.</p>
-    <p><a href="/direct-action.html" target="_blank">View Frame</a> | <a href="https://warpcast.com/~/compose?text=https://warplet-traders.vercel.app/direct-action.html" target="_blank">Share on Warpcast</a></p>
-  </div>
-  
-  <div class="card">
-    <h2><span class="badge">Reliable Fallback</span>Text Only Frame</h2>
-    <p>Uses a remote image URL instead of a base64 encoded SVG. More reliable for sharing on Warpcast.</p>
-    <p><a href="/text-only.html" target="_blank">View Frame</a> | <a href="https://warpcast.com/~/compose?text=https://warplet-traders.vercel.app/text-only.html" target="_blank">Share on Warpcast</a></p>
-  </div>
-
-  <div class="card">
-    <h2>Static Data</h2>
-    <p>Displays static data with no buttons. Uses base64 encoded SVG.</p>
-    <p><a href="/static.html" target="_blank">View Frame</a> | <a href="https://warpcast.com/~/compose?text=https://warplet-traders.vercel.app/static.html" target="_blank">Share on Warpcast</a></p>
-  </div>
-  
-  <h2>API Endpoints</h2>
-  <p>The following API endpoints are available for testing:</p>
-  <ul>
-    <li><code>/api/minimal</code> - Ultra-simple implementation with minimal dependencies</li>
-    <li><code>/api/frame-action</code> - More advanced handler that generates dynamic SVGs</li>
-    <li><code>/api/all-routes</code> - Combined handler that can process different request types</li>
-    <li><code>/api/simple-frame</code> - <span class="badge">NEW</span> Simple frame handler with latest format</li>
-    <li><code>/api/debug</code> - <span class="badge">NEW</span> Debug endpoint that shows detailed request information</li>
-    <li><code>/api/test</code> - <span class="badge">NEW</span> Ultra-minimal test endpoint</li>
-    <li><code>/api/minimal-frame</code> - <span class="badge">NEW</span> Absolute minimal frame handler</li>
-  </ul>
-  
-  <h2>Troubleshooting</h2>
-  <p>If you're experiencing issues with button functionality in Warpcast frames, try the following:</p>
-  <ul>
-    <li>Start with the simpler implementations (super-minimal.html, static.html)</li>
-    <li>Make sure your API endpoints are returning valid FC frame headers</li>
-    <li>Check that your post_url is correctly set to your domain</li>
-    <li>Try using post_redirect actions instead of server-side interactions</li>
-  </ul>
   
   <p>View the <a href="https://github.com/Judd515/warplet-traders">GitHub repository</a> for more details.</p>
 </body>
