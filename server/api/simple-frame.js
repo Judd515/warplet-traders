@@ -3,6 +3,11 @@
  * This is a simplified version without complex logic to ensure basic reliability
  */
 
+// Generate post URL based on environment
+const postUrl = process.env.NODE_ENV === 'production' 
+  ? 'https://warplet-traders.vercel.app/api/simple-frame' 
+  : '/api/simple-frame';
+
 export default function simpleFrameHandler(req, res) {
   try {
     console.log('Simple frame request received:', {
@@ -75,7 +80,7 @@ function generate24hFrame() {
   <meta property="fc:frame:button:2" content="7d Data">
   <meta property="fc:frame:button:3" content="Share Results">
   <meta property="fc:frame:button:4" content="Check My Follows">
-  <meta property="fc:frame:post_url" content="/api/simple-frame">
+  <meta property="fc:frame:post_url" content="${postUrl}">
   <title>24h Top Warplet Traders</title>
 </head>
 <body>
@@ -100,7 +105,7 @@ function generate7dFrame() {
   <meta property="fc:frame:button:2" content="7d Data">
   <meta property="fc:frame:button:3" content="Share Results">
   <meta property="fc:frame:button:4" content="Check My Follows">
-  <meta property="fc:frame:post_url" content="/api/simple-frame">
+  <meta property="fc:frame:post_url" content="${postUrl}">
   <title>7d Top Warplet Traders</title>
 </head>
 <body>
@@ -125,7 +130,7 @@ function generateCheckMeFrame() {
   <meta property="fc:frame:button:2" content="7d Data">
   <meta property="fc:frame:button:3" content="Share Results">
   <meta property="fc:frame:button:4" content="Check My Follows">
-  <meta property="fc:frame:post_url" content="/api/simple-frame">
+  <meta property="fc:frame:post_url" content="${postUrl}">
   <title>Check My Follows</title>
 </head>
 <body>
@@ -147,7 +152,7 @@ function generateUserLoadingFrame(fid) {
   <meta property="fc:frame:image" content="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNDAwIiB2aWV3Qm94PSIwIDAgODAwIDQwMCIgZmlsbD0ibm9uZSI+PHJlY3Qgd2lkdGg9IjgwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9IiMxRTI0M0IiLz48dGV4dCB4PSI0MDAiIHk9IjE2MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjQwIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+TG9hZGluZyBZb3VyIERhdGEuLi48L3RleHQ+PHRleHQgeD0iNDAwIiB5PSIyMjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzk0QTNCOCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+QW5hbHl6aW5nIHRoZSB0b3AgdHJhZGVycyBhbW9uZyB5b3VyIGZvbGxvd3M8L3RleHQ+PHRleHQgeD0iNDAwIiB5PSIyODAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzk0QTNCOCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+RklEOiAke2ZpZH08L3RleHQ+PC9zdmc+">
   <meta property="fc:frame:image:aspect_ratio" content="1.91:1">
   <meta property="fc:frame:button:1" content="View Standard Data">
-  <meta property="fc:frame:post_url" content="/api/simple-frame">
+  <meta property="fc:frame:post_url" content="${postUrl}">
   <title>Loading Your Data</title>
 </head>
 <body>
@@ -169,7 +174,7 @@ function generateErrorFrame() {
   <meta property="fc:frame:image" content="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNDAwIiB2aWV3Qm94PSIwIDAgODAwIDQwMCIgZmlsbD0ibm9uZSI+PHJlY3Qgd2lkdGg9IjgwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9IiMxRTI0M0IiLz48dGV4dCB4PSI0MDAiIHk9IjE2MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjQwIiBmaWxsPSIjRUY0NDQ0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5FcnJvciBPY2N1cnJlZDwvdGV4dD48dGV4dCB4PSI0MDAiIHk9IjIyMCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjI0IiBmaWxsPSIjOTRBM0I4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5Tb21ldGhpbmcgd2VudCB3cm9uZyB3aGlsZSBwcm9jZXNzaW5nIHlvdXIgcmVxdWVzdC48L3RleHQ+PHRleHQgeD0iNDAwIiB5PSIyODAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzk0QTNCOCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+UGxlYXNlIHRyeSBhZ2Fpbi48L3RleHQ+PC9zdmc+">
   <meta property="fc:frame:image:aspect_ratio" content="1.91:1">
   <meta property="fc:frame:button:1" content="Try Again">
-  <meta property="fc:frame:post_url" content="/api/simple-frame">
+  <meta property="fc:frame:post_url" content="${postUrl}">
   <title>Error</title>
 </head>
 <body>
