@@ -20,12 +20,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const sortedTraders = traders
         .map(trader => ({
           ...trader,
-          pnl: timeframe === '24h' ? trader.pnl24h : trader.pnl7d
+          earnings: timeframe === '24h' ? trader.earnings24h : trader.earnings7d,
+          volume: timeframe === '24h' ? trader.volume24h : trader.volume7d
         }))
         .sort((a, b) => {
-          const aPnl = parseFloat(a.pnl?.toString() || '0');
-          const bPnl = parseFloat(b.pnl?.toString() || '0');
-          return bPnl - aPnl;
+          const aEarnings = parseFloat(a.earnings?.toString() || '0');
+          const bEarnings = parseFloat(b.earnings?.toString() || '0');
+          return bEarnings - aEarnings; // Sort by earnings (highest first)
         })
         .slice(0, 5); // Get top 5
 
@@ -123,8 +124,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           username: "No wallets found",
           walletAddress: "",
           topToken: null,
-          pnl24h: null,
-          pnl7d: null
+          earnings24h: null,
+          earnings7d: null,
+          volume24h: null,
+          volume7d: null
         }]);
       }
       
@@ -143,14 +146,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
           username => wallets[username].toLowerCase() === row.wallet_address.toLowerCase()
         ) || row.username;
         
-        // Convert PnL values to strings to match our schema
+        // Convert earnings and volume values to strings to match our schema
         return {
           username,
           walletAddress: row.wallet_address,
           topToken: row.top_token || null,
           // Convert numbers to strings for schema compatibility
-          pnl24h: timeframe === '24h' ? row.pnl.toString() : null,
-          pnl7d: timeframe === '7d' ? row.pnl.toString() : null
+          earnings24h: timeframe === '24h' ? row.earnings.toString() : null,
+          earnings7d: timeframe === '7d' ? row.earnings.toString() : null,
+          volume24h: timeframe === '24h' ? row.volume.toString() : null,
+          volume7d: timeframe === '7d' ? row.volume.toString() : null
         };
       });
       

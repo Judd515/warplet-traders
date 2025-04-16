@@ -10,7 +10,8 @@ interface DuneQueryResult {
     wallet_address: string;
     username: string;
     top_token: string;
-    pnl: number;
+    earnings: number;
+    volume: number;
   }>;
 }
 
@@ -42,17 +43,21 @@ export async function fetchTradingData(
         const tokenIndex = hashValue % tokens.length;
         const token = tokens[tokenIndex];
         
-        // Use hash to generate a stable PnL value between -90 and +90
-        // Add small timeframe modifier to show different data by timeframe
-        const baseValue = ((hashValue % 181) - 90);
-        const timeframeOffset = params.timeframe === '24h' ? 0 : 10;
-        const pnl = baseValue + timeframeOffset;
+        // Generate earnings data (always positive, in USD)
+        const baseEarnings = (hashValue % 5000) + 500; // Between $500 and $5500
+        const timeframeMultiplier = params.timeframe === '24h' ? 1 : 7; // 7x more for 7d
+        const earnings = baseEarnings * timeframeMultiplier;
+        
+        // Generate volume data (in USD)
+        const baseVolume = (hashValue % 50000) + 10000; // Between $10k and $60k
+        const volume = baseVolume * timeframeMultiplier;
         
         return {
           wallet_address: address,
           username: `trader${tokenIndex + 1}`,
           top_token: token,
-          pnl: parseFloat(pnl.toFixed(2))
+          earnings: parseFloat(earnings.toFixed(2)),
+          volume: parseFloat(volume.toFixed(2))
         };
       })
     };

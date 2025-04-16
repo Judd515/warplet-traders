@@ -8,8 +8,10 @@ export const traders = pgTable("traders", {
   username: text("username").notNull().unique(),
   walletAddress: text("wallet_address").notNull(),
   topToken: text("top_token"),
-  pnl24h: decimal("pnl_24h", { precision: 18, scale: 2 }),
-  pnl7d: decimal("pnl_7d", { precision: 18, scale: 2 }),
+  earnings24h: decimal("earnings_24h", { precision: 18, scale: 2 }),
+  earnings7d: decimal("earnings_7d", { precision: 18, scale: 2 }),
+  volume24h: decimal("volume_24h", { precision: 18, scale: 2 }),
+  volume7d: decimal("volume_7d", { precision: 18, scale: 2 }),
 });
 
 export const insertTraderSchema = createInsertSchema(traders).omit({
