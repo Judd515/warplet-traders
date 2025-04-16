@@ -84,34 +84,37 @@ const TradersTable: React.FC<TradersTableProps> = ({ traders, timeframe }) => {
   const checkForAchievements = () => {
     const newAchievements: Achievement[] = [];
     
-    // Find top performer for "To The Moon" achievement
-    const topPerformer = [...traders].sort((a, b) => {
-      const aPnl = parseFloat(timeframe === '24h' ? a.pnl24h?.toString() || '0' : a.pnl7d?.toString() || '0');
-      const bPnl = parseFloat(timeframe === '24h' ? b.pnl24h?.toString() || '0' : b.pnl7d?.toString() || '0');
-      return bPnl - aPnl;
+    // Find top earner for "To The Moon" achievement
+    const topEarner = [...traders].sort((a, b) => {
+      const aEarnings = parseFloat(timeframe === '24h' ? a.earnings24h?.toString() || '0' : a.earnings7d?.toString() || '0');
+      const bEarnings = parseFloat(timeframe === '24h' ? b.earnings24h?.toString() || '0' : b.earnings7d?.toString() || '0');
+      return bEarnings - aEarnings;
     })[0];
     
-    if (topPerformer) {
-      const pnl = parseFloat(timeframe === '24h' ? topPerformer.pnl24h?.toString() || '0' : topPerformer.pnl7d?.toString() || '0');
+    if (topEarner) {
+      const earnings = parseFloat(timeframe === '24h' ? topEarner.earnings24h?.toString() || '0' : topEarner.earnings7d?.toString() || '0');
       
-      // To The Moon achievement (profitable trader with high gains)
-      if (pnl > 80) {
+      // To The Moon achievement (high earning trader)
+      if (earnings > 3000) { // Over $3000 in earnings
         newAchievements.push(achievements.find(a => a.id === 'rocket-moon')!);
       }
       
-      // Diamond Hands (holding through volatility)
-      if (pnl > 0 && ['ETH', 'BTC'].includes(topPerformer.topToken || '')) {
+      // Diamond Hands (holding blue chip tokens)
+      if (earnings > 1000 && ['ETH', 'BTC'].includes(topEarner.topToken || '')) {
         newAchievements.push(achievements.find(a => a.id === 'diamond-hands')!);
       }
       
       // Trend Master (trading hot tokens like ARB or DEGEN)
-      if (['ARB', 'DEGEN'].includes(topPerformer.topToken || '')) {
+      if (['ARB', 'DEGEN'].includes(topEarner.topToken || '')) {
         newAchievements.push(achievements.find(a => a.id === 'trend-master')!);
       }
     }
     
-    // Check traders for consistency (Sharpshooter)
-    if (traders.some(t => Math.abs(parseFloat(t.pnl24h?.toString() || '0')) < 5 && parseFloat(t.pnl24h?.toString() || '0') > 0)) {
+    // Check traders for consistency (Sharpshooter) - traders with moderate but stable earnings
+    if (traders.some(t => {
+      const earnings = parseFloat(timeframe === '24h' ? t.earnings24h?.toString() || '0' : t.earnings7d?.toString() || '0');
+      return earnings > 500 && earnings < 1500; // Moderate earnings range
+    })) {
       newAchievements.push(achievements.find(a => a.id === 'sharp-shooter')!);
     }
     
