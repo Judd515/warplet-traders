@@ -5,8 +5,9 @@
 
 const axios = require('axios');
 
-// Import our simplified frame handler
+// Import our handlers
 const simpleFrameHandler = require('./simple-frame');
+const testHandler = require('./test');
 
 module.exports = (req, res) => {
   // Extract the path from the request
@@ -16,6 +17,11 @@ module.exports = (req, res) => {
   // Handle different routes based on the path
   if (path === '/api/health' || path === '/health') {
     return handleHealth(req, res);
+  }
+  
+  // Test endpoint - simplest possible implementation
+  if (path === '/api/test' || path === '/test') {
+    return testHandler(req, res);
   }
   
   if (path === '/api/frame-action' || path === '/frame-action' || path === '/api/simple-frame' || path === '/simple-frame') {
