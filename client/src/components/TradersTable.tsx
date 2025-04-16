@@ -154,13 +154,27 @@ const TradersTable: React.FC<TradersTableProps> = ({ traders, timeframe }) => {
       }
     }
   };
-  // Format PnL values with proper sign and decimal places
-  const formatPnL = (value: number | string | null | undefined): string => {
-    if (value === null || value === undefined) return '0.00';
+  // Format earnings values with dollar sign
+  const formatEarnings = (value: number | string | null | undefined): string => {
+    if (value === null || value === undefined) return '$0';
     
     const numValue = typeof value === 'string' ? parseFloat(value) : value;
-    const formattedValue = Math.abs(numValue).toFixed(2);
-    return numValue >= 0 ? `+${formattedValue}` : `-${formattedValue}`;
+    return `$${numValue.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
+  };
+  
+  // Format volume values with dollar sign and potentially K/M abbreviations
+  const formatVolume = (value: number | string | null | undefined): string => {
+    if (value === null || value === undefined) return '$0';
+    
+    const numValue = typeof value === 'string' ? parseFloat(value) : value;
+    
+    if (numValue >= 1000000) {
+      return `$${(numValue / 1000000).toFixed(1)}M`;
+    } else if (numValue >= 1000) {
+      return `$${(numValue / 1000).toFixed(1)}K`;
+    } else {
+      return `$${numValue.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
+    }
   };
   
   // Helper function to truncate wallet address
@@ -278,7 +292,7 @@ const TradersTable: React.FC<TradersTableProps> = ({ traders, timeframe }) => {
       <div className="px-5 py-4 bg-indigo-900/30 border-b border-indigo-800/50 flex justify-between items-center">
         <div className="flex items-center">
           <Trophy className="h-5 w-5 mr-2 text-indigo-300" />
-          <h3 className="font-bold text-white">Top Traders</h3>
+          <h3 className="font-bold text-white">Top Earners</h3>
         </div>
         <div className="text-xs text-indigo-300">
           {timeframe === '24h' ? 'Last 24 Hours' : 'Past 7 Days'}
@@ -303,11 +317,14 @@ const TradersTable: React.FC<TradersTableProps> = ({ traders, timeframe }) => {
           {/* Table Content */}
           <div className="divide-y divide-indigo-900/50">
             {traders.map((trader, index) => {
-              const pnlValue = timeframe === '24h' ? trader.pnl24h : trader.pnl7d;
-              const pnlFormatted = formatPnL(pnlValue || 0);
-              const isPositive = parseFloat(pnlValue?.toString() || '0') >= 0;
-              const pnlAmount = Math.abs(parseFloat(pnlValue?.toString() || '0'));
-              const isHighPerformer = pnlAmount > 50; // Consider high performance if >50% change
+              const earnings = timeframe === '24h' ? trader.earnings24h : trader.earnings7d;
+              const volume = timeframe === '24h' ? trader.volume24h : trader.volume7d;
+              
+              const earningsFormatted = formatEarnings(earnings || 0);
+              const volumeFormatted = formatVolume(volume || 0);
+              
+              // Consider high performer if earnings are above $2000
+              const isHighPerformer = (earnings || 0) > 2000;
               
               return (
                 <div 
@@ -329,19 +346,20 @@ const TradersTable: React.FC<TradersTableProps> = ({ traders, timeframe }) => {
                       {/* High performer badge */}
                       {isHighPerformer && (
                         <div className="ml-2">
-                          <Flame className={`h-4 w-4 ${isPositive ? 'text-green-400' : 'text-red-400'}`} />
+                          <Flame className="h-4 w-4 text-green-400" />
                         </div>
                       )}
                     </div>
                     
-                    {/* PnL indicator */}
-                    <div className={`flex items-center rounded-full px-3 py-1 text-sm font-medium ${
-                      isPositive 
-                        ? 'bg-green-950/30 text-green-400 border border-green-800/30' 
-                        : 'bg-red-950/30 text-red-400 border border-red-800/30'
-                    }`}>
-                      {isPositive ? <ArrowUp className="h-3 w-3 mr-1" /> : <ArrowDown className="h-3 w-3 mr-1" />}
-                      {pnlFormatted}%
+                    {/* Earnings indicator */}
+                    <div className="flex flex-col items-end">
+                      <div className="flex items-center rounded-full px-3 py-1 text-sm font-medium bg-green-950/30 text-green-400 border border-green-800/30">
+                        <ArrowUp className="h-3 w-3 mr-1" />
+                        {earningsFormatted}
+                      </div>
+                      <div className="text-xs text-indigo-400 mt-1">
+                        {volumeFormatted} volume
+                      </div>
                     </div>
                   </div>
                   
