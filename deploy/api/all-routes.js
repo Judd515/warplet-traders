@@ -5,6 +5,9 @@
 
 const axios = require('axios');
 
+// Import our simplified frame handler
+const simpleFrameHandler = require('./simple-frame');
+
 module.exports = (req, res) => {
   // Extract the path from the request
   const path = req.url.split('?')[0];
@@ -15,8 +18,9 @@ module.exports = (req, res) => {
     return handleHealth(req, res);
   }
   
-  if (path === '/api/frame-action' || path === '/frame-action') {
-    return handleFrame(req, res);
+  if (path === '/api/frame-action' || path === '/frame-action' || path === '/api/simple-frame' || path === '/simple-frame') {
+    // Use our simplified frame handler for reliability
+    return simpleFrameHandler(req, res);
   }
   
   if (path === '/api/minimal' || path === '/minimal') {
@@ -31,8 +35,8 @@ module.exports = (req, res) => {
     return handleDirectHtml(req, res);
   }
   
-  // Default handler
-  return handleFrame(req, res);
+  // Default handler - use the simple frame handler for reliability
+  return simpleFrameHandler(req, res);
 };
 
 /**
