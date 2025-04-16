@@ -9,6 +9,7 @@ const axios = require('axios');
 const simpleFrameHandler = require('./simple-frame');
 const testHandler = require('./test');
 const debugHandler = require('./debug');
+const frameDebugHandler = require('./frame-debug');
 const minimalFrameHandler = require('./minimal-frame');
 
 module.exports = (req, res) => {
@@ -31,6 +32,11 @@ module.exports = (req, res) => {
   // Debug endpoint - provides detailed information about the request
   if (path === '/api/debug' || path === '/debug') {
     return debugHandler(req, res);
+  }
+  
+  // Frame debug endpoint - specialized for debugging frame communication
+  if (path === '/api/frame-debug' || path === '/frame-debug') {
+    return frameDebugHandler(req, res);
   }
   
   // Test endpoint - simplest possible implementation

@@ -1,47 +1,46 @@
 /**
- * Simple Frame Handler for Warpcast
- * This is a simplified version without complex logic to ensure basic reliability
+ * Simple API handler for Vercel deployment
+ * This ensures the API works correctly with Warpcast frames
  */
 
-/**
- * This helper determines whether to use absolute URLs for production or relative URLs for development
- * Warpcast frames require absolute URLs when deployed to production
- */
-const getFramePostUrl = () => {
-  const PRODUCTION_URL = 'https://warplet-traders.vercel.app';
+// Import necessary modules
+const { createServer } = require('http');
+const express = require('express');
+
+// Create Express app
+const app = express();
+
+// Middleware to parse JSON
+app.use(express.json());
+
+// Serve static files from the public directory
+app.use(express.static('public'));
+
+// CORS middleware - Essential for Warpcast frames
+app.use((req, res, next) => {
+  // Set broad CORS headers to ensure frame communication works
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept, X-Requested-With');
+  res.setHeader('Access-Control-Max-Age', '86400'); // 24 hours
   
-  // In production (Vercel deployment), use an absolute URL
-  if (process.env.NODE_ENV === 'production' || process.env.VERCEL) {
-    return `${PRODUCTION_URL}/api/simple-frame`;
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
   }
   
-  // For local development, use a relative URL
-  return '/api/simple-frame';
-};
+  next();
+});
 
-// Get the appropriate post_url for the current environment
-const postUrl = getFramePostUrl();
-
-export default function simpleFrameHandler(req, res) {
+// Frame action handler
+app.post('/api/simple-frame', (req, res) => {
   try {
-    console.log('Simple frame request received:', {
+    // Log request for debugging
+    console.log('Frame request received:', {
       method: req.method,
       url: req.url,
-      headers: req.headers,
       body: req.body || {}
     });
-    
-    // Set CORS headers - critical for frame communication
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept, X-Requested-With');
-    res.setHeader('Access-Control-Max-Age', '86400'); // 24 hours
-    res.setHeader('Content-Type', 'text/html');
-    
-    // Handle preflight request
-    if (req.method === 'OPTIONS') {
-      return res.status(200).end();
-    }
     
     // Extract button index from request
     let buttonIndex = 1;
@@ -51,7 +50,7 @@ export default function simpleFrameHandler(req, res) {
     
     console.log(`Button index: ${buttonIndex}`);
     
-    // Switch based on button index
+    // Generate response based on button index
     let frameHtml;
     switch (buttonIndex) {
       case 1:
@@ -75,10 +74,18 @@ export default function simpleFrameHandler(req, res) {
     
     return res.status(200).send(frameHtml);
   } catch (error) {
-    console.error('Error in simple frame handler:', error);
+    console.error('Error in frame handler:', error);
     return res.status(200).send(generateErrorFrame());
   }
-};
+});
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+
+// Define the URL for API endpoints
+const API_URL = 'https://warplet-traders.vercel.app';
 
 // Generate 24h data frame
 function generate24hFrame() {
@@ -95,7 +102,7 @@ function generate24hFrame() {
   <meta property="fc:frame:button:2" content="7d Data">
   <meta property="fc:frame:button:3" content="Share Results">
   <meta property="fc:frame:button:4" content="Check My Follows">
-  <meta property="fc:frame:post_url" content="${postUrl}">
+  <meta property="fc:frame:post_url" content="${API_URL}/api/simple-frame">
   <title>24h Top Warplet Traders</title>
 </head>
 <body>
@@ -120,7 +127,7 @@ function generate7dFrame() {
   <meta property="fc:frame:button:2" content="7d Data">
   <meta property="fc:frame:button:3" content="Share Results">
   <meta property="fc:frame:button:4" content="Check My Follows">
-  <meta property="fc:frame:post_url" content="${postUrl}">
+  <meta property="fc:frame:post_url" content="${API_URL}/api/simple-frame">
   <title>7d Top Warplet Traders</title>
 </head>
 <body>
@@ -145,33 +152,11 @@ function generateCheckMeFrame() {
   <meta property="fc:frame:button:2" content="7d Data">
   <meta property="fc:frame:button:3" content="Share Results">
   <meta property="fc:frame:button:4" content="Check My Follows">
-  <meta property="fc:frame:post_url" content="${postUrl}">
+  <meta property="fc:frame:post_url" content="${API_URL}/api/simple-frame">
   <title>Check My Follows</title>
 </head>
 <body>
   <h1>Checking Your Follows</h1>
-</body>
-</html>
-  `;
-}
-
-// Generate User Loading frame (when we have a FID)
-function generateUserLoadingFrame(fid) {
-  return `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta property="fc:frame" content="vNext">
-  <meta property="fc:frame:image" content="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNDAwIiB2aWV3Qm94PSIwIDAgODAwIDQwMCIgZmlsbD0ibm9uZSI+PHJlY3Qgd2lkdGg9IjgwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9IiMxRTI0M0IiLz48dGV4dCB4PSI0MDAiIHk9IjE2MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjQwIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+TG9hZGluZyBZb3VyIERhdGEuLi48L3RleHQ+PHRleHQgeD0iNDAwIiB5PSIyMjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzk0QTNCOCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+QW5hbHl6aW5nIHRoZSB0b3AgdHJhZGVycyBhbW9uZyB5b3VyIGZvbGxvd3M8L3RleHQ+PHRleHQgeD0iNDAwIiB5PSIyODAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzk0QTNCOCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+RklEOiAke2ZpZH08L3RleHQ+PC9zdmc+">
-  <meta property="fc:frame:image:aspect_ratio" content="1.91:1">
-  <meta property="fc:frame:button:1" content="View Standard Data">
-  <meta property="fc:frame:post_url" content="${postUrl}">
-  <title>Loading Your Data</title>
-</head>
-<body>
-  <h1>Loading Data for FID: ${fid}</h1>
 </body>
 </html>
   `;
@@ -189,7 +174,7 @@ function generateErrorFrame() {
   <meta property="fc:frame:image" content="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNDAwIiB2aWV3Qm94PSIwIDAgODAwIDQwMCIgZmlsbD0ibm9uZSI+PHJlY3Qgd2lkdGg9IjgwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9IiMxRTI0M0IiLz48dGV4dCB4PSI0MDAiIHk9IjE2MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjQwIiBmaWxsPSIjRUY0NDQ0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5FcnJvciBPY2N1cnJlZDwvdGV4dD48dGV4dCB4PSI0MDAiIHk9IjIyMCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjI0IiBmaWxsPSIjOTRBM0I4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5Tb21ldGhpbmcgd2VudCB3cm9uZyB3aGlsZSBwcm9jZXNzaW5nIHlvdXIgcmVxdWVzdC48L3RleHQ+PHRleHQgeD0iNDAwIiB5PSIyODAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzk0QTNCOCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+UGxlYXNlIHRyeSBhZ2Fpbi48L3RleHQ+PC9zdmc+">
   <meta property="fc:frame:image:aspect_ratio" content="1.91:1">
   <meta property="fc:frame:button:1" content="Try Again">
-  <meta property="fc:frame:post_url" content="${postUrl}">
+  <meta property="fc:frame:post_url" content="${API_URL}/api/simple-frame">
   <title>Error</title>
 </head>
 <body>
@@ -198,3 +183,16 @@ function generateErrorFrame() {
 </html>
   `;
 }
+
+// Start the server (only for local development testing)
+if (require.main === module) {
+  const PORT = process.env.PORT || 5000;
+  const server = createServer(app);
+  
+  server.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+}
+
+// Export the app for serverless deployment
+module.exports = app;

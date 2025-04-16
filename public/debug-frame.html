@@ -1,18 +1,161 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Debug Frame Test</title>
-  
-  <!-- Farcaster Frame Tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta property="fc:frame" content="vNext">
-  <meta property="fc:frame:image" content="https://warplet-traders.vercel.app/og.png">
-  <meta property="fc:frame:button:1" content="Debug Frame">
-  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/debug">
+  <meta property="fc:frame:image" content="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNDAwIiB2aWV3Qm94PSIwIDAgODAwIDQwMCIgZmlsbD0ibm9uZSI+PHJlY3Qgd2lkdGg9IjgwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9IiMxRTI0M0IiLz48dGV4dCB4PSI0MDAiIHk9IjE2MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjQwIiBmaWxsPSIjNEFERTgwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5GcmFtZSBEZWJ1ZyBNb2RlPC90ZXh0Pjx0ZXh0IHg9IjQwMCIgeT0iMjIwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5Vc2UgdGhpcyBmcmFtZSB0byBkZWJ1ZyBmcmFtZSBjb21tdW5pY2F0aW9uIGlzc3VlczwvdGV4dD48dGV4dCB4PSI0MDAiIHk9IjI4MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjI0IiBmaWxsPSIjOTRBM0I4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5DbGljayBhbnkgYnV0dG9uIHRvIHNlZSByZXF1ZXN0IGRldGFpbHMgaW4gc2VydmVyIGxvZ3M8L3RleHQ+PC9zdmc+">
+  <meta property="fc:frame:image:aspect_ratio" content="1.91:1">
+  <meta property="fc:frame:button:1" content="Test Button 1">
+  <meta property="fc:frame:button:2" content="Test Button 2">
+  <meta property="fc:frame:button:3" content="Test Button 3">
+  <meta property="fc:frame:button:4" content="Test Button 4">
+  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/frame-debug">
+  <title>Frame Debug Tool</title>
+  
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #1e293b;
+      color: white;
+      padding: 20px;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 800px;
+      width: 100%;
+    }
+    
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      text-align: center;
+      color: #4ADE80;
+    }
+    
+    p {
+      margin-bottom: 2rem;
+      text-align: center;
+      color: #94a3b8;
+      line-height: 1.6;
+    }
+    
+    .debug-info {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .debug-info h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: #3b82f6;
+    }
+    
+    pre {
+      font-family: monospace;
+      background-color: rgba(0, 0, 0, 0.3);
+      padding: 15px;
+      border-radius: 4px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+    
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+    
+    .button {
+      background-color: #3b82f6;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      font-weight: bold;
+      text-decoration: none;
+      transition: background-color 0.2s;
+      cursor: pointer;
+    }
+    
+    .button:hover {
+      background-color: #2563eb;
+    }
+  </style>
 </head>
 <body>
-  <h1>Frame Debug Tool</h1>
-  <p>Click the button in Warpcast to see debug information about your request.</p>
+  <div class="container">
+    <h1>Frame Debug Tool</h1>
+    <p>This page helps diagnose frame communication issues.<br>When testing in a browser, click the buttons below to simulate frame interactions.</p>
+    
+    <div class="debug-info">
+      <h2>How to use this debug tool</h2>
+      <ol>
+        <li>When deployed to Vercel, access this page at <code>https://warplet-traders.vercel.app/debug-frame.html</code></li>
+        <li>Click any button to send a test request to the <code>/api/frame-debug</code> endpoint</li>
+        <li>Check the server logs in Vercel to see detailed request information</li>
+        <li>This helps identify issues with headers, CORS, or payload format</li>
+      </ol>
+    </div>
+    
+    <div class="debug-info">
+      <h2>Request Testing</h2>
+      <pre id="request-info">No request made yet. Click a button to test.</pre>
+    </div>
+    
+    <div class="buttons">
+      <button class="button" onclick="simulateFrameRequest(1)">Test Button 1</button>
+      <button class="button" onclick="simulateFrameRequest(2)">Test Button 2</button>
+      <button class="button" onclick="simulateFrameRequest(3)">Test Button 3</button>
+      <button class="button" onclick="simulateFrameRequest(4)">Test Button 4</button>
+    </div>
+  </div>
+  
+  <script>
+    // Function to simulate a frame button click
+    async function simulateFrameRequest(buttonIndex) {
+      const requestInfo = document.getElementById('request-info');
+      requestInfo.textContent = `Sending request with button index: ${buttonIndex}...`;
+      
+      try {
+        // Create payload similar to what Warpcast would send
+        const payload = {
+          untrustedData: {
+            buttonIndex: buttonIndex,
+            fid: 12345, // Simulated FID
+            timestamp: Date.now()
+          }
+        };
+        
+        // Send request to frame debug endpoint
+        const response = await fetch('/api/frame-debug', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload)
+        });
+        
+        // Check if response is OK
+        if (response.ok) {
+          const text = await response.text();
+          requestInfo.textContent = `Request successful!\n\nPayload sent:\n${JSON.stringify(payload, null, 2)}\n\nResponse received with status: ${response.status}`;
+        } else {
+          requestInfo.textContent = `Error: ${response.status} ${response.statusText}\n\nPayload sent:\n${JSON.stringify(payload, null, 2)}`;
+        }
+      } catch (error) {
+        requestInfo.textContent = `Error sending request: ${error.message}\n\nMake sure the server is running and the endpoint exists.`;
+      }
+    }
+  </script>
 </body>
 </html>
