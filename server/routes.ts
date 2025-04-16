@@ -9,6 +9,10 @@ import { insertTraderSchema } from "@shared/schema";
 import * as fs from 'fs';
 import * as path from 'path';
 
+// Import the simple frame handler
+// @ts-ignore - ignore TypeScript errors for this import
+import simpleFrameHandler from './api/simple-frame';
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // Endpoint to get top traders with PnL data for a specific timeframe
   app.get("/api/traders", async (req, res) => {
@@ -193,6 +197,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } else {
       res.status(404).send('Project file not found');
+    }
+  });
+  
+  // Add route for the simple-frame handler (for Warpcast Frame)
+  app.post('/api/simple-frame', (req, res) => {
+    try {
+      console.log('Simple frame request received:', JSON.stringify(req.body));
+      // @ts-ignore - simpleFrameHandler is expecting Express request/response
+      return simpleFrameHandler(req, res);
+    } catch (error) {
+      console.error('Error in simple-frame handler:', error);
+      res.status(500).send('Error processing frame request');
     }
   });
 
