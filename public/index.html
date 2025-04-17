@@ -2,110 +2,200 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Warplet Traders</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta property="fc:frame" content="vNext">
+  <meta property="fc:frame:image" content="https://placehold.co/1200x628/1E293B/FFFFFF?text=Warplet+Top+Traders">
+  <meta property="fc:frame:image:aspect_ratio" content="1.91:1">
+  <meta property="fc:frame:button:1" content="24h Data">
+  <meta property="fc:frame:button:2" content="7d Data">
+  <meta property="fc:frame:button:3" content="Share Results">
+  <meta property="fc:frame:button:4" content="Check My Follows">
+  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/vercel-minimal-frame">
+  <title>Warplet Top Traders</title>
+  
   <style>
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      line-height: 1.5;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-      background: #f5f5f5;
-      color: #333;
-    }
-    h1 {
-      color: #1E293B;
-      border-bottom: 2px solid #4F46E5;
-      padding-bottom: 10px;
-    }
-    h2 {
-      color: #2D3748;
-      margin-top: 30px;
-    }
-    a {
-      color: #4F46E5;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-    .card {
-      background: white;
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .badge {
-      display: inline-block;
-      background: #4F46E5;
+      font-family: sans-serif;
+      background-color: #1e293b;
       color: white;
-      padding: 3px 8px;
-      border-radius: 4px;
-      font-size: 12px;
-      margin-right: 8px;
-    }
-    .highlight {
-      background: #4F46E520;
-      padding: 15px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-    }
-    .actions {
+      padding: 20px;
+      margin: 0;
       display: flex;
-      gap: 10px;
-      margin-top: 20px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
     }
+    
+    .container {
+      max-width: 800px;
+      width: 100%;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    
+    p {
+      margin-bottom: 2rem;
+      text-align: center;
+      color: #94a3b8;
+      line-height: 1.6;
+    }
+    
+    .trader-row {
+      display: flex;
+      margin-bottom: 1rem;
+      padding: 0.75rem;
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 0.5rem;
+      align-items: center;
+    }
+    
+    .rank {
+      width: 2rem;
+      margin-right: 0.5rem;
+      font-weight: bold;
+      text-align: center;
+    }
+    
+    .username {
+      flex-grow: 1;
+      font-weight: bold;
+    }
+    
+    .earnings {
+      text-align: right;
+      color: #4ADE80;
+      font-weight: bold;
+      margin-right: 0.5rem;
+    }
+    
+    .token {
+      width: 4rem;
+      text-align: right;
+      color: #94a3b8;
+      font-size: 0.85rem;
+    }
+    
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+    
     .button {
-      display: inline-block;
-      background: #4F46E5;
+      background-color: #3b82f6;
       color: white;
-      padding: 10px 20px;
-      border-radius: 4px;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      font-weight: bold;
       text-decoration: none;
-      font-weight: 500;
+      transition: background-color 0.2s;
     }
+    
     .button:hover {
-      background: #3730A3;
-      text-decoration: none;
+      background-color: #2563eb;
+    }
+    
+    .check-me {
+      background-color: #10b981;
+    }
+    
+    .check-me:hover {
+      background-color: #059669;
+    }
+    
+    .frame-info {
+      margin-top: 4rem;
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+    }
+    
+    .frame-info h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: #3b82f6;
+    }
+    
+    .frame-info p {
+      text-align: left;
+      margin-bottom: 1rem;
+    }
+    
+    code {
+      background-color: rgba(0, 0, 0, 0.3);
+      padding: 0.2rem 0.4rem;
+      border-radius: 0.25rem;
+      font-family: monospace;
     }
   </style>
 </head>
 <body>
-  <h1>Warplet Traders</h1>
-  
-  <div class="highlight">
-    <h2>Top Warplet Traders on BASE</h2>
-    <p>This app shows the top traders among the people you follow on Warpcast, based on their earnings using Warplet (Warpcast's built-in wallet).</p>
-    <div class="actions">
-      <a href="/clean-frame.html" class="button">View Frame</a>
-      <a href="https://warpcast.com/~/compose?text=https://warplet-traders.vercel.app/clean-frame.html" class="button">Share on Warpcast</a>
+  <div class="container">
+    <h1>Warplet Top Traders</h1>
+    <p>See which traders are making the most with their Warplet</p>
+    
+    <div class="trader-row">
+      <div class="rank">1</div>
+      <div class="username">@thcradio</div>
+      <div class="earnings">$3,580</div>
+      <div class="token">BTC</div>
+    </div>
+    
+    <div class="trader-row">
+      <div class="rank">2</div>
+      <div class="username">@wakaflocka</div>
+      <div class="earnings">$2,940</div>
+      <div class="token">USDC</div>
+    </div>
+    
+    <div class="trader-row">
+      <div class="rank">3</div>
+      <div class="username">@chrislarsc.eth</div>
+      <div class="earnings">$2,450</div>
+      <div class="token">ETH</div>
+    </div>
+    
+    <div class="trader-row">
+      <div class="rank">4</div>
+      <div class="username">@hellno.eth</div>
+      <div class="earnings">$1,840</div>
+      <div class="token">DEGEN</div>
+    </div>
+    
+    <div class="trader-row">
+      <div class="rank">5</div>
+      <div class="username">@karima</div>
+      <div class="earnings">$1,250</div>
+      <div class="token">ARB</div>
+    </div>
+    
+    <div class="buttons">
+      <a href="#" class="button">24h Data</a>
+      <a href="#" class="button">7d Data</a>
+      <a href="#" class="button">Share Results</a>
+      <a href="#" class="button check-me">Check My Follows</a>
+    </div>
+    
+    <div class="frame-info">
+      <h2>Frame Troubleshooting</h2>
+      <p>Having trouble with the frame buttons? Here are simplified versions to try:</p>
+      <ul>
+        <li><a href="/ultra-minimal-frame.html" style="color: #4ADE80;">Ultra Minimal Frame</a> - Uses external images instead of SVGs</li>
+        <li><a href="/debug-frame.html" style="color: #4ADE80;">Debug Frame</a> - For testing frame communication</li>
+      </ul>
+      <p>API endpoints available for testing:</p>
+      <ul>
+        <li><code>/api/vercel-minimal-frame</code> - Simplified API that uses external images</li>
+        <li><code>/api/frame-debug</code> - Logs detailed information about requests</li>
+      </ul>
     </div>
   </div>
-  
-  <div class="card">
-    <h2>How It Works</h2>
-    <p>The frame loads data about the top 5 earners among accounts you follow, showing:</p>
-    <ul>
-      <li>Username</li>
-      <li>Top token traded</li>
-      <li>Earnings (24h and 7d views available)</li>
-      <li>Trading volume</li>
-    </ul>
-    <p>You can view 24-hour or 7-day data, share results, and check who among your follows are the top traders.</p>
-  </div>
-  
-  <div class="card">
-    <h2>Features</h2>
-    <ul>
-      <li>24-hour and 7-day data views</li>
-      <li>Share results via Warpcast</li>
-      <li>"Check My Follows" to analyze your own follows</li>
-      <li>Real-time data from Dune Analytics</li>
-    </ul>
-  </div>
-  
-  <p>View the <a href="https://github.com/Judd515/warplet-traders">GitHub repository</a> for more details.</p>
 </body>
 </html>

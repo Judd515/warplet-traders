@@ -55,6 +55,7 @@ module.exports = (req, res) => {
   
   // Minimal frame handler - most basic implementation
   if (path === '/api/minimal-frame' || path === '/minimal-frame') {
+    console.log('[all-routes] Using minimal frame handler for path:', path);
     return minimalFrameHandler(req, res);
   }
   
