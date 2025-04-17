@@ -3,16 +3,55 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ultra Minimal Frame</title>
+  <title>Ultra Minimal Warplet Frame</title>
   
-  <!-- Absolutely minimal frame specification -->
+  <!-- API-based frame with post_url to the ultra-minimal API -->
   <meta property="fc:frame" content="vNext">
-  <meta property="fc:frame:image" content="https://placehold.co/1200x630/1e293b/FFFFFF?text=Ultra+Minimal+Frame">
-  <meta property="fc:frame:button:1" content="Click Me">
-  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api">
+  <meta property="fc:frame:image" content="https://i.imgur.com/JqPZsZ4.png">
+  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/ultra-minimal">
+  
+  <!-- Buttons that will trigger the post to the API -->
+  <meta property="fc:frame:button:1" content="View 24h Data">
+  <meta property="fc:frame:button:2" content="View 7d Data">
+  <meta property="fc:frame:button:3" content="Share Results">
+  
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background-color: #1e293b;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    p {
+      color: #94a3b8;
+      line-height: 1.6;
+    }
+    .note {
+      margin-top: 3rem;
+      background-color: rgba(59, 130, 246, 0.1);
+      padding: 1rem;
+      border-radius: 0.5rem;
+    }
+  </style>
 </head>
 <body>
-  <h1>Ultra Minimal Frame</h1>
-  <p>This frame uses the absolute minimum required code to test the API endpoint.</p>
+  <h1>Ultra Minimal Warplet Traders API</h1>
+  <p>Testing ultra-minimal API approach with zero dependencies</p>
+  
+  <div class="note">
+    <p><strong>Note:</strong> This frame uses an ultra-minimal API that has:</p>
+    <ul>
+      <li>No external API calls</li>
+      <li>No database lookups</li>
+      <li>Minimal error handling</li>
+      <li>Pre-rendered static HTML</li>
+    </ul>
+    <p>This approach is designed to avoid any potential issues with the API.</p>
+  </div>
 </body>
 </html>

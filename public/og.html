@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OG Image Generator</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: white;
+    }
+    #canvas {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas" width="1200" height="630"></canvas>
+  
+  <script>
+    // Create a simple OG image
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Background
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(0, 0, 1200, 630);
+    
+    // Title
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 72px system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Warplet Top Traders', 600, 270);
+    
+    // Subtitle
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = '36px system-ui, sans-serif';
+    ctx.fillText('See who\'s making the most with their Warplet', 600, 340);
+    
+    // Data points
+    ctx.fillStyle = '#3b82f6';
+    ctx.beginPath();
+    ctx.arc(300, 450, 15, 0, Math.PI * 2);
+    ctx.fill();
+    
+    ctx.fillStyle = '#10b981';
+    ctx.beginPath();
+    ctx.arc(450, 430, 15, 0, Math.PI * 2);
+    ctx.fill();
+    
+    ctx.fillStyle = '#f59e0b';
+    ctx.beginPath();
+    ctx.arc(600, 410, 15, 0, Math.PI * 2);
+    ctx.fill();
+    
+    ctx.fillStyle = '#ef4444';
+    ctx.beginPath();
+    ctx.arc(750, 460, 15, 0, Math.PI * 2);
+    ctx.fill();
+    
+    ctx.fillStyle = '#8b5cf6';
+    ctx.beginPath();
+    ctx.arc(900, 440, 15, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Line connecting points
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(300, 450);
+    ctx.lineTo(450, 430);
+    ctx.lineTo(600, 410);
+    ctx.lineTo(750, 460);
+    ctx.lineTo(900, 440);
+    ctx.stroke();
+    
+    // Convert to PNG data URL for downloading
+    const dataUrl = canvas.toDataURL('image/png');
+    
+    // Add download link
+    const downloadLink = document.createElement('a');
+    downloadLink.href = dataUrl;
+    downloadLink.download = 'og-image.png';
+    downloadLink.textContent = 'Download OG Image';
+    downloadLink.style.display = 'block';
+    downloadLink.style.margin = '20px';
+    document.body.appendChild(downloadLink);
+    
+    // Show preview
+    const img = document.createElement('img');
+    img.src = dataUrl;
+    img.style.width = '600px';
+    img.style.margin = '20px';
+    img.style.border = '1px solid #ccc';
+    document.body.appendChild(img);
+  </script>
+</body>
+</html>
