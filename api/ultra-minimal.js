@@ -45,7 +45,7 @@ function generateMainFrame() {
 <head>
   <meta charset="utf-8">
   <meta property="fc:frame" content="vNext">
-  <meta property="fc:frame:image" content="https://i.imgur.com/JqPZsZ4.png">
+  <meta property="fc:frame:image" content="https://warplet-traders.vercel.app/images/main.png">
   <meta property="fc:frame:button:1" content="View 24h Data">
   <meta property="fc:frame:button:2" content="View 7d Data">
   <meta property="fc:frame:button:3" content="Share Results">
@@ -66,7 +66,7 @@ function generate24hFrame() {
 <head>
   <meta charset="utf-8">
   <meta property="fc:frame" content="vNext">
-  <meta property="fc:frame:image" content="https://i.imgur.com/U8Aavdu.png">
+  <meta property="fc:frame:image" content="https://warplet-traders.vercel.app/images/24h.png">
   <meta property="fc:frame:button:1" content="Back to Main">
   <meta property="fc:frame:button:2" content="View 7d Data">
   <meta property="fc:frame:button:3" content="Share Results">
@@ -87,7 +87,7 @@ function generate7dFrame() {
 <head>
   <meta charset="utf-8">
   <meta property="fc:frame" content="vNext">
-  <meta property="fc:frame:image" content="https://i.imgur.com/YcK03k0.png">
+  <meta property="fc:frame:image" content="https://warplet-traders.vercel.app/images/7d.png">
   <meta property="fc:frame:button:1" content="View 24h Data">
   <meta property="fc:frame:button:2" content="Back to Main">
   <meta property="fc:frame:button:3" content="Share Results">
@@ -110,7 +110,7 @@ function generateShareFrame() {
 <head>
   <meta charset="utf-8">
   <meta property="fc:frame" content="vNext">
-  <meta property="fc:frame:image" content="https://i.imgur.com/JqPZsZ4.png">
+  <meta property="fc:frame:image" content="https://warplet-traders.vercel.app/images/main.png">
   <meta property="fc:frame:button:1" content="View 24h Data">
   <meta property="fc:frame:button:2" content="View 7d Data">
   <meta property="fc:frame:button:3" content="Open Share URL">
@@ -133,7 +133,7 @@ function generateErrorFrame() {
 <head>
   <meta charset="utf-8">
   <meta property="fc:frame" content="vNext">
-  <meta property="fc:frame:image" content="https://i.imgur.com/JqPZsZ4.png">
+  <meta property="fc:frame:image" content="https://warplet-traders.vercel.app/images/main.png">
   <meta property="fc:frame:button:1" content="Try Again">
   <meta property="og:title" content="Error">
   <meta property="og:description" content="Something went wrong">

@@ -2,355 +2,38 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Warpcast Frame API Tester</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Test Frame</title>
+  
+  <!-- Basic frame with super minimal API for testing -->
+  <meta property="fc:frame" content="vNext">
+  <meta property="fc:frame:image" content="https://warplet-traders.vercel.app/images/main.png">
+  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/ultra-minimal">
+  
+  <meta property="fc:frame:button:1" content="View 24h Data">
+  <meta property="fc:frame:button:2" content="View 7d Data">
+  <meta property="fc:frame:button:3" content="Share Results">
   
   <style>
     body {
-      font-family: sans-serif;
+      font-family: system-ui, sans-serif;
       background-color: #1e293b;
       color: white;
       padding: 20px;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
+      text-align: center;
     }
-    
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      width: 100%;
-    }
-    
     h1 {
       font-size: 2.5rem;
       margin-bottom: 1rem;
-      text-align: center;
-      color: #4ADE80;
     }
-    
     p {
-      margin-bottom: 2rem;
       color: #94a3b8;
       line-height: 1.6;
-    }
-    
-    .panel {
-      background-color: rgba(255, 255, 255, 0.1);
-      padding: 20px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-    }
-    
-    .panel h2 {
-      margin-top: 0;
-      color: #3b82f6;
-    }
-    
-    .form-group {
-      margin-bottom: 20px;
-    }
-    
-    label {
-      display: block;
-      margin-bottom: 5px;
-      color: #e2e8f0;
-    }
-    
-    input, select {
-      width: 100%;
-      padding: 10px;
-      border-radius: 4px;
-      border: 1px solid #4b5563;
-      background-color: #1e293b;
-      color: white;
-      font-size: 16px;
-    }
-    
-    button {
-      background-color: #3b82f6;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 4px;
-      font-size: 16px;
-      cursor: pointer;
-      margin-right: 10px;
-    }
-    
-    button:hover {
-      background-color: #2563eb;
-    }
-    
-    .btn-group {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 20px;
-    }
-    
-    .result {
-      background-color: #0f172a;
-      padding: 15px;
-      border-radius: 4px;
-      font-family: monospace;
-      white-space: pre-wrap;
-      overflow-x: auto;
-      min-height: 200px;
-    }
-    
-    .error {
-      color: #ef4444;
-    }
-    
-    .success {
-      color: #4ADE80;
-    }
-    
-    .actions {
-      display: flex;
-      gap: 10px;
-      margin: 20px 0;
-    }
-    
-    .tab-container {
-      margin-top: 20px;
-    }
-    
-    .tab-buttons {
-      display: flex;
-      border-bottom: 1px solid #4b5563;
-      margin-bottom: 20px;
-    }
-    
-    .tab-button {
-      padding: 10px 20px;
-      background-color: transparent;
-      border: none;
-      border-bottom: 2px solid transparent;
-      color: #94a3b8;
-      cursor: pointer;
-    }
-    
-    .tab-button.active {
-      border-bottom: 2px solid #3b82f6;
-      color: white;
-    }
-    
-    .tab-content {
-      display: none;
-    }
-    
-    .tab-content.active {
-      display: block;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Warpcast Frame API Tester</h1>
-    <p>Use this tool to test your frame API endpoints and diagnose communication issues</p>
-    
-    <div class="panel">
-      <h2>API Request</h2>
-      
-      <div class="form-group">
-        <label for="api-url">API Endpoint URL</label>
-        <input type="text" id="api-url" value="https://warplet-traders.vercel.app/api" placeholder="https://your-project.vercel.app/api">
-      </div>
-      
-      <div class="form-group">
-        <label for="button-index">Button Index</label>
-        <select id="button-index">
-          <option value="1">Button 1 (24h Data)</option>
-          <option value="2">Button 2 (7d Data)</option>
-          <option value="3">Button 3 (Share Results)</option>
-          <option value="4">Button 4 (Check My Follows)</option>
-        </select>
-      </div>
-      
-      <div class="actions">
-        <button id="send-request">Send Request</button>
-        <button id="clear-results">Clear Results</button>
-      </div>
-    </div>
-    
-    <div class="tab-container">
-      <div class="tab-buttons">
-        <button class="tab-button active" data-tab="result-tab">Response</button>
-        <button class="tab-button" data-tab="parsed-tab">Parsed Frame</button>
-        <button class="tab-button" data-tab="request-tab">Request Details</button>
-      </div>
-      
-      <div class="tab-content active" id="result-tab">
-        <h2>API Response</h2>
-        <pre id="api-result" class="result">No request sent yet.</pre>
-      </div>
-      
-      <div class="tab-content" id="parsed-tab">
-        <h2>Parsed Frame Data</h2>
-        <div id="frame-parser-result">
-          <p>No frame data parsed yet.</p>
-        </div>
-      </div>
-      
-      <div class="tab-content" id="request-tab">
-        <h2>Request Details</h2>
-        <pre id="request-details" class="result">No request sent yet.</pre>
-      </div>
-    </div>
-  </div>
-  
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const apiUrlInput = document.getElementById('api-url');
-      const buttonIndexSelect = document.getElementById('button-index');
-      const sendRequestBtn = document.getElementById('send-request');
-      const clearResultsBtn = document.getElementById('clear-results');
-      const apiResult = document.getElementById('api-result');
-      const requestDetails = document.getElementById('request-details');
-      const frameParserResult = document.getElementById('frame-parser-result');
-      
-      // Tab functionality
-      const tabButtons = document.querySelectorAll('.tab-button');
-      const tabContents = document.querySelectorAll('.tab-content');
-      
-      tabButtons.forEach(button => {
-        button.addEventListener('click', () => {
-          const tabId = button.getAttribute('data-tab');
-          
-          // Update active button
-          tabButtons.forEach(btn => btn.classList.remove('active'));
-          button.classList.add('active');
-          
-          // Show tab content
-          tabContents.forEach(content => content.classList.remove('active'));
-          document.getElementById(tabId).classList.add('active');
-        });
-      });
-      
-      // Send request
-      sendRequestBtn.addEventListener('click', async () => {
-        const apiUrl = apiUrlInput.value.trim();
-        const buttonIndex = buttonIndexSelect.value;
-        
-        if (!apiUrl) {
-          apiResult.textContent = 'Please enter an API URL';
-          apiResult.classList.add('error');
-          return;
-        }
-        
-        // Create the frame payload
-        const payload = {
-          untrustedData: {
-            buttonIndex: parseInt(buttonIndex),
-            fid: 12915, // Example FID
-            timestamp: Date.now()
-          }
-        };
-        
-        // Display request details
-        requestDetails.textContent = JSON.stringify(payload, null, 2);
-        
-        try {
-          apiResult.textContent = 'Sending request...';
-          apiResult.classList.remove('error', 'success');
-          
-          // Make the request
-          const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(payload)
-          });
-          
-          // Handle redirect response
-          if (response.redirected) {
-            apiResult.textContent = `Redirected to: ${response.url}`;
-            apiResult.classList.add('success');
-            
-            frameParserResult.innerHTML = `
-              <p class="success">Redirect detected!</p>
-              <p>The frame redirected to:</p>
-              <code>${response.url}</code>
-              <p>This is likely a share action that opens the Warpcast composer.</p>
-            `;
-            return;
-          }
-          
-          // Get response text
-          const text = await response.text();
-          apiResult.textContent = text;
-          
-          if (response.ok) {
-            apiResult.classList.add('success');
-            
-            // Try to parse frame metadata
-            try {
-              parseFrameHtml(text);
-            } catch (error) {
-              frameParserResult.innerHTML = `<p class="error">Error parsing frame HTML: ${error.message}</p>`;
-            }
-          } else {
-            apiResult.classList.add('error');
-            frameParserResult.innerHTML = `<p class="error">API returned status: ${response.status} ${response.statusText}</p>`;
-          }
-        } catch (error) {
-          apiResult.textContent = `Error: ${error.message}`;
-          apiResult.classList.add('error');
-          frameParserResult.innerHTML = `<p class="error">${error.message}</p>`;
-        }
-      });
-      
-      // Clear results
-      clearResultsBtn.addEventListener('click', () => {
-        apiResult.textContent = 'Results cleared.';
-        apiResult.classList.remove('error', 'success');
-        requestDetails.textContent = 'No request sent yet.';
-        frameParserResult.innerHTML = '<p>No frame data parsed yet.</p>';
-      });
-      
-      // Function to parse frame HTML and extract metadata
-      function parseFrameHtml(html) {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-        
-        // Extract frame metadata
-        const frameMetaTags = Array.from(doc.querySelectorAll('meta[property^="fc:"]'));
-        
-        if (frameMetaTags.length === 0) {
-          frameParserResult.innerHTML = '<p class="error">No frame meta tags found in the response.</p>';
-          return;
-        }
-        
-        // Create HTML to display the extracted metadata
-        let metadataHtml = '<div class="panel">';
-        metadataHtml += '<h3>Frame Metadata</h3>';
-        metadataHtml += '<ul>';
-        
-        frameMetaTags.forEach(tag => {
-          const property = tag.getAttribute('property');
-          const content = tag.getAttribute('content');
-          
-          metadataHtml += `<li><strong>${property}:</strong> ${content}</li>`;
-        });
-        
-        metadataHtml += '</ul>';
-        
-        // Extract image
-        const imageUrl = doc.querySelector('meta[property="fc:frame:image"]')?.getAttribute('content');
-        
-        if (imageUrl) {
-          metadataHtml += '<h3>Frame Image Preview</h3>';
-          metadataHtml += `<img src="${imageUrl}" alt="Frame Image" style="max-width: 100%; max-height: 300px; object-fit: contain; border: 1px solid #4b5563; border-radius: 4px;">`;
-        }
-        
-        metadataHtml += '</div>';
-        
-        frameParserResult.innerHTML = metadataHtml;
-      }
-    });
-  </script>
+  <h1>API Test Frame</h1>
+  <p>Simple test frame for API functionality</p>
 </body>
 </html>
