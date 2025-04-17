@@ -3,58 +3,34 @@
  * This is a workaround for the Vercel Hobby plan's 12 serverless function limit
  */
 
-module.exports = (req, res) => {
-  // Extract the path from the request
+// Export the handler function for Vercel
+module.exports = function handler(req, res) {
+  // Parse the request path to determine which handler to use
   const path = req.url.split('?')[0];
-  console.log(`Request received for path: ${path}`);
   
-  // Handle different routes based on the path
-  if (path === '/api/health' || path === '/health') {
+  if (path.includes('/api/health')) {
     return handleHealth(req, res);
-  }
-  
-  if (path === '/api/frame-action' || path === '/frame-action') {
-    // Import and use our dedicated frame-action handler if available
-    try {
-      const frameActionHandler = require('./frame-action');
-      return frameActionHandler(req, res);
-    } catch (e) {
-      console.log('Error importing frame-action handler, using fallback:', e.message);
-      return handleFrame(req, res);
-    }
-  }
-  
-  if (path === '/api/minimal' || path === '/minimal') {
-    try {
-      const minimalHandler = require('./minimal');
-      return minimalHandler(req, res);
-    } catch (e) {
-      console.log('Error importing minimal handler, using fallback:', e.message);
-      return handleMinimal(req, res);
-    }
-  }
-  
-  if (path === '/api/edge' || path === '/edge') {
-    return handleEdge(req, res);
-  }
-  
-  if (path === '/api/direct-html' || path === '/direct-html') {
+  } else if (path.includes('/api/direct-html')) {
     return handleDirectHtml(req, res);
+  } else if (path.includes('/api/edge')) {
+    // Edge functions need to be deployed separately
+    return res.status(200).send('This should be handled by an edge function');
+  } else if (path.includes('/api/minimal')) {
+    return handleMinimal(req, res);
+  } else if (path.includes('/api/frame')) {
+    return handleFrame(req, res);
+  } else {
+    // Default to the frame handler for the base API route
+    return handleFrame(req, res);
   }
-  
-  // Default handler
-  return handleFrame(req, res);
 };
 
 /**
  * Health check handler
  */
 function handleHealth(req, res) {
-  return res.status(200).json({
-    status: 'ok',
-    timestamp: new Date().toISOString(),
-    message: 'Warplet Traders API is running'
-  });
+  res.setHeader('Content-Type', 'text/plain');
+  return res.status(200).send('Health check OK');
 }
 
 /**
@@ -62,157 +38,70 @@ function handleHealth(req, res) {
  */
 function handleFrame(req, res) {
   try {
-    console.log('Frame action request received');
-    console.log('Request body:', JSON.stringify(req.body));
+    // Set CORS headers
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Content-Type', 'text/html');
     
-    // Get button index from request if available
-    let buttonIndex = 1; // Default to 24h view
+    // Determine what to show based on the button clicked
+    const buttonIndex = req.body?.untrustedData?.buttonIndex || 0;
     
-    console.log('Detailed request body:', JSON.stringify(req.body, null, 2));
+    // Change the image based on which button was clicked
+    let imageText = "Main+Frame";
+    let mainText = "Warplet Top Traders";
     
-    // Check all possible locations for the button index in Warpcast's request format
-    // Format 1: New Warpcast format with deeply nested untrustedData
-    if (req.body && req.body.untrustedData && req.body.untrustedData.buttonIndex) {
-      buttonIndex = parseInt(req.body.untrustedData.buttonIndex, 10);
-      console.log('Found buttonIndex in untrustedData:', buttonIndex);
-    } 
-    // Format 2: Direct buttonIndex property
-    else if (req.body && req.body.buttonIndex) {
-      buttonIndex = parseInt(req.body.buttonIndex, 10);
-      console.log('Found direct buttonIndex:', buttonIndex);
-    }
-    // Format 3: Nested in trustedData.messageBytes structure
-    else if (req.body && req.body.trustedData && req.body.trustedData.messageBytes) {
-      try {
-        const messageData = JSON.parse(Buffer.from(req.body.trustedData.messageBytes, 'base64').toString('utf8'));
-        console.log('Decoded messageBytes:', JSON.stringify(messageData));
-        if (messageData && messageData.buttonIndex) {
-          buttonIndex = parseInt(messageData.buttonIndex, 10);
-          console.log('Found buttonIndex in messageBytes:', buttonIndex);
-        }
-      } catch (e) {
-        console.log('Error decoding messageBytes:', e.message);
-      }
-    }
-    // Format 4: Handle raw string payload
-    else if (req.method === 'POST') {
-      console.log('POST data received, inspecting for buttonIndex');
-      console.log('Headers:', JSON.stringify(req.headers));
-      
-      // Try to parse request body in different ways
-      if (typeof req.body === 'string') {
-        try {
-          const parsedBody = JSON.parse(req.body);
-          console.log('Parsed body from string:', JSON.stringify(parsedBody));
-          
-          // Check in all possible locations
-          if (parsedBody.buttonIndex) {
-            buttonIndex = parseInt(parsedBody.buttonIndex, 10);
-            console.log('Found buttonIndex in parsed string:', buttonIndex);
-          } else if (parsedBody.untrustedData && parsedBody.untrustedData.buttonIndex) {
-            buttonIndex = parseInt(parsedBody.untrustedData.buttonIndex, 10);
-            console.log('Found buttonIndex in untrustedData of parsed string:', buttonIndex);
-          }
-        } catch (parseError) {
-          console.log('Failed to parse body as JSON:', parseError.message);
-        }
-      }
+    if (buttonIndex === 1) {
+      imageText = "24h+Data+View";
+      mainText = "24-Hour Top Traders";
+    } else if (buttonIndex === 2) {
+      imageText = "7d+Data+View";
+      mainText = "7-Day Top Traders";
+    } else if (buttonIndex === 3) {
+      imageText = "Share+View";
+      mainText = "Share Results";
     }
     
-    console.log('Final buttonIndex being used:', buttonIndex);
+    // Generate a frame HTML response
+    const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta property="fc:frame" content="vNext">
+  <meta property="fc:frame:image" content="https://placehold.co/1200x630/1e293b/FFFFFF?text=${imageText}">
+  <meta property="fc:frame:button:1" content="24h Data">
+  <meta property="fc:frame:button:2" content="7d Data">
+  <meta property="fc:frame:button:3" content="Share">
+  <meta property="fc:frame:button:4" content="Check My Follows">
+  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api">
+</head>
+<body>
+  <h1>${mainText}</h1>
+  <p>Viewing data from the All Routes handler</p>
+</body>
+</html>
+    `;
     
-    // Determine timeframe based on button
-    let timeframe = '24h';
-    if (buttonIndex === 2) {
-      timeframe = '7d';
-    }
-    
-    // Handle share action (button 3)
-    if (buttonIndex === 3) {
-      // Special share view - simplified image URL for better Warpcast compatibility
-      return res.status(200).send(`
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <meta property="fc:frame" content="vNext" />
-            <meta property="fc:frame:image" content="https://warplet-traders.vercel.app/og.png" />
-            <meta property="fc:frame:button:1" content="View Top Traders" />
-            <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/all-routes" />
-          </head>
-          <body>
-            <p>Share this with your followers!</p>
-          </body>
-        </html>
-      `);
-    }
-    
-    // Fixed sample data with no dependencies
-    const sampleData = [
-      { username: "thcradio", topToken: "BTC", pnl: timeframe === '24h' ? 76 : 34 },
-      { username: "wakaflocka", topToken: "USDC", pnl: timeframe === '24h' ? -39 : -12 },
-      { username: "hellno.eth", topToken: "DEGEN", pnl: timeframe === '24h' ? 49 : 22 },
-      { username: "karima", topToken: "ARB", pnl: timeframe === '24h' ? -55 : -28 },
-      { username: "chrislarsc.eth", topToken: "ETH", pnl: timeframe === '24h' ? -63 : -15 }
-    ];
-      
-    // Generate HTML rows for traders
-    const tradersHtml = sampleData.map((trader, index) => {
-      const pnlValue = trader.pnl;
-      const pnlColor = pnlValue >= 0 ? 'green' : 'red';
-      const pnlSign = pnlValue >= 0 ? '+' : '';
-      const pnlFormatted = `${pnlSign}${pnlValue}%`;
-      
-      return `
-        <div style="display:flex; margin-bottom:8px; align-items:center;">
-          <div style="width:20px; margin-right:8px;">${index + 1}.</div>
-          <div style="flex-grow:1; font-weight:bold;">${trader.username}</div>
-          <div style="width:70px; text-align:right; color:${pnlColor};">${pnlFormatted}</div>
-          <div style="width:60px; text-align:right; margin-left:8px; font-size:0.8em; color:#888;">${trader.topToken}</div>
-        </div>
-      `;
-    }).join('');
-    
-    // Use a cleaner URL format for better Warpcast compatibility
-    // While we track the timeframe in the server, we'll use a simpler image URL
-    const staticImageUrl = `https://warplet-traders.vercel.app/og.png`;
-    
-    // Return the complete HTML with a simplified image URL
-    return res.status(200).send(`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <meta property="fc:frame" content="vNext" />
-          <meta property="fc:frame:image" content="${staticImageUrl}" />
-          <meta property="fc:frame:button:1" content="24 Hours" />
-          <meta property="fc:frame:button:2" content="7 Days" />
-          <meta property="fc:frame:button:3" content="Share Results" />
-          <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/all-routes" />
-        </head>
-        <body>
-          <h1>Top Warplet Traders</h1>
-          <div>Timeframe: ${timeframe === '24h' ? '24 Hours' : '7 Days'}</div>
-          <div>${tradersHtml}</div>
-        </body>
-      </html>
-    `);
+    // Return the HTML frame
+    return res.status(200).send(html);
   } catch (error) {
-    console.error('Error in frame action:', error);
+    // Fallback HTML response
+    const fallbackHtml = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta property="fc:frame" content="vNext">
+  <meta property="fc:frame:image" content="https://placehold.co/1200x630/1e293b/FFFFFF?text=Fallback+Frame">
+  <meta property="fc:frame:button:1" content="Retry">
+  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api">
+</head>
+<body>
+  <h1>Fallback Response</h1>
+  <p>Error occurred but the frame is still working</p>
+</body>
+</html>
+    `;
     
-    // Return error frame with simple image URL
-    return res.status(200).send(`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <meta property="fc:frame" content="vNext" />
-          <meta property="fc:frame:image" content="https://warplet-traders.vercel.app/og.png" />
-          <meta property="fc:frame:button:1" content="Try Again" />
-          <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/all-routes" />
-        </head>
-        <body>
-          <p>An error occurred. Please try again.</p>
-        </body>
-      </html>
-    `);
+    // Always return a 200 status even for errors
+    return res.status(200).send(fallbackHtml);
   }
 }
 
@@ -220,184 +109,102 @@ function handleFrame(req, res) {
  * Minimal handler
  */
 function handleMinimal(req, res) {
-  // Static HTML with Farcaster Frame metadata
-  const html = `<!DOCTYPE html>
+  try {
+    // Set CORS headers
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Content-Type', 'text/html');
+    
+    // Super simple frame HTML with no logic
+    const html = `
+<!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Top Warplet Traders</title>
-    <meta property="fc:frame" content="vNext" />
-    <meta property="fc:frame:image" content="https://warplet-traders.vercel.app/og.png?v=20250415&t=${Date.now()}" />
-    <meta property="fc:frame:button:1" content="24 Hours" />
-    <meta property="fc:frame:button:2" content="7 Days" />
-    <meta property="fc:frame:button:3" content="Share Results" />
-    <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/all-routes" />
-  </head>
-  <body>
-    <h1>Top Warplet Traders</h1>
-    <p>Timeframe: 24 Hours</p>
-    <ul>
-      <li>1. thcradio (BTC): +76%</li>
-      <li>2. hellno.eth (DEGEN): +49%</li>
-      <li>3. wakaflocka (USDC): -39%</li>
-      <li>4. karima (ARB): -55%</li>
-      <li>5. chrislarsc.eth (ETH): -63%</li>
-    </ul>
-  </body>
-</html>`;
-
-  // Return simple HTML response
-  res.statusCode = 200;
-  return res.end(html);
-}
-
-/**
- * Edge API handler
- */
-function handleEdge(req, res) {
-  // HTML with Farcaster Frame metadata
-  const html = `<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Top Warplet Traders</title>
-    <meta property="fc:frame" content="vNext" />
-    <meta property="fc:frame:image" content="https://warplet-traders.vercel.app/og.png?v=20250415&t=${Date.now()}" />
-    <meta property="fc:frame:button:1" content="24 Hours" />
-    <meta property="fc:frame:button:2" content="7 Days" />
-    <meta property="fc:frame:button:3" content="Share Results" />
-    <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/all-routes" />
-    <style>
-      body { font-family: sans-serif; color: #333; }
-      ul { list-style-type: none; padding: 0; }
-      li { margin: 10px 0; padding: 5px; }
-      .green { color: green; }
-      .red { color: red; }
-    </style>
-  </head>
-  <body>
-    <h1>Top Warplet Traders</h1>
-    <p>Timeframe: 24 Hours</p>
-    <ul>
-      <li>1. thcradio (BTC): <span class="green">+76%</span></li>
-      <li>2. hellno.eth (DEGEN): <span class="green">+49%</span></li>
-      <li>3. wakaflocka (USDC): <span class="red">-39%</span></li>
-      <li>4. karima (ARB): <span class="red">-55%</span></li>
-      <li>5. chrislarsc.eth (ETH): <span class="red">-63%</span></li>
-    </ul>
-  </body>
-</html>`;
-
-  // Return HTML response
-  res.setHeader('Content-Type', 'text/html');
-  res.statusCode = 200;
-  return res.end(html);
+<head>
+  <meta property="fc:frame" content="vNext">
+  <meta property="fc:frame:image" content="https://placehold.co/1200x630/1e293b/FFFFFF?text=Minimal+Frame">
+  <meta property="fc:frame:button:1" content="Action Button">
+  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/minimal">
+</head>
+<body>
+  <h1>Minimal Frame</h1>
+</body>
+</html>
+    `;
+    
+    return res.status(200).send(html);
+  } catch (error) {
+    // Plain text fallback
+    res.setHeader('Content-Type', 'text/plain');
+    return res.status(200).send('Minimal API is working despite an error');
+  }
 }
 
 /**
  * Direct HTML handler
  */
 function handleDirectHtml(req, res) {
-  // Set content type
-  res.setHeader('Content-Type', 'text/html');
-  
-  // Create HTML directly
-  const html = `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Top Warplet Traders</title>
-        
-        <!-- Farcaster Frame Tags -->
-        <meta property="fc:frame" content="vNext" />
-        <meta property="fc:frame:image" content="https://warplet-traders.vercel.app/og.png?v=20250415&t=${Date.now()}" />
-        <meta property="fc:frame:button:1" content="24 Hours" />
-        <meta property="fc:frame:button:2" content="7 Days" />
-        <meta property="fc:frame:button:3" content="Share Results" />
-        <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/all-routes" />
-        
-        <style>
-          body {
-            font-family: sans-serif;
-            background-color: #1e293b;
-            color: white;
-            padding: 20px;
-            margin: 0;
-          }
-          h1 {
-            font-size: 24px;
-            margin-bottom: 16px;
-          }
-          .trader-row {
-            display: flex;
-            margin-bottom: 8px;
-            align-items: center;
-          }
-          .rank {
-            width: 20px;
-            margin-right: 8px;
-          }
-          .username {
-            flex-grow: 1;
-            font-weight: bold;
-          }
-          .pnl {
-            width: 70px;
-            text-align: right;
-          }
-          .token {
-            width: 60px;
-            text-align: right;
-            margin-left: 8px;
-            font-size: 0.8em;
-            color: #888;
-          }
-        </style>
-      </head>
-      <body>
-        <h1>Top Warplet Traders</h1>
-        <div style="color: #94a3b8; margin-bottom: 20px;">Timeframe: 24 Hours</div>
-        
-        <div class="trader-row">
-          <div class="rank">1.</div>
-          <div class="username">thcradio</div>
-          <div class="pnl" style="color: green;">+76%</div>
-          <div class="token">BTC</div>
-        </div>
-        
-        <div class="trader-row">
-          <div class="rank">2.</div>
-          <div class="username">hellno.eth</div>
-          <div class="pnl" style="color: green;">+49%</div>
-          <div class="token">DEGEN</div>
-        </div>
-        
-        <div class="trader-row">
-          <div class="rank">3.</div>
-          <div class="username">wakaflocka</div>
-          <div class="pnl" style="color: red;">-39%</div>
-          <div class="token">USDC</div>
-        </div>
-        
-        <div class="trader-row">
-          <div class="rank">4.</div>
-          <div class="username">karima</div>
-          <div class="pnl" style="color: red;">-55%</div>
-          <div class="token">ARB</div>
-        </div>
-        
-        <div class="trader-row">
-          <div class="rank">5.</div>
-          <div class="username">chrislarsc.eth</div>
-          <div class="pnl" style="color: red;">-63%</div>
-          <div class="token">ETH</div>
-        </div>
-      </body>
-    </html>
-  `;
-  
-  // Send HTML
-  res.status(200).send(html);
+  try {
+    // Set CORS headers
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Content-Type', 'text/html');
+    
+    // Determine what to show based on the button clicked
+    const buttonIndex = req.body?.untrustedData?.buttonIndex || 0;
+    
+    // Change the image based on which button was clicked
+    let imageText = "Direct+HTML+Frame";
+    let mainText = "Direct HTML Response";
+    
+    if (buttonIndex === 1) {
+      imageText = "24h+Data+View";
+      mainText = "24-Hour Data View";
+    } else if (buttonIndex === 2) {
+      imageText = "7d+Data+View";
+      mainText = "7-Day Data View";
+    } else if (buttonIndex === 3) {
+      imageText = "Share+View";
+      mainText = "Share View";
+    }
+    
+    // Generate a frame HTML response
+    const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta property="fc:frame" content="vNext">
+  <meta property="fc:frame:image" content="https://placehold.co/1200x630/1e293b/FFFFFF?text=${imageText}">
+  <meta property="fc:frame:button:1" content="24h Data">
+  <meta property="fc:frame:button:2" content="7d Data">
+  <meta property="fc:frame:button:3" content="Share">
+  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/direct-html">
+</head>
+<body>
+  <h1>${mainText}</h1>
+  <p>This response was generated by the all-routes handler</p>
+</body>
+</html>
+    `;
+    
+    // Return the HTML frame
+    return res.status(200).send(html);
+  } catch (error) {
+    // Fallback HTML response
+    const fallbackHtml = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta property="fc:frame" content="vNext">
+  <meta property="fc:frame:image" content="https://placehold.co/1200x630/1e293b/FFFFFF?text=Fallback+Frame">
+  <meta property="fc:frame:button:1" content="Retry">
+  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/direct-html">
+</head>
+<body>
+  <h1>Fallback Response</h1>
+  <p>Error in direct HTML handler, but still working</p>
+</body>
+</html>
+    `;
+    
+    // Always return a 200 status even for errors
+    return res.status(200).send(fallbackHtml);
+  }
 }
