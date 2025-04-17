@@ -3,18 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Direct POST Frame</title>
+  <title>Direct HTML Frame</title>
   
-  <!-- Frame with direct POST URL -->
+  <!-- Static frame with direct links to other static HTML files instead of API -->
   <meta property="fc:frame" content="vNext">
-  <meta property="fc:frame:image" content="https://warplet-traders.vercel.app/images/frame-main.svg">
-  
-  <!-- This is the key part - the post_url that enables in-frame updates -->
-  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/ultra-minimal">
+  <meta property="fc:frame:image" content="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjMwIiBmaWxsPSIjMWUyOTNiIi8+CiAgPHRleHQgeD0iNjAwIiB5PSIzMTUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+V2FycGxldCBUb3AgVHJhZGVyczwvdGV4dD4KPC9zdmc+">
   
   <meta property="fc:frame:button:1" content="View 24h Data">
+  <meta property="fc:frame:button:1:action" content="link">
+  <meta property="fc:frame:button:1:target" content="https://warplet-traders.vercel.app/direct-24h.html">
+  
   <meta property="fc:frame:button:2" content="View 7d Data">
+  <meta property="fc:frame:button:2:action" content="link">
+  <meta property="fc:frame:button:2:target" content="https://warplet-traders.vercel.app/direct-7d.html">
+  
   <meta property="fc:frame:button:3" content="Share Results">
+  <meta property="fc:frame:button:3:action" content="link">
+  <meta property="fc:frame:button:3:target" content="https://warpcast.com/~/compose?text=Top%20Warplet%20Earners%20(7d)%0A%0A1.%20%40thcradio%20(BTC)%3A%20%243%2C580%20%2F%20%2442.5K%20volume%0A2.%20%40wakaflocka%20(USDC)%3A%20%242%2C940%20%2F%20%2438.7K%20volume%0A3.%20%40chrislarsc.eth%20(ETH)%3A%20%242%2C450%20%2F%20%2431.2K%20volume%0A4.%20%40hellno.eth%20(DEGEN)%3A%20%241%2C840%20%2F%20%2424.6K%20volume%0A5.%20%40karima%20(ARB)%3A%20%241%2C250%20%2F%20%2418.9K%20volume%0A%0Ahttps%3A%2F%2Fwarplet-traders.vercel.app">
   
   <style>
     body {
@@ -32,23 +37,21 @@
       color: #94a3b8;
       line-height: 1.6;
     }
-    .feature {
+    .warning {
       margin-top: 2rem;
       padding: 1rem;
-      background-color: rgba(59, 130, 246, 0.1);
+      background-color: rgba(244, 63, 94, 0.1);
       border-radius: 0.5rem;
-      text-align: left;
     }
   </style>
 </head>
 <body>
   <h1>Warplet Top Traders</h1>
-  <p>See which traders are making the most with their Warplet</p>
+  <p>See who's making the most with their Warplet</p>
   
-  <div class="feature">
-    <h2>In-Frame Updates</h2>
-    <p>This version uses POST requests to update data within the same frame, without navigating to new pages.</p>
-    <p>When you click a button, the frame should update with new content rather than opening a new page.</p>
+  <div class="warning">
+    <p><strong>Note:</strong> This frame uses direct HTML links as a fallback approach.</p>
+    <p>Buttons will open new pages rather than updating in-frame, but this approach maximizes compatibility.</p>
   </div>
 </body>
 </html>

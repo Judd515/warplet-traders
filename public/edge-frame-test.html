@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edge Runtime Frame</title>
+  
+  <!-- Frame using Vercel Edge Runtime -->
+  <meta property="fc:frame" content="vNext">
+  <meta property="fc:frame:image" content="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjMwIiBmaWxsPSIjMWUyOTNiIi8+CiAgPHRleHQgeD0iNjAwIiB5PSIzMTUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+V2FycGxldCBUb3AgVHJhZGVyczwvdGV4dD4KPC9zdmc+">
+  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/edge-frame">
+  
+  <meta property="fc:frame:button:1" content="View 24h Data">
+  <meta property="fc:frame:button:2" content="View 7d Data">
+  <meta property="fc:frame:button:3" content="Share Results">
+  
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background-color: #1e293b;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    p {
+      color: #94a3b8;
+      line-height: 1.6;
+    }
+    .info {
+      margin-top: 2rem;
+      padding: 1rem;
+      background-color: rgba(20, 184, 166, 0.1);
+      border-radius: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Edge Runtime Frame</h1>
+  <p>Using Vercel Edge Runtime for better compatibility</p>
+  
+  <div class="info">
+    <p><strong>How it works:</strong> This frame uses Vercel's Edge Runtime instead of Node.js serverless functions.</p>
+    <p>Edge functions run closer to users, have different limitations, and may handle frame requests better.</p>
+    <p>This approach also uses the simplest possible request parsing to minimize error sources.</p>
+  </div>
+</body>
+</html>
