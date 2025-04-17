@@ -16,7 +16,7 @@ export default function handler(req, res) {
     return res.status(200).end();
   }
   
-  // For GET requests, show the typical main screen (buttons will be configured correctly)
+  // For GET requests, show the main screen with all four buttons
   if (req.method === 'GET') {
     return res.status(200).send(getFrameHtml('main'));
   }
