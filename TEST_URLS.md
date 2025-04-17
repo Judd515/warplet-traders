@@ -1,38 +1,31 @@
 # Warplet Traders Test URLs
 
-## Latest Solutions (In-Frame Updates)
+## FINAL SOLUTION - ALL-IN-ONE APPROACH
+Complete solution in a single file with no dependencies:
+- **Entry Point:** https://warplet-traders.vercel.app/one-file-test.html
+- **API Endpoint:** https://warplet-traders.vercel.app/api/one-file-frame
 
-### NEW: Edge Runtime Frame
-Uses Vercel Edge Runtime instead of Node.js runtime for better compatibility:
+## Previous Solutions (In-Frame Updates)
+
+### Edge Runtime Frame
+Uses Vercel Edge Runtime instead of Node.js runtime:
 - **Entry Point:** https://warplet-traders.vercel.app/edge-frame-test.html
 - **API Endpoint:** https://warplet-traders.vercel.app/api/edge-frame
 
-### NEW: Debug Frame
-Logs detailed information about requests to help diagnose issues:
+### Debug Frame
+Logs detailed information about requests:
 - **Entry Point:** https://warplet-traders.vercel.app/debug-frame.html
 - **API Endpoint:** https://warplet-traders.vercel.app/api/frame-debug
+
+### Base64 Image Approach
+Uses base64-encoded SVG images:
+- **Entry Point:** https://warplet-traders.vercel.app/base64-test.html
+- **API Endpoint:** https://warplet-traders.vercel.app/api/base64
 
 ### Ultra-Simple Frame
 Simple implementation with minimal processing:
 - **Entry Point:** https://warplet-traders.vercel.app/simple-frame-test.html
 - **API Endpoint:** https://warplet-traders.vercel.app/api/simple-frame
-
-## Previous API-Based Solutions
-
-### Base64 Image Approach
-Uses base64-encoded SVG images to avoid remote URL loading:
-- **Entry Point:** https://warplet-traders.vercel.app/base64-test.html
-- **API Endpoint:** https://warplet-traders.vercel.app/api/base64
-
-### Minimal Headers Approach
-Uses only essential frame headers:
-- **Entry Point:** https://warplet-traders.vercel.app/minimal-headers.html
-- **API Endpoint:** https://warplet-traders.vercel.app/api/minimal-headers
-
-### Basic PNG Image Approach
-Uses direct hosted PNG images:
-- **Entry Point:** https://warplet-traders.vercel.app/api-test.html
-- **API Endpoint:** https://warplet-traders.vercel.app/api/ultra-minimal
 
 ## Static Frame Solution (Works but opens new pages)
 These URLs use direct link-based navigation with no API dependencies:
@@ -43,20 +36,19 @@ These URLs use direct link-based navigation with no API dependencies:
 
 ## Testing Priority
 
-1. **Try first:** Edge Runtime Frame - https://warplet-traders.vercel.app/edge-frame-test.html
-   - Uses Vercel Edge Runtime which has different characteristics than Node.js
-   - Extremely simple request handling with minimal error surface
-   - Base64 SVG images for reliable display
+1. **TRY THIS ONE:** All-in-One Frame - https://warplet-traders.vercel.app/one-file-test.html
+   - Completely standalone implementation in a single file
+   - No dependencies or external resources
+   - Direct SVG generation and base64 encoding
+   - Minimal code with fewer points of failure
 
-2. **Try second:** Debug Frame - https://warplet-traders.vercel.app/debug-frame.html
-   - This will help us understand the request format that Warpcast is sending
-   - Logs detailed information about the request to help diagnose issues
-
-3. **If still having issues:** Keep trying other approaches in order
+2. **If it doesn't work:** Use the static frame solution as a fallback
+   - Static solution will open new pages instead of updating in-frame
+   - But at least it works reliably with Warpcast
 
 ## Development Testing
 When testing locally, use:
 
+- **All-in-One:** http://localhost:5000/one-file-test.html
 - **Edge Runtime:** http://localhost:5000/edge-frame-test.html
 - **Debug Frame:** http://localhost:5000/debug-frame.html
-- **Simple Frame:** http://localhost:5000/simple-frame-test.html

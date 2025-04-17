@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>One-File Frame Implementation</title>
+  
+  <!-- Frame using single-file implementation -->
+  <meta property="fc:frame" content="vNext">
+  <meta property="fc:frame:image" content="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgICAgIDxyZWN0IHdpZHRoPSIxMjAwIiBoZWlnaHQ9IjYzMCIgZmlsbD0iIzFlMjkzYiIvPgogICAgICA8dGV4dCB4PSI2MDAiIHk9IjMxNSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjYwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjZmZmZmZmIj5XYXJwbGV0IFRvcCBUcmFkZXJzPC90ZXh0Pgo8L3N2Zz4=">
+  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/one-file-frame">
+  
+  <meta property="fc:frame:button:1" content="View 24h Data">
+  <meta property="fc:frame:button:2" content="View 7d Data">
+  <meta property="fc:frame:button:3" content="Share Results">
+  
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background-color: #1e293b;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    p {
+      color: #94a3b8;
+      line-height: 1.6;
+    }
+    .all-in-one {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background-color: rgba(99, 102, 241, 0.1);
+      border-radius: 0.75rem;
+      border: 1px solid rgba(99, 102, 241, 0.2);
+    }
+    ul {
+      text-align: left;
+      color: #94a3b8;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>All-in-One Frame</h1>
+  <p>Single file implementation with no dependencies</p>
+  
+  <div class="all-in-one">
+    <p><strong>This approach:</strong></p>
+    <ul>
+      <li>Uses a completely standalone implementation</li>
+      <li>Combines all logic in one serverless function</li>
+      <li>Minimizes complexity and potential points of failure</li>
+      <li>Uses direct SVG generation and base64 encoding</li>
+      <li>Eliminates all external dependencies</li>
+    </ul>
+  </div>
+</body>
+</html>
