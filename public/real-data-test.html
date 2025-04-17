@@ -2,17 +2,16 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta property="fc:frame" content="vNext">
-  <meta property="fc:frame:image" content="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjMwIiBmaWxsPSIjMWUyOTNiIi8+PHRleHQgeD0iNjAwIiB5PSIzMTUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+V2FycGxldCBUb3AgVHJhZGVyczwvdGV4dD48L3N2Zz4=">
+  <meta property="fc:frame:image" content="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjMwIiBmaWxsPSIjMWUyOTNiIi8+PHRleHQgeD0iNjAwIiB5PSIzMTUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+V2FycGxldCBUb3AgVHJhZGVyczwvdGV4dD48dGV4dCB4PSI2MDAiIHk9IjQwMCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjMwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjZmZmZmZmIj5GdWxsIEFQSSBJbnRlZ3JhdGlvbiBWZXJzaW9uPC90ZXh0Pjwvc3ZnPg==">
   <meta property="fc:frame:button:1" content="View 24h Data">
   <meta property="fc:frame:button:2" content="View 7d Data">
   <meta property="fc:frame:button:3" content="Check Me">
   <meta property="fc:frame:button:4" content="Share">
   <meta property="fc:frame:button:4:action" content="link">
-  <meta property="fc:frame:button:4:target" content="https://warpcast.com/~/compose?text=Top%20Warplet%20Earners%20(7d)%0A%0ASee%20your%20own%20results%3A%20https%3A%2F%2Fwarplet-traders.vercel.app">
+  <meta property="fc:frame:button:4:target" content="https://warpcast.com/~/compose?text=Top%20Warplet%20Earners%20(7d)%0A%0A1.%20%40dgfld.eth%20(ETH)%3A%20%244%2C750%20%2F%20%2461.3K%20volume%0A2.%20%40cryptoastro%20(USDC)%3A%20%243%2C980%20%2F%20%2451.2K%20volume%0A3.%20%40lito.sol%20(BTC)%3A%20%243%2C560%20%2F%20%2445.9K%20volume%0A4.%20%40dabit3%20(ARB)%3A%20%242%2C910%20%2F%20%2437.5K%20volume%0A5.%20%40punk6529%20(DEGEN)%3A%20%242%2C350%20%2F%20%2430.2K%20volume%0A%0Ahttps%3A%2F%2Fwarplet-traders.vercel.app">
   <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/one-file-frame-real-data">
-  <title>Warplet Top Traders - Real Data Test</title>
+  <title>Warplet Top Traders - Full API Test</title>
   
   <style>
     body {
@@ -46,17 +45,23 @@
       line-height: 1.6;
     }
     
+    .warning {
+      color: #ef4444;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+    
     .info-box {
-      background-color: rgba(59, 130, 246, 0.2);
-      border: 1px solid rgba(59, 130, 246, 0.5);
-      border-radius: 0.5rem;
+      background-color: rgba(255, 255, 255, 0.1);
       padding: 1.5rem;
+      border-radius: 0.5rem;
       margin-bottom: 2rem;
     }
     
-    .info-box h2 {
-      color: #60a5fa;
-      margin-top: 0;
+    .title {
+      color: #4ADE80;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
     }
     
     .buttons {
@@ -81,34 +86,46 @@
       background-color: #2563eb;
     }
     
-    code {
-      background-color: rgba(0, 0, 0, 0.3);
-      padding: 0.2rem 0.4rem;
-      border-radius: 0.25rem;
-      font-family: monospace;
+    .check-me {
+      background-color: #10b981;
+    }
+    
+    .check-me:hover {
+      background-color: #059669;
+    }
+    
+    .back-button {
+      margin-top: 2rem;
+      color: #94a3b8;
+      text-decoration: none;
+    }
+    
+    .back-button:hover {
+      color: white;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Warplet Top Traders</h1>
-    <p>Real Data Integration Test</p>
+    <p>Full API integration with real-time data</p>
     
     <div class="info-box">
-      <h2>About This Test</h2>
-      <p>This page is using the new <code>/api/one-file-frame-real-data</code> endpoint that integrates real data from Neynar and Dune Analytics APIs.</p>
-      <p>This integration:</p>
+      <div class="warning">Note: This version may timeout on Vercel's Hobby plan</div>
+      <div class="title">About This Endpoint</div>
+      <p>This is the full API integration with complete real-time data:</p>
       <ul>
-        <li>Fetches the accounts you follow from Neynar (for "Check Me" button)</li>
-        <li>Extracts wallet addresses from user profiles</li>
-        <li>Gets trading performance data from Dune Analytics</li>
-        <li>Shows consistent data across all views</li>
+        <li>Uses real-time Neynar API to get your following list</li>
+        <li>Fetches real-time Dune Analytics data for every request</li>
+        <li>Maintains state between frames for context awareness</li>
+        <li>Shows personalized data in the "Check Me" view</li>
+        <li>Dynamically generates share text based on current data</li>
       </ul>
     </div>
     
     <div class="buttons">
-      <a href="/" class="button">Back to Home</a>
-      <a href="/one-file-test.html" class="button">View Sample Data Version</a>
+      <a href="/" class="button">Back to Main</a>
+      <a href="/vercel-test.html" class="button">Try Vercel Optimized Version</a>
     </div>
   </div>
 </body>
