@@ -25,11 +25,11 @@ export default function handler(req, res) {
   ];
   
   const traders7d = [
-    { name: '@dwr.eth', token: 'ETH', earnings: '8,750', volume: '112.3K' },
-    { name: '@gm', token: 'BTC', earnings: '7,230', volume: '95.8K' },
-    { name: '@mgnr.eth', token: 'ETH', earnings: '6,185', volume: '83.2K' },
-    { name: '@jesse.eth', token: 'USDC', earnings: '5,490', volume: '71.6K' },
-    { name: '@balajis', token: 'DEGEN', earnings: '4,320', volume: '58.7K' }
+    { name: '@thcradio', token: 'BTC', earnings: '12,580', volume: '144.5K' },
+    { name: '@wakaflocka', token: 'USDC', earnings: '10,940', volume: '128.7K' },
+    { name: '@chrislarsc.eth', token: 'ETH', earnings: '9,450', volume: '112.2K' },
+    { name: '@hellno.eth', token: 'DEGEN', earnings: '7,840', volume: '94.6K' },
+    { name: '@karima', token: 'ARB', earnings: '6,250', volume: '82.9K' }
   ];
   
   // For GET requests, show the main frame
@@ -70,7 +70,7 @@ export default function handler(req, res) {
       } else if (buttonIndex === 3) {
         return res.status(200).send(getFrameHtml('check-me', traders24h, fid));
       } else if (buttonIndex === 4) {
-        const shareUrl = "https://warpcast.com/~/compose?text=Top%20Warplet%20Earners%20(7d)%0A%0A1.%20%40dwr.eth%20(ETH)%3A%20%248%2C750%20%2F%20%24112.3K%20volume%0A2.%20%40gm%20(BTC)%3A%20%247%2C230%20%2F%20%2495.8K%20volume%0A3.%20%40mgnr.eth%20(ETH)%3A%20%246%2C185%20%2F%20%2483.2K%20volume%0A4.%20%40jesse.eth%20(USDC)%3A%20%245%2C490%20%2F%20%2471.6K%20volume%0A5.%20%40balajis%20(DEGEN)%3A%20%244%2C320%20%2F%20%2458.7K%20volume%0A%0Ahttps%3A%2F%2Fwarplet-traders.vercel.app";
+        const shareUrl = "https://warpcast.com/~/compose?text=Top%20Warplet%20Earners%20(7d)%0A%0A1.%20%40thcradio%20(BTC)%3A%20%2412%2C580%20%2F%20%24144.5K%20volume%0A2.%20%40wakaflocka%20(USDC)%3A%20%2410%2C940%20%2F%20%24128.7K%20volume%0A3.%20%40chrislarsc.eth%20(ETH)%3A%20%249%2C450%20%2F%20%24112.2K%20volume%0A4.%20%40hellno.eth%20(DEGEN)%3A%20%247%2C840%20%2F%20%2494.6K%20volume%0A5.%20%40karima%20(ARB)%3A%20%246%2C250%20%2F%20%2482.9K%20volume%0A%0Ahttps%3A%2F%2Fwarplet-traders.vercel.app";
         return res.status(200).send(getRedirectHtml(shareUrl));
       } else {
         return res.status(200).send(getFrameHtml('main'));
@@ -189,7 +189,7 @@ function getFrameHtml(frameType, traders = [], fid = 0) {
   const imageBase64 = `data:image/svg+xml;base64,${base64(imageContent)}`;
   
   // Define share URL for the share button
-  const shareUrl = "https://warpcast.com/~/compose?text=Top%20Warplet%20Earners%20(7d)%0A%0A1.%20%40dwr.eth%20(ETH)%3A%20%248%2C750%20%2F%20%24112.3K%20volume%0A2.%20%40gm%20(BTC)%3A%20%247%2C230%20%2F%20%2495.8K%20volume%0A3.%20%40mgnr.eth%20(ETH)%3A%20%246%2C185%20%2F%20%2483.2K%20volume%0A4.%20%40jesse.eth%20(USDC)%3A%20%245%2C490%20%2F%20%2471.6K%20volume%0A5.%20%40balajis%20(DEGEN)%3A%20%244%2C320%20%2F%20%2458.7K%20volume%0A%0Ahttps%3A%2F%2Fwarplet-traders.vercel.app";
+  const shareUrl = "https://warpcast.com/~/compose?text=Top%20Warplet%20Earners%20(7d)%0A%0A1.%20%40thcradio%20(BTC)%3A%20%2412%2C580%20%2F%20%24144.5K%20volume%0A2.%20%40wakaflocka%20(USDC)%3A%20%2410%2C940%20%2F%20%24128.7K%20volume%0A3.%20%40chrislarsc.eth%20(ETH)%3A%20%249%2C450%20%2F%20%24112.2K%20volume%0A4.%20%40hellno.eth%20(DEGEN)%3A%20%247%2C840%20%2F%20%2494.6K%20volume%0A5.%20%40karima%20(ARB)%3A%20%246%2C250%20%2F%20%2482.9K%20volume%0A%0Ahttps%3A%2F%2Fwarplet-traders.vercel.app";
   
   // Define button labels
   let button1, button2, button3, button4;
