@@ -52,8 +52,11 @@ export default function handler(req, res) {
       } else if (buttonIndex === 2) {
         frameType = 'week';
       } else if (buttonIndex === 3) {
-        // Button 3 is for sharing, let's return a special redirect frame
-        return res.status(200).send(getRedirectFrame());
+        // Button 3 is for sharing
+        frameType = 'share';
+      } else if (buttonIndex === 4) {
+        // Button 4 is for "Check Me" functionality
+        frameType = 'check-me';
       } else {
         frameType = 'main';
       }
@@ -151,36 +154,65 @@ function getFrameHtml(frameType) {
   `;
   }
   
+  // Mock data for Check Me functionality (to be replaced with actual user data)
+  const userTopTraders24h = [
+    { name: '@user_follow1', token: 'ETH', earnings: '1,850', volume: '23.5K' },
+    { name: '@user_follow2', token: 'BTC', earnings: '1,620', volume: '19.8K' },
+    { name: '@user_follow3', token: 'USDC', earnings: '1,340', volume: '17.2K' },
+    { name: '@user_follow4', token: 'DEGEN', earnings: '980', volume: '12.4K' },
+    { name: '@user_follow5', token: 'ARB', earnings: '720', volume: '9.1K' }
+  ];
+  
+  const userTopTraders7d = [
+    { name: '@user_follow1', token: 'ETH', earnings: '2,750', volume: '34.2K' },
+    { name: '@user_follow2', token: 'BTC', earnings: '2,340', volume: '30.5K' },
+    { name: '@user_follow3', token: 'USDC', earnings: '1,980', volume: '25.6K' },
+    { name: '@user_follow4', token: 'DEGEN', earnings: '1,520', volume: '19.7K' },
+    { name: '@user_follow5', token: 'ARB', earnings: '1,190', volume: '15.3K' }
+  ];
+  
   // Frame-specific content
-  let imageContent, button1, button2, button3;
+  let imageContent, button1, button2, button3, button4;
   
   if (frameType === 'main') {
     imageContent = createSimpleSvg('Warplet Top Traders');
     button1 = 'View 24h Data';
     button2 = 'View 7d Data'; 
     button3 = 'Share Results';
+    button4 = 'Check Me';
   } else if (frameType === 'day') {
     imageContent = createTradersSvg('24h Top Traders', topTraders24h);
     button1 = 'Back to Main';
     button2 = 'View 7d Data';
     button3 = 'Share Results';
+    button4 = 'Check Me';
   } else if (frameType === 'week') {
     imageContent = createTradersSvg('7d Top Traders', topTraders7d);
     button1 = 'View 24h Data';
     button2 = 'Back to Main';
     button3 = 'Share Results';
+    button4 = 'Check Me';
   } else if (frameType === 'share') {
-    // This state is no longer needed but keeping for completeness
-    imageContent = createSimpleSvg('Share Results');
+    // Create a different SVG for share so it looks different
+    imageContent = createSimpleSvg('Share Top Traders');
     button1 = 'View 24h Data';
     button2 = 'View 7d Data';
+    button3 = 'Back to Main';
+    button4 = 'Check Me';
+  } else if (frameType === 'check-me') {
+    // Show the "Check Me" view with the user's follows
+    imageContent = createTradersSvg('Your Top Followed Traders (7d)', userTopTraders7d);
+    button1 = 'Back to Main';
+    button2 = 'Your 24h Data';
     button3 = 'Share Results';
+    button4 = 'View Global Data';
   } else {
     // Error frame
     imageContent = createSimpleSvg('Error Occurred');
     button1 = 'Try Again';
     button2 = '';
     button3 = '';
+    button4 = '';
   }
   
   // Generate base64 image string
@@ -208,6 +240,16 @@ function getFrameHtml(frameType) {
   
   if (button3) {
     html += `  <meta property="fc:frame:button:3" content="${button3}">\n`;
+  }
+  
+  if (button4) {
+    html += `  <meta property="fc:frame:button:4" content="${button4}">\n`;
+  }
+  
+  // Share URL for button 3
+  if (frameType === 'share') {
+    html += `  <meta property="fc:frame:button:3:action" content="post_redirect">\n`;
+    html += `  <meta property="fc:frame:button:3:target" content="${shareUrl}">\n`;
   }
   
   html += `</head>
