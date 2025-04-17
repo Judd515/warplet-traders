@@ -51,8 +51,10 @@ export default function handler(req, res) {
         frameType = 'day';
       } else if (buttonIndex === 2) {
         frameType = 'week';
+      } else if (buttonIndex === 3) {
+        // Button 3 is for sharing, let's return a special redirect frame
+        return res.status(200).send(getRedirectFrame());
       } else {
-        // For any other button (including 3), just show main
         frameType = 'main';
       }
       
@@ -121,38 +123,58 @@ function getFrameHtml(frameType) {
   // Share URL that will be used directly
   const shareUrl = "https://warpcast.com/~/compose?text=Top%20Warplet%20Earners%20(7d)%0A%0A1.%20%40thcradio%20(BTC)%3A%20%243%2C580%20%2F%20%2442.5K%20volume%0A2.%20%40wakaflocka%20(USDC)%3A%20%242%2C940%20%2F%20%2438.7K%20volume%0A3.%20%40chrislarsc.eth%20(ETH)%3A%20%242%2C450%20%2F%20%2431.2K%20volume%0A4.%20%40hellno.eth%20(DEGEN)%3A%20%241%2C840%20%2F%20%2424.6K%20volume%0A5.%20%40karima%20(ARB)%3A%20%241%2C250%20%2F%20%2418.9K%20volume%0A%0Ahttps%3A%2F%2Fwarplet-traders.vercel.app";
   
+  /**
+   * Generate a special redirect frame that immediately redirects to the share URL
+   */
+  function getRedirectFrame() {
+    return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="refresh" content="0;url=${shareUrl}">
+  <meta property="fc:frame" content="vNext">
+  <meta property="fc:frame:image" content="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjMwIiBmaWxsPSIjMWUyOTNiIi8+CiAgPHRleHQgeD0iNjAwIiB5PSIzMTUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+UmVkaXJlY3RpbmcgdG8gc2hhcmUuLi48L3RleHQ+Cjwvc3ZnPg==">
+  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/one-file-frame">
+  <meta property="fc:frame:button:1" content="View 24h Data">
+  <meta property="fc:frame:button:2" content="View 7d Data">
+  <meta property="fc:frame:button:3" content="Share Results">
+  <script>
+    window.location.href = "${shareUrl}";
+  </script>
+</head>
+<body>
+  <p>Redirecting to share URL...</p>
+  <p><a href="${shareUrl}">Click here if not redirected automatically</a></p>
+</body>
+</html>
+  `;
+  }
+  
   // Frame-specific content
-  let imageContent, button1, button2, button3, button3Action, button3Target;
+  let imageContent, button1, button2, button3;
   
   if (frameType === 'main') {
     imageContent = createSimpleSvg('Warplet Top Traders');
     button1 = 'View 24h Data';
     button2 = 'View 7d Data'; 
     button3 = 'Share Results';
-    button3Action = 'link';
-    button3Target = shareUrl;
   } else if (frameType === 'day') {
     imageContent = createTradersSvg('24h Top Traders', topTraders24h);
     button1 = 'Back to Main';
     button2 = 'View 7d Data';
     button3 = 'Share Results';
-    button3Action = 'link';
-    button3Target = shareUrl;
   } else if (frameType === 'week') {
     imageContent = createTradersSvg('7d Top Traders', topTraders7d);
     button1 = 'View 24h Data';
     button2 = 'Back to Main';
     button3 = 'Share Results';
-    button3Action = 'link';
-    button3Target = shareUrl;
   } else if (frameType === 'share') {
     // This state is no longer needed but keeping for completeness
     imageContent = createSimpleSvg('Share Results');
     button1 = 'View 24h Data';
     button2 = 'View 7d Data';
     button3 = 'Share Results';
-    button3Action = 'link';
-    button3Target = shareUrl;
   } else {
     // Error frame
     imageContent = createSimpleSvg('Error Occurred');
@@ -186,11 +208,6 @@ function getFrameHtml(frameType) {
   
   if (button3) {
     html += `  <meta property="fc:frame:button:3" content="${button3}">\n`;
-    
-    if (button3Action && button3Target) {
-      html += `  <meta property="fc:frame:button:3:action" content="${button3Action}">\n`;
-      html += `  <meta property="fc:frame:button:3:target" content="${button3Target}">\n`;
-    }
   }
   
   html += `</head>
