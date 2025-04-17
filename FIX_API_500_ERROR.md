@@ -1,66 +1,86 @@
-# Fixing the 500 Server Error in Vercel API Functions
+# Fixing Vercel API 500 Errors: Troubleshooting Guide
 
-We've identified the root issue: The API function at `/api` is returning a 500 Internal Server Error. This is why the frames aren't working properly. Let's fix this systematically.
+If you're seeing 500 (INTERNAL_SERVER_ERROR) errors with your Vercel API functions, here are systematic steps to troubleshoot and fix the issue:
 
-## Debugging and Fixing Steps
+## 1. Check Basic Functionality
 
-### 1. Simplified API Handler
+We've created an ultra-minimal API at `/api/index.js` that returns plain text. If this still returns a 500 error, the issue is likely with the Vercel configuration, not your code.
 
-The `api/index.js` file has been completely rewritten to be crash-proof:
-- Removed all potential error-causing code
-- Added try/catch blocks around everything
-- Simplified to return a static response
+## 2. Environment Variables
 
-This ultra-minimal version should not crash under any circumstances.
+Make sure all required environment variables are set in the Vercel project dashboard:
+- Go to Project Settings > Environment Variables
+- Verify that NEYNAR_API_KEY and DUNE_API_KEY are set
+- Check that DATABASE_URL is configured properly
 
-### 2. Testing with test-frame.html
+## 3. Vercel Configuration
 
-A minimal test frame was created at `public/test-frame.html`:
-- Only includes essential meta tags
-- Uses a placeholder.co image that's guaranteed to work
-- Has a single button for testing API communication
+We've added a `vercel.json` file that explicitly configures the serverless functions:
+- Reduces memory to 128MB (the minimum)
+- Sets a 10-second timeout
+- Ensures proper routing of API requests
 
-### 3. Vercel Function Debugging
+## 4. Test with Ultra-Minimal Frame
 
-After deploying these changes to Vercel:
+We've created `public/ultra-minimal.html` which uses the smallest possible frame code to test the API functionality. Visit this URL to test:
+```
+https://warplet-traders.vercel.app/ultra-minimal.html
+```
 
-1. Check if you can access `https://warplet-traders.vercel.app/api` directly in your browser
-   - If it returns HTML instead of a 500 error, the basic function is working
-   
-2. Check Vercel Function logs:
-   - Find the specific error that was causing the 500 response
-   - Common issues include:
-     - Missing environment variables (NEYNAR_API_KEY, etc.)
-     - References to Node.js modules not included in the deployment
-     - Memory limits exceeded
+## 5. Check Vercel Logs
 
-3. Test the frame at `https://warplet-traders.vercel.app/test-frame.html`
-   - If the button works, the API communication is fixed
+The most useful debugging information will be in the Vercel function logs:
+1. Go to your Vercel dashboard
+2. Navigate to the project
+3. Click on "Deployments"
+4. Select the latest deployment
+5. Click on "Functions"
+6. Look for the `/api` function and check its logs
 
-### 4. Missing Environment Variables
+## 6. Local Testing
 
-If the API is failing due to missing environment variables:
+If possible, test the API locally to confirm it works:
+```bash
+# Install Vercel CLI
+npm i -g vercel
 
-1. Log into your Vercel dashboard
-2. Select your project
-3. Go to Settings > Environment Variables
-4. Add any required variables:
-   - NEYNAR_API_KEY
-   - DUNE_API_KEY
-   - Any other required secrets
+# Login to Vercel
+vercel login
 
-### 5. Vercel Function Size Limits
+# Link to your project
+vercel link
 
-Vercel's Hobby plan has limits on function size:
-- Make sure dependencies are properly bundled
-- Avoid very large packages
-- Split complex logic into smaller functions
+# Pull environment variables
+vercel env pull
 
-## Next Steps
+# Run development server
+vercel dev
+```
 
-Once the minimal API is working:
-1. Gradually add back features one at a time
-2. Test after each addition to ensure it still works
-3. Check Vercel logs if any issues reappear
+## 7. Function Size
 
-The root issue was almost certainly in the API function, not in the frame HTML itself. By fixing the function, the frame buttons should start working correctly.
+Vercel has limits on function size. Try simplifying your function to see if that's the issue:
+- Remove unnecessary dependencies
+- Split into smaller functions
+- Use dynamic imports for large libraries
+
+## 8. Serverless vs Edge Functions
+
+Consider switching to edge functions if there are issues with the serverless environment:
+- Create a new API endpoint at `/api/edge.js`
+- Use edge-compatible code (simpler, fewer dependencies)
+- Export a function with the proper edge runtime annotation
+
+## 9. Alternative Solution
+
+If API functions continue to fail, consider using static HTML files with direct links between them:
+- See `public/static-frame.html` and related files for examples
+- This approach doesn't use APIs but loses the ability to refresh frame content in place
+
+## 10. Contact Vercel Support
+
+If all else fails, contact Vercel support with:
+- Function logs
+- Error messages
+- Deployment information
+- Minimal reproduction steps

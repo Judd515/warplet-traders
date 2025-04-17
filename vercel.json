@@ -1,40 +1,15 @@
 {
   "version": 2,
-  "buildCommand": "echo 'Skipping build step'",
-  "installCommand": "npm ci --omit=dev",
-  "outputDirectory": "public",
   "functions": {
-    "api/all-routes.js": {
-      "memory": 1024,
+    "api/**/*.js": {
+      "memory": 128,
       "maxDuration": 10
     }
   },
-  "rewrites": [
-    { "source": "/", "destination": "/index.html" },
-    { "source": "/api", "destination": "/api/all-routes.js" },
-    { "source": "/api/(.*)", "destination": "/api/all-routes.js" }
-  ],
-  "headers": [
+  "routes": [
     {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" },
-        { "key": "Access-Control-Allow-Origin", "value": "*" },
-        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS" },
-        { "key": "Access-Control-Allow-Headers", "value": "X-Requested-With, Content-Type, Accept" }
-      ]
-    },
-    {
-      "source": "/assets/(.*)",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
-      ]
+      "src": "/api(.*)",
+      "dest": "/api$1"
     }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  },
-  "github": {
-    "silent": true
-  }
+  ]
 }

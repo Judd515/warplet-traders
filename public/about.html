@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Warplet Traders</title>
+  
+  <!-- Static frame with direct navigation -->
+  <meta property="fc:frame" content="vNext">
+  <meta property="fc:frame:image" content="https://placehold.co/1200x630/1e293b/FFFFFF?text=About+Warplet+Traders">
+  
+  <!-- Direct action buttons -->
+  <meta property="fc:frame:button:1" content="View 24h Data">
+  <meta property="fc:frame:button:1:action" content="link"> 
+  <meta property="fc:frame:button:1:target" content="https://warplet-traders.vercel.app/static-24h.html">
+  
+  <meta property="fc:frame:button:2" content="View 7d Data">
+  <meta property="fc:frame:button:2:action" content="link">
+  <meta property="fc:frame:button:2:target" content="https://warplet-traders.vercel.app/static-7d.html">
+  
+  <meta property="fc:frame:button:3" content="Back to Main">
+  <meta property="fc:frame:button:3:action" content="link">
+  <meta property="fc:frame:button:3:target" content="https://warplet-traders.vercel.app/static-frame.html">
+  
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background-color: #1e293b;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    p {
+      color: #94a3b8;
+      line-height: 1.6;
+      max-width: 600px;
+      margin: 0 auto 1rem;
+    }
+    .info-section {
+      margin: 2rem auto;
+      max-width: 600px;
+      text-align: left;
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+    }
+    .info-section h2 {
+      margin-top: 0;
+      color: #3b82f6;
+      font-size: 1.5rem;
+    }
+    .note {
+      margin-top: 3rem;
+      background-color: rgba(59, 130, 246, 0.1);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>About Warplet Traders</h1>
+  <p>Track the top earners using Warpcast's built-in wallet</p>
+  
+  <div class="info-section">
+    <h2>What is Warplet Traders?</h2>
+    <p>Warplet Traders tracks and displays which Warpcast users are making the most earnings with their Warplet (Warpcast's built-in wallet) on the BASE blockchain.</p>
+    
+    <h2>How does it work?</h2>
+    <p>We analyze trading data from Dune Analytics and match it with social data from the Neynar API to show you who among your follows are the top earners.</p>
+    
+    <h2>What data is shown?</h2>
+    <p>We show the top 5 earners, their primary token, earnings amount, and trading volume over either 24-hour or 7-day periods.</p>
+    
+    <h2>How to use the frame?</h2>
+    <ul>
+      <li>Click "24h Data" to see earnings from the last 24 hours</li>
+      <li>Click "7d Data" to see earnings from the last 7 days</li>
+      <li>Click "Share Results" to share with your followers</li>
+    </ul>
+  </div>
+  
+  <div class="note">
+    <p><strong>Note:</strong> This is a static version of the frame that works without requiring an API.</p>
+    <p>In the future, we'll add personalized "Check My Follows" functionality.</p>
+  </div>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>24h Top Warplet Traders</title>
+  
+  <!-- Static frame with direct navigation -->
+  <meta property="fc:frame" content="vNext">
+  <meta property="fc:frame:image" content="https://placehold.co/1200x630/1e293b/FFFFFF?text=24h+Data">
+  
+  <!-- Direct action buttons -->
+  <meta property="fc:frame:button:1" content="Back to Main">
+  <meta property="fc:frame:button:1:action" content="link"> 
+  <meta property="fc:frame:button:1:target" content="https://warplet-traders.vercel.app/static-frame.html">
+  
+  <meta property="fc:frame:button:2" content="View 7d Data">
+  <meta property="fc:frame:button:2:action" content="link">
+  <meta property="fc:frame:button:2:target" content="https://warplet-traders.vercel.app/static-7d.html">
+  
+  <meta property="fc:frame:button:3" content="Share Results">
+  <meta property="fc:frame:button:3:action" content="link">
+  <meta property="fc:frame:button:3:target" content="https://warpcast.com/~/compose?text=Top%20Warplet%20Earners%20(24h)%0A%0A1.%20%40thcradio%20(BTC)%3A%20%241%2C360%20%2F%20%2415.3K%20volume%0A2.%20%40wakaflocka%20(USDC)%3A%20%24980%20%2F%20%2411.2K%20volume%0A3.%20%40chrislarsc.eth%20(ETH)%3A%20%24850%20%2F%20%249.8K%20volume%0A4.%20%40hellno.eth%20(DEGEN)%3A%20%24630%20%2F%20%247.5K%20volume%0A5.%20%40karima%20(ARB)%3A%20%24420%20%2F%20%245.2K%20volume%0A%0Ahttps%3A%2F%2Fwarplet-traders.vercel.app%2Fstatic-frame.html">
+  
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background-color: #1e293b;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    p {
+      color: #94a3b8;
+      line-height: 1.6;
+    }
+    .trader-list {
+      margin: 2rem auto;
+      max-width: 600px;
+      text-align: left;
+    }
+    .trader-item {
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 1rem;
+      margin-bottom: 0.5rem;
+      border-radius: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .trader-name {
+      font-weight: bold;
+    }
+    .trader-earnings {
+      color: #4ADE80;
+      font-weight: bold;
+    }
+    .trader-token {
+      color: #94a3b8;
+      font-size: 0.9rem;
+      margin-left: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>24h Top Warplet Traders</h1>
+  <p>Top earners over the last 24 hours</p>
+  
+  <div class="trader-list">
+    <div class="trader-item">
+      <div class="trader-name">1. @thcradio</div>
+      <div>
+        <span class="trader-earnings">$1,360</span>
+        <span class="trader-token">BTC</span>
+      </div>
+    </div>
+    
+    <div class="trader-item">
+      <div class="trader-name">2. @wakaflocka</div>
+      <div>
+        <span class="trader-earnings">$980</span>
+        <span class="trader-token">USDC</span>
+      </div>
+    </div>
+    
+    <div class="trader-item">
+      <div class="trader-name">3. @chrislarsc.eth</div>
+      <div>
+        <span class="trader-earnings">$850</span>
+        <span class="trader-token">ETH</span>
+      </div>
+    </div>
+    
+    <div class="trader-item">
+      <div class="trader-name">4. @hellno.eth</div>
+      <div>
+        <span class="trader-earnings">$630</span>
+        <span class="trader-token">DEGEN</span>
+      </div>
+    </div>
+    
+    <div class="trader-item">
+      <div class="trader-name">5. @karima</div>
+      <div>
+        <span class="trader-earnings">$420</span>
+        <span class="trader-token">ARB</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

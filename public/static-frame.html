@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Static Warplet Frame</title>
+  
+  <!-- Static frame with direct actions and no post_url -->
+  <meta property="fc:frame" content="vNext">
+  <meta property="fc:frame:image" content="https://placehold.co/1200x630/1e293b/FFFFFF?text=Warplet+Top+Traders">
+  
+  <!-- Direct action buttons that don't require an API -->
+  <meta property="fc:frame:button:1" content="View 24h Data">
+  <meta property="fc:frame:button:1:action" content="link"> 
+  <meta property="fc:frame:button:1:target" content="https://warplet-traders.vercel.app/static-24h.html">
+  
+  <meta property="fc:frame:button:2" content="View 7d Data">
+  <meta property="fc:frame:button:2:action" content="link">
+  <meta property="fc:frame:button:2:target" content="https://warplet-traders.vercel.app/static-7d.html">
+  
+  <meta property="fc:frame:button:3" content="Share Results">
+  <meta property="fc:frame:button:3:action" content="link">
+  <meta property="fc:frame:button:3:target" content="https://warpcast.com/~/compose?text=Top%20Warplet%20Earners%20(7d)%0A%0A1.%20%40thcradio%20(BTC)%3A%20%243%2C580%20%2F%20%2442.5K%20volume%0A2.%20%40wakaflocka%20(USDC)%3A%20%242%2C940%20%2F%20%2438.7K%20volume%0A3.%20%40chrislarsc.eth%20(ETH)%3A%20%242%2C450%20%2F%20%2431.2K%20volume%0A4.%20%40hellno.eth%20(DEGEN)%3A%20%241%2C840%20%2F%20%2424.6K%20volume%0A5.%20%40karima%20(ARB)%3A%20%241%2C250%20%2F%20%2418.9K%20volume%0A%0Ahttps%3A%2F%2Fwarplet-traders.vercel.app%2Fstatic-frame.html">
+  
+  <meta property="fc:frame:button:4" content="Learn More">
+  <meta property="fc:frame:button:4:action" content="link">
+  <meta property="fc:frame:button:4:target" content="https://warplet-traders.vercel.app/about.html">
+  
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background-color: #1e293b;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    p {
+      color: #94a3b8;
+      line-height: 1.6;
+    }
+    .note {
+      margin-top: 3rem;
+      background-color: rgba(59, 130, 246, 0.1);
+      padding: 1rem;
+      border-radius: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Warplet Top Traders</h1>
+  <p>See which traders are making the most with their Warplet</p>
+  
+  <div class="note">
+    <p><strong>Note:</strong> This is a static frame that uses direct links instead of an API.</p>
+    <p>Each button navigates to a different page without requiring a POST request to an API.</p>
+    <p>This approach works around any API issues that might be occurring.</p>
+  </div>
+</body>
+</html>
