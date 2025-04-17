@@ -17,9 +17,10 @@ export default function handler(req, res) {
     return res.status(200).end();
   }
   
-  // For GET requests, show the main screen
+  // For GET requests, show the main screen with default state (not in user mode)
   if (req.method === 'GET') {
-    return res.status(200).send(getFrameHtml('loading'));
+    const initialState = JSON.stringify({ userMode: false, fid: 0 });
+    return res.status(200).send(getFrameHtml('loading', initialState));
   }
   
   // For POST requests (button clicks), handle button actions
@@ -43,11 +44,30 @@ export default function handler(req, res) {
       
       console.log('Button clicked:', buttonIndex);
       
-      // Extract the current frame type and user's FID
+      // Extract the current frame type, user's FID, and context from the frame state
       const currentFrame = req.body?.untrustedData?.frameType || 'vNext';
       const fid = req.body?.untrustedData?.fid || 12915; // Default to your FID (12915)
+      const stateData = req.body?.untrustedData?.state || '{}';
       
-      console.log(`Processing request for FID ${fid} from frame ${currentFrame}`);
+      // Try to parse the state to get context
+      let context = {
+        userMode: false,  // If true, we're showing personalized data for the user
+        fid: fid,         // The user's FID that we're showing data for
+      };
+      
+      try {
+        const parsedState = JSON.parse(stateData);
+        if (parsedState.userMode !== undefined) {
+          context.userMode = parsedState.userMode;
+        }
+        if (parsedState.fid) {
+          context.fid = parsedState.fid;
+        }
+      } catch (e) {
+        console.log('Could not parse state data:', e);
+      }
+      
+      console.log(`Processing request for FID ${fid} from frame ${currentFrame}, context:`, context);
       
       // Handle share button (button 4) directly with a share link
       if (buttonIndex === 4 && currentFrame !== 'share') {
@@ -82,30 +102,35 @@ export default function handler(req, res) {
       // Determine which type of data to display based on button click
       let timeframe = '24h';
       let frameType = 'loading';
-      let userSpecific = false;
       
-      if (buttonIndex === 1) {
-        // Button 1: View 24h Data (global)
+      // Handle the "Check Me" button (button 3) - always use the requester's FID
+      if (buttonIndex === 3) {
+        // When user clicks "Check Me", we switch to user mode and use their FID
+        context.userMode = true;
+        context.fid = fid; // Use the current requester's FID
+        timeframe = '24h';  // Default to 24h view when checking
+        console.log(`Switching to user mode for FID ${fid}`);
+      }
+      // Handle time period buttons (1 and 2)
+      else if (buttonIndex === 1) {
+        // Button 1: View 24h Data (using current context - either user's data or global)
         timeframe = '24h';
-        frameType = 'loading';
-        userSpecific = false;
-      } else if (buttonIndex === 2) {
-        // Button 2: View 7d Data (global)
+        // Keep the current context (user mode or global)
+      } 
+      else if (buttonIndex === 2) {
+        // Button 2: View 7d Data (using current context - either user's data or global)
         timeframe = '7d';
-        frameType = 'loading';
-        userSpecific = false;
-      } else if (buttonIndex === 3) {
-        // Button 3: Check Me - load user's FID data
-        timeframe = '24h';
-        frameType = 'loading';
-        userSpecific = true;
+        // Keep the current context (user mode or global)
       }
       
-      // Show loading screen first
-      res.status(200).send(getLoadingFrameHtml(fid));
+      // Create updated state for next request
+      const newState = JSON.stringify(context);
       
-      // Process the data in the background
-      processUserData(fid, timeframe, userSpecific)
+      // Show loading screen first
+      res.status(200).send(getLoadingFrameHtml(fid, newState));
+      
+      // Process the data in the background - use the context to determine if user-specific
+      processUserData(context.fid, timeframe, context.userMode)
         .catch(error => {
           console.error('Error processing data:', error);
         });
@@ -113,12 +138,13 @@ export default function handler(req, res) {
       return;
     } catch (error) {
       console.error('Error handling frame action:', error);
-      return res.status(200).send(getFrameHtml('error'));
+      return res.status(200).send(getFrameHtml('error', JSON.stringify({ userMode: false, fid: 0 })));
     }
   }
   
-  // Default response for other methods
-  return res.status(200).send(getFrameHtml('main'));
+  // Default response for other methods - initialize with default state
+  const initialState = JSON.stringify({ userMode: false, fid: 0 });
+  return res.status(200).send(getFrameHtml('main', initialState));
 }
 
 /**
@@ -389,7 +415,7 @@ async function fetchTradingData(addresses, apiKey, timeframe = '24h') {
 /**
  * Generate a loading frame HTML
  */
-function getLoadingFrameHtml(fid) {
+function getLoadingFrameHtml(fid, state = '{}') {
   // Create a simple SVG for the loading screen
   const loadingSvg = `<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
     <rect width="1200" height="630" fill="#1e293b"/>
@@ -412,6 +438,7 @@ function getLoadingFrameHtml(fid) {
   <meta property="fc:frame" content="vNext">
   <meta property="fc:frame:image" content="data:image/svg+xml;base64,${base64Image}">
   <meta property="fc:frame:post_url" content="${postUrl}">
+  <meta property="fc:frame:state" content="${state}">
   <meta property="fc:frame:button:1" content="View 24h Data">
   <meta property="fc:frame:button:2" content="View 7d Data">
   <meta property="fc:frame:button:3" content="Check Me">
@@ -424,7 +451,7 @@ function getLoadingFrameHtml(fid) {
 /**
  * Generate frame HTML for a specific frame type
  */
-function getFrameHtml(frameType) {
+function getFrameHtml(frameType, state = '{}') {
   // Base SVG creator function for simple text
   const createSimpleSvg = (text) => {
     return `<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
@@ -513,6 +540,7 @@ function getFrameHtml(frameType) {
   <meta property="fc:frame" content="vNext">
   <meta property="fc:frame:image" content="${base64Image}">
   <meta property="fc:frame:post_url" content="${postUrl}">
+  <meta property="fc:frame:state" content="${state}">
   <meta property="fc:frame:button:1" content="${button1}">
 `;
 
