@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Base64 Image Frame</title>
+  
+  <!-- Frame with base64 image (no external URLs) -->
+  <meta property="fc:frame" content="vNext">
+  <meta property="fc:frame:image" content="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjMwIiBmaWxsPSIjMWUyOTNiIi8+CiAgPHRleHQgeD0iNjAwIiB5PSIzMTUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+V2FycGxldCBUb3AgVHJhZGVyczwvdGV4dD4KPC9zdmc+">
+  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/base64">
+  
+  <meta property="fc:frame:button:1" content="View 24h Data">
+  <meta property="fc:frame:button:2" content="View 7d Data">
+  <meta property="fc:frame:button:3" content="Share Results">
+  
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background-color: #1e293b;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    p {
+      color: #94a3b8;
+      line-height: 1.6;
+    }
+    .note {
+      margin-top: 2rem;
+      padding: 1rem;
+      background-color: rgba(59, 130, 246, 0.1);
+      border-radius: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Base64 Image Test</h1>
+  <p>Using base64-encoded SVG for maximum compatibility</p>
+  
+  <div class="note">
+    <p><strong>Note:</strong> This frame uses base64-encoded SVG images that don't require any external URL loading.</p>
+    <p>This approach avoids issues with image hosting services being blocked or images failing to load.</p>
+  </div>
+</body>
+</html>
