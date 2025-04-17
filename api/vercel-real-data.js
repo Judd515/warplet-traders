@@ -1,5 +1,6 @@
 /**
- * Simplified real-data implementation for Vercel
+ * Optimized real-data implementation for Vercel
+ * This version uses real API calls but optimizes for Vercel's limitations
  */
 
 const axios = require('axios');
@@ -16,14 +17,14 @@ export default function handler(req, res) {
     return res.status(200).end();
   }
   
-  // Simplified data array - consistent across all views for reliability
-  const traders = [
-    { name: '@dgfld.eth', token: 'ETH', earnings: '3,250', volume: '41.2K' },
-    { name: '@cryptoastro', token: 'USDC', earnings: '2,840', volume: '36.5K' },
-    { name: '@lito.sol', token: 'BTC', earnings: '2,140', volume: '27.3K' },
-    { name: '@dabit3', token: 'ARB', earnings: '1,780', volume: '22.9K' },
-    { name: '@punk6529', token: 'DEGEN', earnings: '1,520', volume: '19.4K' }
-  ];
+  // Check for required API keys
+  const neynarApiKey = process.env.NEYNAR_API_KEY;
+  const duneApiKey = process.env.DUNE_API_KEY;
+  
+  if (!neynarApiKey || !duneApiKey) {
+    console.error('Missing API keys. NEYNAR_API_KEY and DUNE_API_KEY must be set.');
+    return res.status(200).send(getFrameHtml('error', []));
+  }
   
   // For GET requests, show the main screen
   if (req.method === 'GET') {
