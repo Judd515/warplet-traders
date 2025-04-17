@@ -16,9 +16,9 @@ export default function handler(req, res) {
     return res.status(200).end();
   }
   
-  // For GET requests, return the entry frame HTML
+  // For GET requests, return the entry frame HTML with user's FID data
   if (req.method === 'GET') {
-    return res.status(200).send(getFrameHtml('main'));
+    return res.status(200).send(getFrameHtml('check-me'));
   }
   
   // For POST requests (button clicks), parse the button index and return appropriate frame
@@ -44,21 +44,108 @@ export default function handler(req, res) {
       
       console.log('Button clicked:', buttonIndex);
       
-      // Determine which frame to return based on button index
+      // Get the current frame type to help with context-sensitive buttons
+      const currentFrame = req.body?.untrustedData?.frameType || 'vNext';
+      
+      // Extract additional data from the request if needed
+      const fid = req.body?.untrustedData?.fid || null; // User's FID if available
+      
+      // Determine which frame to return based on button index and current context
       let frameType = 'main';
       
-      if (buttonIndex === 1) {
-        frameType = 'day';
-      } else if (buttonIndex === 2) {
-        frameType = 'week';
-      } else if (buttonIndex === 3) {
-        // Button 3 is for sharing
-        frameType = 'share';
-      } else if (buttonIndex === 4) {
-        // Button 4 is for "Check Me" functionality
-        frameType = 'check-me';
+      // Handle special case for the "Check Me" view where buttons have different meanings
+      if (currentFrame === 'check-me') {
+        if (buttonIndex === 1) {
+          // Back to Main from Check Me view
+          frameType = 'main';
+        } else if (buttonIndex === 2) {
+          // Your 24h Data button from Check Me view
+          frameType = 'check-me-24h';
+        } else if (buttonIndex === 3) {
+          // Share button from anywhere - use direct link approach
+          return res.status(200).send(`
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta property="fc:frame" content="vNext">
+  <meta property="fc:frame:image" content="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjMwIiBmaWxsPSIjMWUyOTNiIi8+CiAgPHRleHQgeD0iNjAwIiB5PSIzMTUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+U2hhcmluZyBUb3AgVHJhZGVyczwvdGV4dD4KPC9zdmc+">
+  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/one-file-frame">
+  <meta property="fc:frame:button:1" content="View 24h Data">
+  <meta property="fc:frame:button:2" content="View 7d Data">
+  <meta property="fc:frame:button:3" content="Open Share URL">
+  <meta property="fc:frame:button:3:action" content="link">
+  <meta property="fc:frame:button:3:target" content="https://warpcast.com/~/compose?text=Top%20Warplet%20Earners%20(7d)%0A%0A1.%20%40thcradio%20(BTC)%3A%20%243%2C580%20%2F%20%2442.5K%20volume%0A2.%20%40wakaflocka%20(USDC)%3A%20%242%2C940%20%2F%20%2438.7K%20volume%0A3.%20%40chrislarsc.eth%20(ETH)%3A%20%242%2C450%20%2F%20%2431.2K%20volume%0A4.%20%40hellno.eth%20(DEGEN)%3A%20%241%2C840%20%2F%20%2424.6K%20volume%0A5.%20%40karima%20(ARB)%3A%20%241%2C250%20%2F%20%2418.9K%20volume%0A%0Ahttps%3A%2F%2Fwarplet-traders.vercel.app">
+  <meta property="fc:frame:button:4" content="Check Me">
+</head>
+<body></body>
+</html>
+          `);
+        } else if (buttonIndex === 4) {
+          // View Global Data button from Check Me view
+          frameType = 'main';
+        }
+      } else if (currentFrame === 'check-me-24h') {
+        // Handling the "Your 24h Data" view navigation
+        if (buttonIndex === 1) {
+          frameType = 'check-me'; // Back to 7d Check Me view
+        } else if (buttonIndex === 2) {
+          frameType = 'main'; // Go to main view
+        } else if (buttonIndex === 3) {
+          // Share button - special handling
+          return res.status(200).send(`
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta property="fc:frame" content="vNext">
+  <meta property="fc:frame:image" content="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjMwIiBmaWxsPSIjMWUyOTNiIi8+CiAgPHRleHQgeD0iNjAwIiB5PSIzMTUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+U2hhcmluZyBUb3AgVHJhZGVyczwvdGV4dD4KPC9zdmc+">
+  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/one-file-frame">
+  <meta property="fc:frame:button:1" content="View 24h Data">
+  <meta property="fc:frame:button:2" content="View 7d Data">
+  <meta property="fc:frame:button:3" content="Open Share URL">
+  <meta property="fc:frame:button:3:action" content="link">
+  <meta property="fc:frame:button:3:target" content="https://warpcast.com/~/compose?text=Top%20Warplet%20Earners%20(7d)%0A%0A1.%20%40thcradio%20(BTC)%3A%20%243%2C580%20%2F%20%2442.5K%20volume%0A2.%20%40wakaflocka%20(USDC)%3A%20%242%2C940%20%2F%20%2438.7K%20volume%0A3.%20%40chrislarsc.eth%20(ETH)%3A%20%242%2C450%20%2F%20%2431.2K%20volume%0A4.%20%40hellno.eth%20(DEGEN)%3A%20%241%2C840%20%2F%20%2424.6K%20volume%0A5.%20%40karima%20(ARB)%3A%20%241%2C250%20%2F%20%2418.9K%20volume%0A%0Ahttps%3A%2F%2Fwarplet-traders.vercel.app">
+  <meta property="fc:frame:button:4" content="Check Me">
+</head>
+<body></body>
+</html>
+          `);
+        } else if (buttonIndex === 4) {
+          frameType = 'check-me'; // Go back to 7d Check Me view
+        }
       } else {
-        frameType = 'main';
+        // Standard navigation for main, day, week views
+        if (buttonIndex === 1) {
+          frameType = 'day';
+        } else if (buttonIndex === 2) {
+          frameType = 'week';
+        } else if (buttonIndex === 3) {
+          // Share button from anywhere - use direct link approach
+          return res.status(200).send(`
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta property="fc:frame" content="vNext">
+  <meta property="fc:frame:image" content="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjMwIiBmaWxsPSIjMWUyOTNiIi8+CiAgPHRleHQgeD0iNjAwIiB5PSIzMTUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+U2hhcmluZyBUb3AgVHJhZGVyczwvdGV4dD4KPC9zdmc+">
+  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/one-file-frame">
+  <meta property="fc:frame:button:1" content="View 24h Data">
+  <meta property="fc:frame:button:2" content="View 7d Data">
+  <meta property="fc:frame:button:3" content="Open Share URL">
+  <meta property="fc:frame:button:3:action" content="link">
+  <meta property="fc:frame:button:3:target" content="https://warpcast.com/~/compose?text=Top%20Warplet%20Earners%20(7d)%0A%0A1.%20%40thcradio%20(BTC)%3A%20%243%2C580%20%2F%20%2442.5K%20volume%0A2.%20%40wakaflocka%20(USDC)%3A%20%242%2C940%20%2F%20%2438.7K%20volume%0A3.%20%40chrislarsc.eth%20(ETH)%3A%20%242%2C450%20%2F%20%2431.2K%20volume%0A4.%20%40hellno.eth%20(DEGEN)%3A%20%241%2C840%20%2F%20%2424.6K%20volume%0A5.%20%40karima%20(ARB)%3A%20%241%2C250%20%2F%20%2418.9K%20volume%0A%0Ahttps%3A%2F%2Fwarplet-traders.vercel.app">
+  <meta property="fc:frame:button:4" content="Check Me">
+</head>
+<body></body>
+</html>
+          `);
+        } else if (buttonIndex === 4) {
+          // Check Me button from any other view
+          frameType = 'check-me';
+        } else {
+          frameType = 'main';
+        }
       }
       
       // Return the appropriate frame HTML
@@ -69,8 +156,8 @@ export default function handler(req, res) {
     }
   }
   
-  // Default response
-  return res.status(200).send(getFrameHtml('main'));
+  // Default response - start with user's FID data
+  return res.status(200).send(getFrameHtml('check-me'));
 }
 
 /**
@@ -200,19 +287,26 @@ function getFrameHtml(frameType) {
     button3 = 'Back to Main';
     button4 = 'Check Me';
   } else if (frameType === 'check-me') {
-    // Show the "Check Me" view with the user's follows
+    // Show the "Check Me" view with the user's follows for 7 days
     imageContent = createTradersSvg('Your Top Followed Traders (7d)', userTopTraders7d);
     button1 = 'Back to Main';
     button2 = 'Your 24h Data';
     button3 = 'Share Results';
     button4 = 'View Global Data';
+  } else if (frameType === 'check-me-24h') {
+    // Show the "Check Me" view with the user's follows for 24 hours
+    imageContent = createTradersSvg('Your Top Followed Traders (24h)', userTopTraders24h);
+    button1 = 'Back to 7d Data';
+    button2 = 'View Global Data';
+    button3 = 'Share Results';
+    button4 = 'Check Me';
   } else {
     // Error frame
     imageContent = createSimpleSvg('Error Occurred');
     button1 = 'Try Again';
     button2 = '';
     button3 = '';
-    button4 = '';
+    button4 = 'Check Me';
   }
   
   // Generate base64 image string
