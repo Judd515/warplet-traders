@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta property="fc:frame" content="vNext">
+  <meta property="fc:frame:image" content="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjMwIiBmaWxsPSIjMWUyOTNiIi8+PHRleHQgeD0iNjAwIiB5PSIzMTUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+V2FycGxldCBUb3AgVHJhZGVyczwvdGV4dD48L3N2Zz4=">
+  <meta property="fc:frame:button:1" content="View 24h Data">
+  <meta property="fc:frame:button:2" content="View 7d Data">
+  <meta property="fc:frame:button:3" content="Check Me">
+  <meta property="fc:frame:button:4" content="Share">
+  <meta property="fc:frame:button:4:action" content="link">
+  <meta property="fc:frame:button:4:target" content="https://warpcast.com/~/compose?text=Top%20Warplet%20Earners%20(7d)%0A%0ASee%20your%20own%20results%3A%20https%3A%2F%2Fwarplet-traders.vercel.app">
+  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/vercel-real-data">
+  <title>Warplet Top Traders - Vercel Test</title>
+  
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #1e293b;
+      color: white;
+      padding: 20px;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 800px;
+      width: 100%;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    
+    p {
+      margin-bottom: 2rem;
+      text-align: center;
+      color: #94a3b8;
+      line-height: 1.6;
+    }
+    
+    .info-box {
+      background-color: rgba(59, 130, 246, 0.2);
+      border: 1px solid rgba(59, 130, 246, 0.5);
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .info-box h2 {
+      color: #60a5fa;
+      margin-top: 0;
+    }
+    
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+    
+    .button {
+      background-color: #3b82f6;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      font-weight: bold;
+      text-decoration: none;
+      transition: background-color 0.2s;
+    }
+    
+    .button:hover {
+      background-color: #2563eb;
+    }
+    
+    code {
+      background-color: rgba(0, 0, 0, 0.3);
+      padding: 0.2rem 0.4rem;
+      border-radius: 0.25rem;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Warplet Top Traders</h1>
+    <p>Vercel-Optimized Implementation</p>
+    
+    <div class="info-box">
+      <h2>About This Test</h2>
+      <p>This page uses a simplified API endpoint that's optimized for Vercel's Hobby plan limitations:</p>
+      <ul>
+        <li>Processes requests much faster with less memory usage</li>
+        <li>Includes consistent data across all views</li>
+        <li>Still shows the user's FID in the "Check Me" view</li>
+        <li>Maintains the same button order and functionality</li>
+      </ul>
+      <p>This version is more reliable for Vercel deployment but with slightly simplified functionality.</p>
+    </div>
+    
+    <div class="buttons">
+      <a href="/" class="button">Back to Home</a>
+      <a href="/real-data-test.html" class="button">View Full API Version</a>
+    </div>
+  </div>
+</body>
+</html>
