@@ -58,7 +58,7 @@ export default function handler(req, res) {
       let frameType = 'main';
       
       // Direct share implementation - for consistent handling across all frames
-      const shareUrl = "https://warpcast.com/~/compose?text=Top%20Warplet%20Earners%20(7d)%0A%0A1.%20%40thcradio%20(BTC)%3A%20%243%2C580%20%2F%20%2442.5K%20volume%0A2.%20%40wakaflocka%20(USDC)%3A%20%242%2C940%20%2F%20%2438.7K%20volume%0A3.%20%40chrislarsc.eth%20(ETH)%3A%20%242%2C450%20%2F%20%2431.2K%20volume%0A4.%20%40hellno.eth%20(DEGEN)%3A%20%241%2C840%20%2F%20%2424.6K%20volume%0A5.%20%40karima%20(ARB)%3A%20%241%2C250%20%2F%20%2418.9K%20volume%0A%0Ahttps%3A%2F%2Fwarplet-traders.vercel.app";
+      const shareUrl = "https://warpcast.com/~/compose?text=Top%20Warplet%20Earners%20(7d)%0A%0A1.%20%40dgfld.eth%20(ETH)%3A%20%244%2C750%20%2F%20%2461.3K%20volume%0A2.%20%40cryptoastro%20(USDC)%3A%20%243%2C980%20%2F%20%2451.2K%20volume%0A3.%20%40lito.sol%20(BTC)%3A%20%243%2C560%20%2F%20%2445.9K%20volume%0A4.%20%40dabit3%20(ARB)%3A%20%242%2C910%20%2F%20%2437.5K%20volume%0A5.%20%40punk6529%20(DEGEN)%3A%20%242%2C350%20%2F%20%2430.2K%20volume%0A%0Ahttps%3A%2F%2Fwarplet-traders.vercel.app";
       
       // Direct share link with one click (always button4 except in select cases)
       if (buttonIndex === 4 && currentFrame !== 'share' && currentFrame !== 'check-me-24h' && currentFrame !== 'check-me') {
@@ -174,25 +174,34 @@ function getFrameHtml(frameType) {
     return Buffer.from(svg).toString('base64');
   };
   
-  // Sample trader data (would be replaced with real API calls)
-  const topTraders24h = [
-    { name: '@thcradio', token: 'BTC', earnings: '2,380', volume: '29.4K' },
-    { name: '@wakaflocka', token: 'USDC', earnings: '1,940', volume: '22.7K' },
-    { name: '@chrislarsc.eth', token: 'ETH', earnings: '1,450', volume: '18.2K' },
-    { name: '@hellno.eth', token: 'DEGEN', earnings: '1,240', volume: '15.6K' },
-    { name: '@karima', token: 'ARB', earnings: '950', volume: '11.9K' }
+  // Use consistent trader data for all views
+  // These would be fetched from Dune Analytics in production
+  // For now we use realistic sample data
+  const allTraders24h = [
+    { name: '@dgfld.eth', token: 'ETH', earnings: '3,250', volume: '41.2K' },
+    { name: '@cryptoastro', token: 'USDC', earnings: '2,840', volume: '36.5K' },
+    { name: '@lito.sol', token: 'BTC', earnings: '2,140', volume: '27.3K' },
+    { name: '@dabit3', token: 'ARB', earnings: '1,780', volume: '22.9K' },
+    { name: '@punk6529', token: 'DEGEN', earnings: '1,520', volume: '19.4K' }
   ];
   
-  const topTraders7d = [
-    { name: '@thcradio', token: 'BTC', earnings: '3,580', volume: '42.5K' },
-    { name: '@wakaflocka', token: 'USDC', earnings: '2,940', volume: '38.7K' },
-    { name: '@chrislarsc.eth', token: 'ETH', earnings: '2,450', volume: '31.2K' },
-    { name: '@hellno.eth', token: 'DEGEN', earnings: '1,840', volume: '24.6K' },
-    { name: '@karima', token: 'ARB', earnings: '1,250', volume: '18.9K' }
+  const allTraders7d = [
+    { name: '@dgfld.eth', token: 'ETH', earnings: '4,750', volume: '61.3K' },
+    { name: '@cryptoastro', token: 'USDC', earnings: '3,980', volume: '51.2K' },
+    { name: '@lito.sol', token: 'BTC', earnings: '3,560', volume: '45.9K' },
+    { name: '@dabit3', token: 'ARB', earnings: '2,910', volume: '37.5K' },
+    { name: '@punk6529', token: 'DEGEN', earnings: '2,350', volume: '30.2K' }
   ];
+  
+  // In a real implementation, we would filter allTraders to just those the user follows
+  // For demo purposes, we'll use the same data for all views to maintain consistency
+  const topTraders24h = allTraders24h;
+  const topTraders7d = allTraders7d;
+  const userTopTraders24h = allTraders24h;
+  const userTopTraders7d = allTraders7d;
   
   // Share URL that will be used directly
-  const shareUrl = "https://warpcast.com/~/compose?text=Top%20Warplet%20Earners%20(7d)%0A%0A1.%20%40thcradio%20(BTC)%3A%20%243%2C580%20%2F%20%2442.5K%20volume%0A2.%20%40wakaflocka%20(USDC)%3A%20%242%2C940%20%2F%20%2438.7K%20volume%0A3.%20%40chrislarsc.eth%20(ETH)%3A%20%242%2C450%20%2F%20%2431.2K%20volume%0A4.%20%40hellno.eth%20(DEGEN)%3A%20%241%2C840%20%2F%20%2424.6K%20volume%0A5.%20%40karima%20(ARB)%3A%20%241%2C250%20%2F%20%2418.9K%20volume%0A%0Ahttps%3A%2F%2Fwarplet-traders.vercel.app";
+  const shareUrl = "https://warpcast.com/~/compose?text=Top%20Warplet%20Earners%20(7d)%0A%0A1.%20%40dgfld.eth%20(ETH)%3A%20%244%2C750%20%2F%20%2461.3K%20volume%0A2.%20%40cryptoastro%20(USDC)%3A%20%243%2C980%20%2F%20%2451.2K%20volume%0A3.%20%40lito.sol%20(BTC)%3A%20%243%2C560%20%2F%20%2445.9K%20volume%0A4.%20%40dabit3%20(ARB)%3A%20%242%2C910%20%2F%20%2437.5K%20volume%0A5.%20%40punk6529%20(DEGEN)%3A%20%242%2C350%20%2F%20%2430.2K%20volume%0A%0Ahttps%3A%2F%2Fwarplet-traders.vercel.app";
   
   /**
    * Generate a special redirect frame that immediately redirects to the share URL
@@ -209,7 +218,8 @@ function getFrameHtml(frameType) {
   <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/one-file-frame">
   <meta property="fc:frame:button:1" content="View 24h Data">
   <meta property="fc:frame:button:2" content="View 7d Data">
-  <meta property="fc:frame:button:3" content="Share Results">
+  <meta property="fc:frame:button:3" content="Check Me">
+  <meta property="fc:frame:button:4" content="Share">
   <script>
     window.location.href = "${shareUrl}";
   </script>
@@ -219,31 +229,8 @@ function getFrameHtml(frameType) {
   <p><a href="${shareUrl}">Click here if not redirected automatically</a></p>
 </body>
 </html>
-  `;
+    `;
   }
-  
-  // Real trader data APIs integration
-  // This would normally fetch data from Neynar and Dune APIs
-  // For now, we're demonstrating with realistic but sample data
-  const realTraders24h = [
-    { name: '@dgfld.eth', token: 'ETH', earnings: '3,250', volume: '41.2K' },
-    { name: '@cryptoastro', token: 'USDC', earnings: '2,840', volume: '36.5K' },
-    { name: '@lito.sol', token: 'BTC', earnings: '2,140', volume: '27.3K' },
-    { name: '@dabit3', token: 'ARB', earnings: '1,780', volume: '22.9K' },
-    { name: '@punk6529', token: 'DEGEN', earnings: '1,520', volume: '19.4K' }
-  ];
-  
-  const realTraders7d = [
-    { name: '@dgfld.eth', token: 'ETH', earnings: '4,750', volume: '61.3K' },
-    { name: '@cryptoastro', token: 'USDC', earnings: '3,980', volume: '51.2K' },
-    { name: '@lito.sol', token: 'BTC', earnings: '3,560', volume: '45.9K' },
-    { name: '@dabit3', token: 'ARB', earnings: '2,910', volume: '37.5K' },
-    { name: '@punk6529', token: 'DEGEN', earnings: '2,350', volume: '30.2K' }
-  ];
-  
-  // Realistic Farcaster following data - this mimics what we would get from Neynar API
-  const userTopTraders24h = realTraders24h;
-  const userTopTraders7d = realTraders7d;
   
   // Frame-specific content
   let imageContent, button1, button2, button3, button4;
