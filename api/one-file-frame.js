@@ -42,6 +42,8 @@ export default function handler(req, res) {
         }
       }
       
+      console.log('Button clicked:', buttonIndex);
+      
       // Determine which frame to return based on button index
       let frameType = 'main';
       
@@ -49,9 +51,8 @@ export default function handler(req, res) {
         frameType = 'day';
       } else if (buttonIndex === 2) {
         frameType = 'week';
-      } else if (buttonIndex === 3) {
-        frameType = 'share';
       } else {
+        // For any other button (including 3), just show main
         frameType = 'main';
       }
       
@@ -117,6 +118,9 @@ function getFrameHtml(frameType) {
     { name: '@karima', token: 'ARB', earnings: '1,250', volume: '18.9K' }
   ];
   
+  // Share URL that will be used directly
+  const shareUrl = "https://warpcast.com/~/compose?text=Top%20Warplet%20Earners%20(7d)%0A%0A1.%20%40thcradio%20(BTC)%3A%20%243%2C580%20%2F%20%2442.5K%20volume%0A2.%20%40wakaflocka%20(USDC)%3A%20%242%2C940%20%2F%20%2438.7K%20volume%0A3.%20%40chrislarsc.eth%20(ETH)%3A%20%242%2C450%20%2F%20%2431.2K%20volume%0A4.%20%40hellno.eth%20(DEGEN)%3A%20%241%2C840%20%2F%20%2424.6K%20volume%0A5.%20%40karima%20(ARB)%3A%20%241%2C250%20%2F%20%2418.9K%20volume%0A%0Ahttps%3A%2F%2Fwarplet-traders.vercel.app";
+  
   // Frame-specific content
   let imageContent, button1, button2, button3, button3Action, button3Target;
   
@@ -125,23 +129,30 @@ function getFrameHtml(frameType) {
     button1 = 'View 24h Data';
     button2 = 'View 7d Data'; 
     button3 = 'Share Results';
+    button3Action = 'link';
+    button3Target = shareUrl;
   } else if (frameType === 'day') {
     imageContent = createTradersSvg('24h Top Traders', topTraders24h);
     button1 = 'Back to Main';
     button2 = 'View 7d Data';
     button3 = 'Share Results';
+    button3Action = 'link';
+    button3Target = shareUrl;
   } else if (frameType === 'week') {
     imageContent = createTradersSvg('7d Top Traders', topTraders7d);
     button1 = 'View 24h Data';
     button2 = 'Back to Main';
     button3 = 'Share Results';
+    button3Action = 'link';
+    button3Target = shareUrl;
   } else if (frameType === 'share') {
+    // This state is no longer needed but keeping for completeness
     imageContent = createSimpleSvg('Share Results');
     button1 = 'View 24h Data';
     button2 = 'View 7d Data';
-    button3 = 'Open Share URL';
+    button3 = 'Share Results';
     button3Action = 'link';
-    button3Target = 'https://warpcast.com/~/compose?text=Top%20Warplet%20Earners%20(7d)%0A%0A1.%20%40thcradio%20(BTC)%3A%20%243%2C580%20%2F%20%2442.5K%20volume%0A2.%20%40wakaflocka%20(USDC)%3A%20%242%2C940%20%2F%20%2438.7K%20volume%0A3.%20%40chrislarsc.eth%20(ETH)%3A%20%242%2C450%20%2F%20%2431.2K%20volume%0A4.%20%40hellno.eth%20(DEGEN)%3A%20%241%2C840%20%2F%20%2424.6K%20volume%0A5.%20%40karima%20(ARB)%3A%20%241%2C250%20%2F%20%2418.9K%20volume%0A%0Ahttps%3A%2F%2Fwarplet-traders.vercel.app';
+    button3Target = shareUrl;
   } else {
     // Error frame
     imageContent = createSimpleSvg('Error Occurred');
