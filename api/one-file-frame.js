@@ -16,9 +16,9 @@ export default function handler(req, res) {
     return res.status(200).end();
   }
   
-  // For GET requests, return the entry frame HTML - starting with user's followers data (24h)
+  // For GET requests, show the typical main screen (buttons will be configured correctly)
   if (req.method === 'GET') {
-    return res.status(200).send(getFrameHtml('check-me-24h'));
+    return res.status(200).send(getFrameHtml('main'));
   }
   
   // For POST requests (button clicks), parse the button index and return appropriate frame
@@ -81,103 +81,48 @@ export default function handler(req, res) {
         `);
       }
       
-      // Handle special case for the "Check Me" view
-      if (currentFrame === 'check-me') {
-        if (buttonIndex === 1) {
-          // Your 24h Data
-          frameType = 'check-me-24h';
-        } else if (buttonIndex === 2) {
-          // View Global Data
-          frameType = 'main';
-        } else if (buttonIndex === 3) {
-          // Back to Main
-          frameType = 'main';
-        } else if (buttonIndex === 4) {
-          // Share button
-          return res.status(200).send(`
-<!DOCTYPE html>
-<html>
-<head>
-  <meta http-equiv="refresh" content="0;url=${shareUrl}">
-  <meta charset="utf-8">
-  <meta property="fc:frame" content="vNext">
-  <meta property="fc:frame:image" content="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjMwIiBmaWxsPSIjMWUyOTNiIi8+CiAgPHRleHQgeD0iNjAwIiB5PSIzMTUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+T3BlbmluZyBTaGFyZSBDb21wb3Nlci4uLjwvdGV4dD4KPC9zdmc+">
-  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/one-file-frame">
-  <meta property="fc:frame:button:1" content="Your 24h Data">
-  <meta property="fc:frame:button:2" content="View Global Data">
-  <meta property="fc:frame:button:3" content="Back to Main">
-  <meta property="fc:frame:button:4" content="Share">
-  <meta property="fc:frame:button:4:action" content="link">
-  <meta property="fc:frame:button:4:target" content="${shareUrl}">
-  <script>window.location.href = "${shareUrl}";</script>
-</head>
-<body>
-  <p>Opening share composer...</p>
-  <p><a href="${shareUrl}">Click here if not redirected</a></p>
-</body>
-</html>
-          `);
-        }
-      } else if (currentFrame === 'check-me-24h') {
-        // Handling the "Your 24h Data" view navigation
-        if (buttonIndex === 1) {
-          frameType = 'check-me'; // Your 7d Data
-        } else if (buttonIndex === 2) {
-          frameType = 'main'; // View Global Data
-        } else if (buttonIndex === 3) {
-          frameType = 'main'; // Back to Main
-        } else if (buttonIndex === 4) {
-          // Share button
-          return res.status(200).send(`
-<!DOCTYPE html>
-<html>
-<head>
-  <meta http-equiv="refresh" content="0;url=${shareUrl}">
-  <meta charset="utf-8">
-  <meta property="fc:frame" content="vNext">
-  <meta property="fc:frame:image" content="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjMwIiBmaWxsPSIjMWUyOTNiIi8+CiAgPHRleHQgeD0iNjAwIiB5PSIzMTUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+T3BlbmluZyBTaGFyZSBDb21wb3Nlci4uLjwvdGV4dD4KPC9zdmc+">
-  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/one-file-frame">
-  <meta property="fc:frame:button:1" content="Your 7d Data">
-  <meta property="fc:frame:button:2" content="View Global Data">
-  <meta property="fc:frame:button:3" content="Back to Main">
-  <meta property="fc:frame:button:4" content="Share">
-  <meta property="fc:frame:button:4:action" content="link">
-  <meta property="fc:frame:button:4:target" content="${shareUrl}">
-  <script>window.location.href = "${shareUrl}";</script>
-</head>
-<body>
-  <p>Opening share composer...</p>
-  <p><a href="${shareUrl}">Click here if not redirected</a></p>
-</body>
-</html>
-          `);
-        }
-      } else {
-        // Standard navigation for main, day, week views
-        if (buttonIndex === 1) {
-          if (currentFrame === 'main' || currentFrame === 'week') {
-            frameType = 'day'; // View 24h Data
-          } else if (currentFrame === 'day') {
-            frameType = 'main'; // Back to Main
-          } else {
-            frameType = 'day';
-          }
-        } else if (buttonIndex === 2) {
-          if (currentFrame === 'main' || currentFrame === 'day') {
-            frameType = 'week'; // View 7d Data
-          } else if (currentFrame === 'week') {
-            frameType = 'main'; // Back to Main
-          } else {
-            frameType = 'week';
-          }
-        } else if (buttonIndex === 3) {
-          // Check Me button (button 3 in new order)
-          frameType = 'check-me';
-        } else if (buttonIndex === 4 && currentFrame === 'share') {
-          // Special case: "Back to Main" on share view is button 4
+      // All frames will follow the same button pattern, even the "Check Me" frames
+      // All buttons are handled the same way regardless of which frame is currently shown
+      if (buttonIndex === 1) {
+        // Button 1: View 24h Data
+        frameType = 'day';
+      } else if (buttonIndex === 2) {
+        // Button 2: View 7d Data
+        frameType = 'week';
+      } else if (buttonIndex === 3) {
+        // Button 3: Check Me - load user's FID data
+        // If already on "Check Me" view, this will refresh it
+        frameType = 'check-me';
+      } else if (buttonIndex === 4) {
+        // Button 4: Share (already handled by the direct link action)
+        // Only handle the special case for the share view's "Back to Main" button
+        if (currentFrame === 'share') {
           frameType = 'main';
         } else {
-          frameType = 'main';
+          // For all other cases, open the share link directly (handled by button action)
+          return res.status(200).send(`
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="refresh" content="0;url=${shareUrl}">
+  <meta charset="utf-8">
+  <meta property="fc:frame" content="vNext">
+  <meta property="fc:frame:image" content="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjMwIiBmaWxsPSIjMWUyOTNiIi8+CiAgPHRleHQgeD0iNjAwIiB5PSIzMTUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+T3BlbmluZyBTaGFyZSBDb21wb3Nlci4uLjwvdGV4dD4KPC9zdmc+">
+  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/one-file-frame">
+  <meta property="fc:frame:button:1" content="View 24h Data">
+  <meta property="fc:frame:button:2" content="View 7d Data">
+  <meta property="fc:frame:button:3" content="Check Me">
+  <meta property="fc:frame:button:4" content="Share">
+  <meta property="fc:frame:button:4:action" content="link">
+  <meta property="fc:frame:button:4:target" content="${shareUrl}">
+  <script>window.location.href = "${shareUrl}";</script>
+</head>
+<body>
+  <p>Opening share composer...</p>
+  <p><a href="${shareUrl}">Click here if not redirected</a></p>
+</body>
+</html>
+          `);
         }
       }
       
@@ -323,16 +268,16 @@ function getFrameHtml(frameType) {
   } else if (frameType === 'check-me') {
     // Show the "Check Me" view with the user's follows for 7 days
     imageContent = createTradersSvg('Your Top Followed Traders (7d)', userTopTraders7d);
-    button1 = 'Your 24h Data';
-    button2 = 'View Global Data';
-    button3 = 'Back to Main';
+    button1 = 'View 24h Data';
+    button2 = 'View 7d Data';
+    button3 = 'Check Me';
     button4 = 'Share';
   } else if (frameType === 'check-me-24h') {
     // Show the "Check Me" view with the user's follows for 24 hours
     imageContent = createTradersSvg('Your Top Followed Traders (24h)', userTopTraders24h);
-    button1 = 'Your 7d Data';
-    button2 = 'View Global Data';
-    button3 = 'Back to Main';
+    button1 = 'View 24h Data';
+    button2 = 'View 7d Data';
+    button3 = 'Check Me';
     button4 = 'Share';
   } else {
     // Error frame
