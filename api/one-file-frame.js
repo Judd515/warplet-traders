@@ -16,9 +16,9 @@ export default function handler(req, res) {
     return res.status(200).end();
   }
   
-  // For GET requests, return the entry frame HTML with user's FID data
+  // For GET requests, return the entry frame HTML - starting with user's followers data (24h)
   if (req.method === 'GET') {
-    return res.status(200).send(getFrameHtml('check-me'));
+    return res.status(200).send(getFrameHtml('check-me-24h'));
   }
   
   // For POST requests (button clicks), parse the button index and return appropriate frame
@@ -53,96 +53,129 @@ export default function handler(req, res) {
       // Determine which frame to return based on button index and current context
       let frameType = 'main';
       
-      // Handle special case for the "Check Me" view where buttons have different meanings
+      // Direct share implementation - for consistent handling across all frames
+      const shareUrl = "https://warpcast.com/~/compose?text=Top%20Warplet%20Earners%20(7d)%0A%0A1.%20%40thcradio%20(BTC)%3A%20%243%2C580%20%2F%20%2442.5K%20volume%0A2.%20%40wakaflocka%20(USDC)%3A%20%242%2C940%20%2F%20%2438.7K%20volume%0A3.%20%40chrislarsc.eth%20(ETH)%3A%20%242%2C450%20%2F%20%2431.2K%20volume%0A4.%20%40hellno.eth%20(DEGEN)%3A%20%241%2C840%20%2F%20%2424.6K%20volume%0A5.%20%40karima%20(ARB)%3A%20%241%2C250%20%2F%20%2418.9K%20volume%0A%0Ahttps%3A%2F%2Fwarplet-traders.vercel.app";
+      
+      // Direct share link with one click (always button4 except in select cases)
+      if (buttonIndex === 4 && currentFrame !== 'share' && currentFrame !== 'check-me-24h' && currentFrame !== 'check-me') {
+        return res.status(200).send(`
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="refresh" content="0;url=${shareUrl}">
+  <meta charset="utf-8">
+  <meta property="fc:frame" content="vNext">
+  <meta property="fc:frame:image" content="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjMwIiBmaWxsPSIjMWUyOTNiIi8+CiAgPHRleHQgeD0iNjAwIiB5PSIzMTUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+T3BlbmluZyBTaGFyZSBDb21wb3Nlci4uLjwvdGV4dD4KPC9zdmc+">
+  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/one-file-frame">
+  <meta property="fc:frame:button:1" content="View 24h Data">
+  <meta property="fc:frame:button:2" content="View 7d Data">
+  <meta property="fc:frame:button:3" content="Check Me">
+  <meta property="fc:frame:button:4" content="Share">
+  <script>window.location.href = "${shareUrl}";</script>
+</head>
+<body>
+  <p>Opening share composer...</p>
+  <p><a href="${shareUrl}">Click here if not redirected</a></p>
+</body>
+</html>
+        `);
+      }
+      
+      // Handle special case for the "Check Me" view
       if (currentFrame === 'check-me') {
         if (buttonIndex === 1) {
-          // Back to Main from Check Me view
-          frameType = 'main';
-        } else if (buttonIndex === 2) {
-          // Your 24h Data button from Check Me view
+          // Your 24h Data
           frameType = 'check-me-24h';
+        } else if (buttonIndex === 2) {
+          // View Global Data
+          frameType = 'main';
         } else if (buttonIndex === 3) {
-          // Share button from anywhere - use direct link approach
+          // Back to Main
+          frameType = 'main';
+        } else if (buttonIndex === 4) {
+          // Share button
           return res.status(200).send(`
 <!DOCTYPE html>
 <html>
 <head>
+  <meta http-equiv="refresh" content="0;url=${shareUrl}">
   <meta charset="utf-8">
   <meta property="fc:frame" content="vNext">
-  <meta property="fc:frame:image" content="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjMwIiBmaWxsPSIjMWUyOTNiIi8+CiAgPHRleHQgeD0iNjAwIiB5PSIzMTUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+U2hhcmluZyBUb3AgVHJhZGVyczwvdGV4dD4KPC9zdmc+">
+  <meta property="fc:frame:image" content="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjMwIiBmaWxsPSIjMWUyOTNiIi8+CiAgPHRleHQgeD0iNjAwIiB5PSIzMTUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+T3BlbmluZyBTaGFyZSBDb21wb3Nlci4uLjwvdGV4dD4KPC9zdmc+">
   <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/one-file-frame">
-  <meta property="fc:frame:button:1" content="View 24h Data">
-  <meta property="fc:frame:button:2" content="View 7d Data">
-  <meta property="fc:frame:button:3" content="Open Share URL">
-  <meta property="fc:frame:button:3:action" content="link">
-  <meta property="fc:frame:button:3:target" content="https://warpcast.com/~/compose?text=Top%20Warplet%20Earners%20(7d)%0A%0A1.%20%40thcradio%20(BTC)%3A%20%243%2C580%20%2F%20%2442.5K%20volume%0A2.%20%40wakaflocka%20(USDC)%3A%20%242%2C940%20%2F%20%2438.7K%20volume%0A3.%20%40chrislarsc.eth%20(ETH)%3A%20%242%2C450%20%2F%20%2431.2K%20volume%0A4.%20%40hellno.eth%20(DEGEN)%3A%20%241%2C840%20%2F%20%2424.6K%20volume%0A5.%20%40karima%20(ARB)%3A%20%241%2C250%20%2F%20%2418.9K%20volume%0A%0Ahttps%3A%2F%2Fwarplet-traders.vercel.app">
-  <meta property="fc:frame:button:4" content="Check Me">
+  <meta property="fc:frame:button:1" content="Your 24h Data">
+  <meta property="fc:frame:button:2" content="View Global Data">
+  <meta property="fc:frame:button:3" content="Back to Main">
+  <meta property="fc:frame:button:4" content="Share">
+  <meta property="fc:frame:button:4:action" content="link">
+  <meta property="fc:frame:button:4:target" content="${shareUrl}">
+  <script>window.location.href = "${shareUrl}";</script>
 </head>
-<body></body>
+<body>
+  <p>Opening share composer...</p>
+  <p><a href="${shareUrl}">Click here if not redirected</a></p>
+</body>
 </html>
           `);
-        } else if (buttonIndex === 4) {
-          // View Global Data button from Check Me view
-          frameType = 'main';
         }
       } else if (currentFrame === 'check-me-24h') {
         // Handling the "Your 24h Data" view navigation
         if (buttonIndex === 1) {
-          frameType = 'check-me'; // Back to 7d Check Me view
+          frameType = 'check-me'; // Your 7d Data
         } else if (buttonIndex === 2) {
-          frameType = 'main'; // Go to main view
+          frameType = 'main'; // View Global Data
         } else if (buttonIndex === 3) {
-          // Share button - special handling
+          frameType = 'main'; // Back to Main
+        } else if (buttonIndex === 4) {
+          // Share button
           return res.status(200).send(`
 <!DOCTYPE html>
 <html>
 <head>
+  <meta http-equiv="refresh" content="0;url=${shareUrl}">
   <meta charset="utf-8">
   <meta property="fc:frame" content="vNext">
-  <meta property="fc:frame:image" content="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjMwIiBmaWxsPSIjMWUyOTNiIi8+CiAgPHRleHQgeD0iNjAwIiB5PSIzMTUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+U2hhcmluZyBUb3AgVHJhZGVyczwvdGV4dD4KPC9zdmc+">
+  <meta property="fc:frame:image" content="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjMwIiBmaWxsPSIjMWUyOTNiIi8+CiAgPHRleHQgeD0iNjAwIiB5PSIzMTUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+T3BlbmluZyBTaGFyZSBDb21wb3Nlci4uLjwvdGV4dD4KPC9zdmc+">
   <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/one-file-frame">
-  <meta property="fc:frame:button:1" content="View 24h Data">
-  <meta property="fc:frame:button:2" content="View 7d Data">
-  <meta property="fc:frame:button:3" content="Open Share URL">
-  <meta property="fc:frame:button:3:action" content="link">
-  <meta property="fc:frame:button:3:target" content="https://warpcast.com/~/compose?text=Top%20Warplet%20Earners%20(7d)%0A%0A1.%20%40thcradio%20(BTC)%3A%20%243%2C580%20%2F%20%2442.5K%20volume%0A2.%20%40wakaflocka%20(USDC)%3A%20%242%2C940%20%2F%20%2438.7K%20volume%0A3.%20%40chrislarsc.eth%20(ETH)%3A%20%242%2C450%20%2F%20%2431.2K%20volume%0A4.%20%40hellno.eth%20(DEGEN)%3A%20%241%2C840%20%2F%20%2424.6K%20volume%0A5.%20%40karima%20(ARB)%3A%20%241%2C250%20%2F%20%2418.9K%20volume%0A%0Ahttps%3A%2F%2Fwarplet-traders.vercel.app">
-  <meta property="fc:frame:button:4" content="Check Me">
+  <meta property="fc:frame:button:1" content="Your 7d Data">
+  <meta property="fc:frame:button:2" content="View Global Data">
+  <meta property="fc:frame:button:3" content="Back to Main">
+  <meta property="fc:frame:button:4" content="Share">
+  <meta property="fc:frame:button:4:action" content="link">
+  <meta property="fc:frame:button:4:target" content="${shareUrl}">
+  <script>window.location.href = "${shareUrl}";</script>
 </head>
-<body></body>
+<body>
+  <p>Opening share composer...</p>
+  <p><a href="${shareUrl}">Click here if not redirected</a></p>
+</body>
 </html>
           `);
-        } else if (buttonIndex === 4) {
-          frameType = 'check-me'; // Go back to 7d Check Me view
         }
       } else {
         // Standard navigation for main, day, week views
         if (buttonIndex === 1) {
-          frameType = 'day';
+          if (currentFrame === 'main' || currentFrame === 'week') {
+            frameType = 'day'; // View 24h Data
+          } else if (currentFrame === 'day') {
+            frameType = 'main'; // Back to Main
+          } else {
+            frameType = 'day';
+          }
         } else if (buttonIndex === 2) {
-          frameType = 'week';
+          if (currentFrame === 'main' || currentFrame === 'day') {
+            frameType = 'week'; // View 7d Data
+          } else if (currentFrame === 'week') {
+            frameType = 'main'; // Back to Main
+          } else {
+            frameType = 'week';
+          }
         } else if (buttonIndex === 3) {
-          // Share button from anywhere - use direct link approach
-          return res.status(200).send(`
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta property="fc:frame" content="vNext">
-  <meta property="fc:frame:image" content="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjMwIiBmaWxsPSIjMWUyOTNiIi8+CiAgPHRleHQgeD0iNjAwIiB5PSIzMTUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+U2hhcmluZyBUb3AgVHJhZGVyczwvdGV4dD4KPC9zdmc+">
-  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/one-file-frame">
-  <meta property="fc:frame:button:1" content="View 24h Data">
-  <meta property="fc:frame:button:2" content="View 7d Data">
-  <meta property="fc:frame:button:3" content="Open Share URL">
-  <meta property="fc:frame:button:3:action" content="link">
-  <meta property="fc:frame:button:3:target" content="https://warpcast.com/~/compose?text=Top%20Warplet%20Earners%20(7d)%0A%0A1.%20%40thcradio%20(BTC)%3A%20%243%2C580%20%2F%20%2442.5K%20volume%0A2.%20%40wakaflocka%20(USDC)%3A%20%242%2C940%20%2F%20%2438.7K%20volume%0A3.%20%40chrislarsc.eth%20(ETH)%3A%20%242%2C450%20%2F%20%2431.2K%20volume%0A4.%20%40hellno.eth%20(DEGEN)%3A%20%241%2C840%20%2F%20%2424.6K%20volume%0A5.%20%40karima%20(ARB)%3A%20%241%2C250%20%2F%20%2418.9K%20volume%0A%0Ahttps%3A%2F%2Fwarplet-traders.vercel.app">
-  <meta property="fc:frame:button:4" content="Check Me">
-</head>
-<body></body>
-</html>
-          `);
-        } else if (buttonIndex === 4) {
-          // Check Me button from any other view
+          // Check Me button (button 3 in new order)
           frameType = 'check-me';
+        } else if (buttonIndex === 4 && currentFrame === 'share') {
+          // Special case: "Back to Main" on share view is button 4
+          frameType = 'main';
         } else {
           frameType = 'main';
         }
@@ -261,52 +294,53 @@ function getFrameHtml(frameType) {
   // Frame-specific content
   let imageContent, button1, button2, button3, button4;
   
+  // Fixed button order for all frames: 24hr, 7day, Check Me, Share
   if (frameType === 'main') {
     imageContent = createSimpleSvg('Warplet Top Traders');
     button1 = 'View 24h Data';
     button2 = 'View 7d Data'; 
-    button3 = 'Share Results';
-    button4 = 'Check Me';
+    button3 = 'Check Me';
+    button4 = 'Share';
   } else if (frameType === 'day') {
     imageContent = createTradersSvg('24h Top Traders', topTraders24h);
     button1 = 'Back to Main';
     button2 = 'View 7d Data';
-    button3 = 'Share Results';
-    button4 = 'Check Me';
+    button3 = 'Check Me';
+    button4 = 'Share';
   } else if (frameType === 'week') {
     imageContent = createTradersSvg('7d Top Traders', topTraders7d);
     button1 = 'View 24h Data';
     button2 = 'Back to Main';
-    button3 = 'Share Results';
-    button4 = 'Check Me';
+    button3 = 'Check Me';
+    button4 = 'Share';
   } else if (frameType === 'share') {
     // Create a different SVG for share so it looks different
     imageContent = createSimpleSvg('Share Top Traders');
     button1 = 'View 24h Data';
     button2 = 'View 7d Data';
-    button3 = 'Back to Main';
-    button4 = 'Check Me';
+    button3 = 'Check Me';
+    button4 = 'Back to Main';
   } else if (frameType === 'check-me') {
     // Show the "Check Me" view with the user's follows for 7 days
     imageContent = createTradersSvg('Your Top Followed Traders (7d)', userTopTraders7d);
-    button1 = 'Back to Main';
-    button2 = 'Your 24h Data';
-    button3 = 'Share Results';
-    button4 = 'View Global Data';
+    button1 = 'Your 24h Data';
+    button2 = 'View Global Data';
+    button3 = 'Back to Main';
+    button4 = 'Share';
   } else if (frameType === 'check-me-24h') {
     // Show the "Check Me" view with the user's follows for 24 hours
     imageContent = createTradersSvg('Your Top Followed Traders (24h)', userTopTraders24h);
-    button1 = 'Back to 7d Data';
+    button1 = 'Your 7d Data';
     button2 = 'View Global Data';
-    button3 = 'Share Results';
-    button4 = 'Check Me';
+    button3 = 'Back to Main';
+    button4 = 'Share';
   } else {
     // Error frame
     imageContent = createSimpleSvg('Error Occurred');
     button1 = 'Try Again';
-    button2 = '';
-    button3 = '';
-    button4 = 'Check Me';
+    button2 = 'View 24h Data';
+    button3 = 'Check Me';
+    button4 = 'Share';
   }
   
   // Generate base64 image string
@@ -340,10 +374,10 @@ function getFrameHtml(frameType) {
     html += `  <meta property="fc:frame:button:4" content="${button4}">\n`;
   }
   
-  // Share URL for button 3
-  if (frameType === 'share') {
-    html += `  <meta property="fc:frame:button:3:action" content="post_redirect">\n`;
-    html += `  <meta property="fc:frame:button:3:target" content="${shareUrl}">\n`;
+  // Add share button action (button 4 in our new order) - direct link to share
+  if (frameType !== 'share') {
+    html += `  <meta property="fc:frame:button:4:action" content="link">\n`;
+    html += `  <meta property="fc:frame:button:4:target" content="${shareUrl}">\n`;
   }
   
   html += `</head>
