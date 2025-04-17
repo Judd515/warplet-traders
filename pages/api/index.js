@@ -4,5 +4,5 @@ export default function handler(req, res) {
   res.setHeader('Content-Type', 'text/plain');
   
   // Just return a simple string
-  return res.status(200).send('OK - API is working');
+  return res.status(200).send('OK - API is working (from pages/api)');
 }

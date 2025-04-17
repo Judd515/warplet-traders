@@ -4,7 +4,7 @@
  */
 
 // Export the handler function for Vercel
-module.exports = function handler(req, res) {
+export default function handler(req, res) {
   // Parse the request path to determine which handler to use
   const path = req.url.split('?')[0];
   
