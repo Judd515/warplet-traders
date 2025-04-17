@@ -1,0 +1,36 @@
+[14:56:26.000] Cloning github.com/Judd515/warplet-traders (Branch: main, Commit: 190177e)
+[14:56:26.741] Cloning completed: 741.000ms
+[14:56:26.849] Found .vercelignore
+[14:56:26.874] Removed 52 ignored files defined in .vercelignore
+[14:56:27.724] Restored build cache from previous deployment (CYD522CuueACDkBjBP27gSx76cGh)
+[14:56:27.864] Running build in Washington, D.C., USA (East) – iad1
+[14:56:28.689] Running "vercel build"
+[14:56:30.009] Vercel CLI 41.6.0
+[14:56:30.216] WARN! When using Next.js, it is recommended to place JavaScript Functions inside of the `pages/api` (provided by Next.js) directory instead of `api` (provided by Vercel). Other languages (Python, Go, etc) should still go in the `api` directory.
+[14:56:30.217] Learn More: https://nextjs.org/docs/api-routes/introduction
+[14:56:30.975] Running "install" command: `npm ci --omit=dev`...
+[14:56:44.437] 
+[14:56:44.438] added 395 packages, and audited 396 packages in 13s
+[14:56:44.439] 
+[14:56:44.440] 52 packages are looking for funding
+[14:56:44.440]   run `npm fund` for details
+[14:56:44.443] 
+[14:56:44.443] 1 moderate severity vulnerability
+[14:56:44.444] 
+[14:56:44.444] To address all issues, run:
+[14:56:44.445]   npm audit fix
+[14:56:44.445] 
+[14:56:44.445] Run `npm audit` for details.
+[14:56:44.721] Skipping build step
+[14:56:44.775] Installing dependencies...
+[14:56:47.054] npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+[14:56:47.124] npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+[14:56:49.496] 
+[14:56:49.497] added 94 packages in 5s
+[14:56:49.498] 
+[14:56:49.498] 61 packages are looking for funding
+[14:56:49.498]   run `npm fund` for details
+[14:56:51.763] Build Completed in /vercel/output [21s]
+[14:56:51.962] Deploying outputs...
+[14:56:53.962] Error: No more than 12 Serverless Functions can be added to a Deployment on the Hobby plan. Create a team (Pro plan) to deploy more. Learn More: https://vercel.link/function-count-limit
+[14:56:54.817] 

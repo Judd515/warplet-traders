@@ -1,94 +1,81 @@
-# Minimal Vercel Deployment for Warpcast Frames (Hobby Plan)
+# Vercel Minimal Deployment Guide
 
-This guide solves the "Frame error: Unknown error communicating with the frame server" issue on Vercel's Hobby Plan by using an absolute minimal implementation.
+This guide helps you deploy your Warplet Top Traders frame to Vercel's Hobby plan, which has a limit of 12 serverless functions per project.
 
-## Why this approach works:
+## The Problem
 
-1. **Single API file**: Uses just one `/api/index.js` file to handle all frame interactions
-2. **Remote-hosted images**: Uses Imgur-hosted images instead of base64-encoded SVGs or placeholders
-3. **Minimal HTML**: Reduces frame HTML to only essential meta tags
-4. **Direct API path**: Uses `/api` as the endpoint rather than a more complex path
+Vercel's Hobby plan limits you to no more than 12 serverless functions per deployment. Our project has more API endpoints than this limit allows, causing deployments to fail with the error:
 
-## Deployment Instructions
+```
+Error: No more than 12 Serverless Functions can be added to a Deployment on the Hobby plan. 
+Create a team (Pro plan) to deploy more. Learn More: https://vercel.link/function-count-limit
+```
 
-### 1. Files to Deploy
+## The Solution
 
-The minimal deployment requires just these files:
-- `/api/index.js` - The serverless function that handles all frame requests
-- `/public/vercel-minimal.html` - The entry point HTML file for the frame
+We've created a deployment script that will:
+
+1. Back up all your API files
+2. Create a `.vercelignore` file that excludes all but the essential API endpoints
+3. Let you deploy only the most important functions to stay under the limit
+
+## Deployment Steps
+
+### 1. Prepare for Deployment
+
+Run the script to create a minimal deployment package:
+
+```bash
+node create-minimal-deploy.js
+```
+
+This will:
+- Create a backup of all API files in `.api_backup/`
+- Generate a `.vercelignore` file that excludes non-essential API endpoints
 
 ### 2. Deploy to Vercel
 
-1. Connect your GitHub repository to Vercel
-2. Use these settings:
-   - Framework preset: **Other**
-   - Build command: Leave blank
-   - Output directory: **public**
-   - Install command: Leave blank
+Run the Vercel deployment command:
 
-### 3. Test the Frame
-
-After deployment, the frame should be accessible at:
-```
-https://your-project-name.vercel.app/vercel-minimal.html
+```bash
+vercel --prod
 ```
 
-Each button click should work without the "Frame error" message.
+### 3. Restore Your Dev Environment (After Deployment)
 
-## Understanding the Implementation
+After successful deployment, restore your development environment:
 
-### The Single API File (/api/index.js)
-
-This file handles all HTTP requests to `/api` and:
-1. Sets proper CORS headers
-2. Extracts the button index from the request
-3. Returns appropriate HTML based on the button clicked
-4. Handles the share button redirect
-
-### Pre-hosted Images
-
-Instead of generating SVGs or using base64 encoding, we use direct URLs to images hosted on Imgur:
-- Main view: https://i.imgur.com/QT7rPHB.png
-- 24h data: https://i.imgur.com/LWL18gi.png
-- 7d data: https://i.imgur.com/0eXt1zi.png
-- Check My Follows: https://i.imgur.com/mfQaxzJ.png
-
-### Frame HTML Structure
-
-The frame HTML is kept minimal:
-```html
-<!DOCTYPE html>
-<html>
-<head>
-  <meta property="fc:frame" content="vNext">
-  <meta property="fc:frame:image" content="https://i.imgur.com/QT7rPHB.png">
-  <meta property="fc:frame:button:1" content="24h Data">
-  <meta property="fc:frame:button:2" content="7d Data">
-  <meta property="fc:frame:button:3" content="Share Results">
-  <meta property="fc:frame:button:4" content="Check My Follows">
-  <meta property="fc:frame:post_url" content="https://your-project-name.vercel.app/api">
-</head>
-<body>
-  <h1>Warplet Top Traders</h1>
-</body>
-</html>
+```bash
+node restore-api-files.js
 ```
+
+This will:
+- Restore all API files from the backup
+- Reset the `.vercelignore` file
+
+## Essential Endpoints
+
+The minimal deployment includes only these essential endpoints:
+
+1. `api/warpcast-stable.js` - Our ultra-stable endpoint with no external API dependencies
+2. `api/health.js` - Health check endpoint
+3. `api/index.js` - Main API entry point
+4. `api/frame-action.js` - Frame action handler
+5. `api/minimal.js` - Minimal implementation
+
+## Production URLs
+
+After deployment, your frame will be available at:
+
+- Main URL: `https://warplet-traders.vercel.app`
+- Ultra-stable URL: `https://warplet-traders.vercel.app/warpcast-frame.html`
 
 ## Troubleshooting
 
-If you still encounter issues:
+If you encounter issues:
 
-1. **Check Vercel Functions**: Make sure the serverless function is deployed correctly
-2. **Verify the post_url**: It should be the absolute URL to your `/api` endpoint
-3. **Test with curl**: Try making a direct POST request to your API endpoint
-4. **Check Vercel logs**: Look for any errors in the function execution
+1. Check the Vercel deployment logs
+2. Verify that the `.vercelignore` file was created correctly
+3. Make sure you have the latest changes pushed to your repository
 
-## Return to Advanced Implementation
-
-Once this minimal version is working, you can gradually restore the full functionality:
-
-1. Replace the static images with dynamic SVGs
-2. Implement the Neynar and Dune Analytics integrations
-3. Add user-specific data functionality
-
-The key is to make incremental changes while testing each step to ensure everything continues to work.
+If all else fails, you can manually edit the `.vercelignore` file to exclude specific API endpoints.

@@ -1,34 +1,47 @@
-# Ignore specific files, not everything
+# Auto-generated .vercelignore for Vercel Hobby plan deployment
+# Excludes all API files except essentials
+
+# Keep only these essential API files:
+# - warpcast-stable.js
+# - health.js
+# - index.js
+# - frame-action.js
+# - minimal.js
+
+# Exclude all other API files
+api/all-routes.js
+api/base64.js
 api/db.js
 api/direct-html.js
+api/edge-frame.js
 api/edge.config.js
 api/edge.js
 api/frame-action-vercel.js
-api/frame-action.js
-api/health.js
-api/index.js
-api/minimal.js
+api/frame-debug.js
+api/frame-service.js
+api/minimal-headers.js
+api/one-file-frame-real-data.js
+api/one-file-frame.js
 api/refresh-data.js
 api/schema.js
 api/serverless-handler.js
 api/serverless-storage.js
+api/simple-frame.js
 api/storage.js
 api/traders.js
-api/tsconfig.json
+api/ultra-minimal.js
+api/ultra-stable.js
+api/vercel-minimal-frame.js
+api/vercel-real-data.js
 
-# Script files not needed in production
+# Exclude all JS files in the root used for deployment/building
+build-frame.js
+create-minimal-deploy.js
+deploy-minimal.js
 exclude-api-files.js
 restore-api-files.js
-deploy-minimal.js
-create-minimal-deploy.js
-*.sh
-
-# Other files not needed for deployment
-*.ts
-*.md
-!README.md
-!VERCEL_DEPLOYMENT.md
-!DEPLOYMENT_SUMMARY.md
-
-# Keep these files
-# api/all-routes.js is explicitly kept by not being in the ignore list
+server-vercel.js
+simple-api-vercel.js
+update-og-references.js
+vercel-build.js
+vercel.dev.js

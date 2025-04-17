@@ -1,38 +1,56 @@
-// A simple Node.js script to restore API files from the temporary directory
-// This is an alternative approach to the shell script
+/**
+ * Script to restore all API files after a minimal deployment
+ */
 
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+const fs = require('fs');
+const path = require('path');
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Check if backup directory exists
-const backupDir = '.api_backup';
-if (!fs.existsSync(backupDir)) {
-  console.log('Backup directory not found. Nothing to restore.');
-  process.exit(0);
-}
-
-// Get all files in the backup directory
-const files = fs.readdirSync(backupDir);
-const apiDir = path.join(__dirname, 'api');
-
-console.log('Current API files:', fs.readdirSync(apiDir));
-console.log('Files to restore:', files);
-
-// Restore files from backup
-for (const file of files) {
-  const srcPath = path.join(backupDir, file);
-  const destPath = path.join(apiDir, file);
+function restoreApiFiles() {
+  console.log('Restoring API files from backup...');
   
-  console.log(`Restoring ${file}`);
-  fs.renameSync(srcPath, destPath);
+  const backupDir = path.join(__dirname, '.api_backup');
+  const apiDir = path.join(__dirname, 'api');
+  
+  // Check if backup directory exists
+  if (!fs.existsSync(backupDir)) {
+    console.error('Error: Backup directory .api_backup/ not found');
+    console.log('No files to restore.');
+    return;
+  }
+  
+  // Get all files in the backup directory
+  const backupFiles = fs.readdirSync(backupDir);
+  
+  // Restore each file
+  let restoredCount = 0;
+  backupFiles.forEach(file => {
+    const source = path.join(backupDir, file);
+    const dest = path.join(apiDir, file);
+    
+    if (fs.statSync(source).isFile()) {
+      fs.copyFileSync(source, dest);
+      restoredCount++;
+    }
+  });
+  
+  console.log(`Restored ${restoredCount} API files from backup`);
+  
+  // Reset .vercelignore to its previous state
+  if (fs.existsSync(path.join(__dirname, '.vercelignore.bak'))) {
+    fs.copyFileSync(
+      path.join(__dirname, '.vercelignore.bak'),
+      path.join(__dirname, '.vercelignore')
+    );
+    console.log('Restored original .vercelignore file');
+  } else {
+    // Create a minimal .vercelignore that doesn't exclude API files
+    const vercelIgnore = '# Default .vercelignore\n# No API files excluded\n';
+    fs.writeFileSync(path.join(__dirname, '.vercelignore'), vercelIgnore);
+    console.log('Created new .vercelignore file (no API files excluded)');
+  }
+  
+  console.log('\nAll API files have been restored!');
 }
 
-// Remove the backup directory
-fs.rmdirSync(backupDir);
-
-console.log('Restored API files:', fs.readdirSync(apiDir));
-console.log('API files successfully restored');
+// Run the script
+restoreApiFiles();

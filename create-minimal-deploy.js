@@ -1,111 +1,85 @@
-#!/usr/bin/env node
-
 /**
  * Simple script to create a minimal deployment package
  * This avoids the 12 function limit on Vercel Hobby plan
  */
 
-import fs from 'fs';
-import path from 'path';
-import { execSync } from 'child_process';
-import { fileURLToPath } from 'url';
+const fs = require('fs');
+const path = require('path');
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Define the essential API files to keep
+const essentialApiFiles = [
+  'warpcast-stable.js',   // Our new ultra-stable endpoint
+  'health.js',            // Health check endpoint
+  'index.js',             // Main API entry point
+  'frame-action.js',      // Frame action handler
+  'minimal.js'            // Minimal implementation
+];
 
-// Create deployment directory
-const deployDir = 'deploy';
-if (fs.existsSync(deployDir)) {
-  console.log('Cleaning up existing deploy directory...');
-  execSync(`rm -rf ${deployDir}`);
-}
-
-// Create directory structure
-console.log('Creating deployment directory structure...');
-fs.mkdirSync(deployDir);
-fs.mkdirSync(path.join(deployDir, 'api'));
-fs.mkdirSync(path.join(deployDir, 'public'));
-
-// Copy essential files
-console.log('Copying essential files...');
-
-// Copy all-routes.js (only API file needed)
-fs.copyFileSync(
-  path.join(__dirname, 'api', 'all-routes.js'),
-  path.join(deployDir, 'api', 'all-routes.js')
-);
-
-// Copy public files (index.html and images)
-try {
-  fs.copyFileSync(
-    path.join(__dirname, 'public', 'index.html'),
-    path.join(deployDir, 'public', 'index.html')
-  );
+// Create a .vercelignore file that excludes everything except essentials
+function createVercelIgnore() {
+  console.log('Creating .vercelignore file...');
   
-  // Copy og.png if it exists (required for frame)
-  if (fs.existsSync(path.join(__dirname, 'public', 'og.png'))) {
-    fs.copyFileSync(
-      path.join(__dirname, 'public', 'og.png'),
-      path.join(deployDir, 'public', 'og.png')
-    );
-  }
-} catch (err) {
-  console.warn('Warning: Could not copy some public files', err.message);
+  // Start with ignoring all API files
+  const apiDir = path.join(__dirname, 'api');
+  const apiFiles = fs.readdirSync(apiDir);
+  
+  // Create the ignore content
+  let ignoreContent = '# Auto-generated .vercelignore\n';
+  ignoreContent += '# Excludes all API files except essentials\n\n';
+  
+  // Add all API files except essentials to ignore list
+  apiFiles.forEach(file => {
+    if (!essentialApiFiles.includes(file)) {
+      ignoreContent += `api/${file}\n`;
+    }
+  });
+  
+  // Write the file
+  fs.writeFileSync(path.join(__dirname, '.vercelignore'), ignoreContent);
+  console.log(`Created .vercelignore with ${apiFiles.length - essentialApiFiles.length} API files excluded`);
 }
 
-// Copy Vercel configuration
-fs.copyFileSync(
-  path.join(__dirname, 'vercel.json'),
-  path.join(deployDir, 'vercel.json')
-);
-
-// Create a minimal package.json
-const packageJson = {
-  "name": "warplet-traders",
-  "version": "1.0.0",
-  "description": "Warplet Traders Frame App",
-  "dependencies": {
-    "express": "^4.18.2",
-    "@neondatabase/serverless": "^0.8.1",
-    "ws": "^8.16.0"
+// Create a hidden backup of each file in the api folder
+function backupApiFiles() {
+  console.log('Backing up API files...');
+  
+  const apiDir = path.join(__dirname, 'api');
+  const apiFiles = fs.readdirSync(apiDir);
+  
+  // Create backup folder if it doesn't exist
+  const backupDir = path.join(__dirname, '.api_backup');
+  if (!fs.existsSync(backupDir)) {
+    fs.mkdirSync(backupDir);
   }
-};
+  
+  // Copy each file to the backup
+  apiFiles.forEach(file => {
+    const source = path.join(apiDir, file);
+    const dest = path.join(backupDir, file);
+    
+    if (fs.statSync(source).isFile()) {
+      fs.copyFileSync(source, dest);
+    }
+  });
+  
+  console.log(`Backed up ${apiFiles.length} API files to .api_backup/`);
+}
 
-fs.writeFileSync(
-  path.join(deployDir, 'package.json'),
-  JSON.stringify(packageJson, null, 2)
-);
+// Main function
+function createMinimalDeploy() {
+  console.log('Creating minimal deployment package...');
+  
+  // 1. Backup all API files
+  backupApiFiles();
+  
+  // 2. Create .vercelignore
+  createVercelIgnore();
+  
+  console.log('\nMinimal deployment package created!');
+  console.log('Deploy with: vercel --prod');
+  console.log('\nTo restore all API files after deployment, run:');
+  console.log('node restore-api-files.js');
+}
 
-// Create a simplified README
-const readmeContent = `# Minimal Warplet Traders Deployment
-
-This is a minimal deployment package created for the Vercel Hobby plan.
-It contains only the essential files needed to run the app while staying
-under the 12 serverless function limit.
-
-## Deployment
-
-To deploy this package:
-
-\`\`\`bash
-cd deploy
-vercel
-\`\`\`
-`;
-
-fs.writeFileSync(
-  path.join(deployDir, 'README.md'),
-  readmeContent
-);
-
-console.log('\nDeployment package created successfully!');
-console.log('Directory contents:');
-console.log('-----------------------------------');
-execSync(`ls -la ${deployDir}`, { stdio: 'inherit' });
-console.log('-----------------------------------');
-execSync(`ls -la ${deployDir}/api`, { stdio: 'inherit' });
-console.log('-----------------------------------');
-execSync(`ls -la ${deployDir}/public`, { stdio: 'inherit' });
-
-console.log('\nTo deploy, run:');
-console.log('cd deploy && vercel');
+// Run the script
+createMinimalDeploy();
