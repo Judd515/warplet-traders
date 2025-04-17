@@ -90,9 +90,8 @@ export default function handler(req, res) {
         // Button 2: View 7d Data
         frameType = 'week';
       } else if (buttonIndex === 3) {
-        // Button 3: Check Me - load user's FID data
-        // If already on "Check Me" view, this will refresh it
-        frameType = 'check-me';
+        // Button 3: Check Me - load user's FID data with 24h timeframe as default
+        frameType = 'check-me-24h';
       } else if (buttonIndex === 4) {
         // Button 4: Share (already handled by the direct link action)
         // Only handle the special case for the share view's "Back to Main" button
@@ -134,8 +133,8 @@ export default function handler(req, res) {
     }
   }
   
-  // Default response - start with user's FID data
-  return res.status(200).send(getFrameHtml('check-me'));
+  // Default response - start with user's FID data (24h view)
+  return res.status(200).send(getFrameHtml('check-me-24h'));
 }
 
 /**
