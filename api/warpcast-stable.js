@@ -1,27 +1,30 @@
 /**
  * Enhanced frame implementation for Warpcast
- * Fetches profile photos from Neynar API
+ * Fetches profile photos from Neynar API with caching
  * 
  * IMPORTANT RULES:
  * - Always show the profile photo of the user whose data is being displayed
- * - Using larger profile circle (62.5px) with adjusted layout
+ * - Using larger profile circle (76px) with adjusted layout
  * - Increased font sizes for better readability
+ * - All text uses Verdana font for consistency
  */
 import axios from 'axios';
 
-// Helper function to fetch user profile from Neynar API
+// Import the profile cache system
+const profileCache = require('./profile-cache');
+
+// Helper function to fetch user profile from Neynar API with caching
 async function fetchUserProfile(fid) {
-  // Forced hardcoded profile for specific users
-  if (fid === 12915) {
-    console.log('Using special hardcoded profile for 0xjudd (FID 12915)');
-    return {
-      fid: 12915,
-      username: "0xjudd.eth",
-      displayName: "0xJudd.eth 🎩↑",
-      pfp: { 
-        url: "https://i.imgur.com/yyBPo9n.jpg" 
-      }
-    };
+  if (!fid) {
+    console.log('No FID provided, skipping profile fetch');
+    return null;
+  }
+  
+  // Check if we have this profile in our cache
+  const cachedProfile = profileCache.getCachedProfile(fid);
+  if (cachedProfile) {
+    console.log(`Using cached profile for FID ${fid}: ${cachedProfile.username || 'unknown'}`);
+    return cachedProfile;
   }
   
   try {
@@ -35,84 +38,83 @@ async function fetchUserProfile(fid) {
     console.log(`Using Neynar API key: ${process.env.NEYNAR_API_KEY.substring(0, 4)}...`);
     
     // Fetch user profile - use FID directly if provided
-    if (fid) {
-      const apiUrl = `https://api.neynar.com/v2/farcaster/user?fid=${fid}`;
-      console.log(`Making API call to: ${apiUrl}`);
+    const apiUrl = `https://api.neynar.com/v2/farcaster/user?fid=${fid}`;
+    console.log(`Making API call to: ${apiUrl}`);
+    
+    const response = await axios.get(apiUrl, {
+      headers: {
+        'accept': 'application/json',
+        'api_key': process.env.NEYNAR_API_KEY
+      },
+      timeout: 5000 // 5 second timeout to avoid long waits
+    });
+    
+    if (response.data && response.data.user) {
+      const user = response.data.user;
+      console.log(`Success! Found user profile for FID ${fid}: ${user.username}`);
+      console.log(`Profile photo URL: ${user.pfp_url}`);
       
-      const response = await axios.get(apiUrl, {
-        headers: {
-          'accept': 'application/json',
-          'api_key': process.env.NEYNAR_API_KEY
-        },
-        timeout: 5000 // 5 second timeout to avoid long waits
-      });
+      // Create a profile object in the format our app expects
+      const profileData = {
+        fid: user.fid,
+        username: user.username,
+        displayName: user.display_name,
+        pfp: { url: user.pfp_url }
+      };
       
-      console.log('Neynar API raw response:', JSON.stringify(response.data, null, 2).substring(0, 300) + '...');
+      // Cache the profile data
+      profileCache.cacheProfile(fid, profileData);
+      profileCache.cacheProfile(user.username, profileData);
       
-      if (response.data && response.data.user) {
-        const user = response.data.user;
-        console.log(`Success! Found user profile for FID ${fid}: ${user.username}`);
-        console.log(`Profile photo URL: ${user.pfp_url}`);
-        
-        // Create a profile object in the format our app expects
-        return {
-          fid: user.fid,
-          username: user.username,
-          displayName: user.display_name,
-          pfp: { url: user.pfp_url }
-        };
-      }
+      return profileData;
     }
     
     // If we get here, there was no result or an error occurred
     console.log('No user data returned from Neynar API for FID:', fid);
+    
+    // Try an alternative approach with bulk endpoint
+    console.log('Trying alternative endpoint for FID:', fid);
+    const bulkResponse = await axios.get(
+      `https://api.neynar.com/v2/farcaster/user/bulk?fids=${fid}`,
+      {
+        headers: {
+          'accept': 'application/json',
+          'api_key': process.env.NEYNAR_API_KEY
+        },
+        timeout: 5000
+      }
+    );
+    
+    if (bulkResponse.data && bulkResponse.data.users && bulkResponse.data.users.length > 0) {
+      const user = bulkResponse.data.users[0];
+      console.log(`Found user profile using alternate method: ${user.username}`);
+      console.log(`Profile photo URL: ${user.pfp_url}`);
+      
+      const profileData = {
+        fid: user.fid,
+        username: user.username,
+        displayName: user.display_name,
+        pfp: { url: user.pfp_url }
+      };
+      
+      // Cache the profile data
+      profileCache.cacheProfile(fid, profileData);
+      profileCache.cacheProfile(user.username, profileData);
+      
+      return profileData;
+    }
+    
     return null;
   } catch (error) {
     console.error('Error fetching user profile:', error.message);
     console.error('Error details:', error.response ? JSON.stringify(error.response.data, null, 2) : 'No response data');
     
-    // Try an alternative approach with bulk endpoint if the first method fails
-    try {
-      console.log('Trying alternative endpoint for FID:', fid);
-      const response = await axios.get(
-        `https://api.neynar.com/v2/farcaster/user/bulk?fids=${fid}`,
-        {
-          headers: {
-            'accept': 'application/json',
-            'api_key': process.env.NEYNAR_API_KEY
-          },
-          timeout: 5000
-        }
-      );
-      
-      if (response.data && response.data.users && response.data.users.length > 0) {
-        const user = response.data.users[0];
-        console.log(`Found user profile using alternate method: ${user.username}`);
-        console.log(`Profile photo URL: ${user.pfp_url}`);
-        
-        return {
-          fid: user.fid,
-          username: user.username,
-          displayName: user.display_name,
-          pfp: { url: user.pfp_url }
-        };
-      }
-    } catch (backupError) {
-      console.error('Also failed with backup method:', backupError.message);
-      console.error('Backup error details:', backupError.response ? JSON.stringify(backupError.response.data, null, 2) : 'No response data');
-    }
-    
-    // As a last resort, if all else fails, provide a hardcoded profile for known FIDs
-    if (fid === 12915) {
-      console.log('Falling back to hardcoded profile for 0xjudd after API failures');
-      return {
-        fid: 12915,
-        username: "0xjudd.eth",
-        displayName: "0xJudd.eth 🎩↑",
-        pfp: { 
-          url: "https://i.imgur.com/yyBPo9n.jpg" 
-        }
-      };
+    // Use cached profile as fallback, even if we didn't check before
+    // This covers any known profiles we have in our system
+    const fallbackProfile = profileCache.getCachedProfile(fid);
+    if (fallbackProfile) {
+      console.log(`Using fallback cached profile for FID ${fid} after API error`);
+      return fallbackProfile;
     }
     
     return null;
@@ -188,21 +190,8 @@ export default async function handler(req, res) {
           let profile = null;
           if (fid) {
             console.log(`Fetching profile for FID: ${fid} for 24h view`);
-            // Use hardcoded profile for 0xjudd
-            if (fid === 12915) {
-              profile = {
-                fid: 12915,
-                username: "0xjudd.eth",
-                displayName: "0xJudd.eth 🎩↑",
-                pfp: { 
-                  url: "https://i.imgur.com/yyBPo9n.jpg" 
-                }
-              };
-              console.log('Using hardcoded profile photo URL for 24h view:', profile.pfp.url);
-            } else {
-              profile = await fetchUserProfile(fid);
-              console.log('Profile fetched for 24h view:', profile ? 'success' : 'failed');
-            }
+            profile = await fetchUserProfile(fid);
+            console.log('Profile fetched for 24h view:', profile ? 'success' : 'failed');
           }
           return res.status(200).send(getFrameHtml('24h', traders24h, fid, profile));
         } catch (error) {
@@ -215,21 +204,8 @@ export default async function handler(req, res) {
           let profile = null;
           if (fid) {
             console.log(`Fetching profile for FID: ${fid} for 7d view`);
-            // Use hardcoded profile for 0xjudd
-            if (fid === 12915) {
-              profile = {
-                fid: 12915,
-                username: "0xjudd.eth",
-                displayName: "0xJudd.eth 🎩↑",
-                pfp: { 
-                  url: "https://i.imgur.com/yyBPo9n.jpg" 
-                }
-              };
-              console.log('Using hardcoded profile photo URL for 7d view:', profile.pfp.url);
-            } else {
-              profile = await fetchUserProfile(fid);
-              console.log('Profile fetched for 7d view:', profile ? 'success' : 'failed');
-            }
+            profile = await fetchUserProfile(fid);
+            console.log('Profile fetched for 7d view:', profile ? 'success' : 'failed');
           }
           return res.status(200).send(getFrameHtml('7d', traders7d, fid, profile));
         } catch (error) {
@@ -241,24 +217,10 @@ export default async function handler(req, res) {
           // For "Check Me", get user profile first
           let profile = null;
           
-          // If it's your FID (12915), hardcode your profile data
-          if (fid === 12915) {
-            console.log('Detected 0xjudd.eth profile, using hardcoded data...');
-            profile = {
-              fid: 12915,
-              username: "0xjudd.eth",
-              displayName: "0xJudd.eth 🎩↑",
-              pfp: { 
-                url: "https://i.imgur.com/yyBPo9n.jpg" 
-              }
-            };
-            console.log('Using hardcoded profile photo URL:', profile.pfp.url);
-          } 
-          // Otherwise try fetching via API
-          else if (fid) {
-            console.log(`Fetching profile for FID: ${fid}`);
+          if (fid) {
+            console.log(`Fetching profile for FID: ${fid} for Check Me view`);
             profile = await fetchUserProfile(fid);
-            console.log('Profile fetched:', profile ? 'success' : 'failed');
+            console.log('Profile fetched for Check Me view:', profile ? 'success' : 'failed');
           }
           
           // Custom data for 0xjudd (FID 12915)
@@ -333,7 +295,7 @@ function getRedirectHtml(url) {
   <meta http-equiv="refresh" content="0;url=${url}">
   <meta charset="utf-8">
   <meta property="fc:frame" content="vNext">
-  <meta property="fc:frame:image" content="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjMwIiBmaWxsPSIjMWUyOTNiIi8+CiAgPHRleHQgeD0iNjAwIiB5PSIzMTUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+T3BlbmluZyBTaGFyZSBDb21wb3Nlci4uLjwvdGV4dD4KPC9zdmc+">
+  <meta property="fc:frame:image" content="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjMwIiBmaWxsPSIjMTIxMjE4Ii8+CiAgPHRleHQgeD0iNjAwIiB5PSIzMTUiIGZvbnQtZmFtaWx5PSJWZXJkYW5hIiBmb250LXNpemU9IjYwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjZmZmZmZmIj5PcGVuaW5nIFNoYXJlIENvbXBvc2VyLi4uPC90ZXh0PgogIDx0ZXh0IHg9IjYwMCIgeT0iNTgwIiBmb250LWZhbWlseT0iVmVyZGFuYSIgZm9udC1zaXplPSIyNCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzdlODI5NiI+RnJhbWUgY3JlYXRlZCBieSAweGp1ZGQ8L3RleHQ+Cjwvc3ZnPg==">
   <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/warpcast-stable">
   <meta property="fc:frame:button:1" content="View 24h Data">
   <meta property="fc:frame:button:2" content="View 7d Data">
