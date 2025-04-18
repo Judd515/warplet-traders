@@ -296,7 +296,7 @@ function getRedirectHtml(url) {
   <meta charset="utf-8">
   <meta property="fc:frame" content="vNext">
   <meta property="fc:frame:image" content="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjMwIiBmaWxsPSIjMTIxMjE4Ii8+CiAgPHRleHQgeD0iNjAwIiB5PSIzMTUiIGZvbnQtZmFtaWx5PSJWZXJkYW5hIiBmb250LXNpemU9IjYwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjZmZmZmZmIj5PcGVuaW5nIFNoYXJlIENvbXBvc2VyLi4uPC90ZXh0PgogIDx0ZXh0IHg9IjYwMCIgeT0iNTgwIiBmb250LWZhbWlseT0iVmVyZGFuYSIgZm9udC1zaXplPSIyNCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzdlODI5NiI+RnJhbWUgY3JlYXRlZCBieSAweGp1ZGQ8L3RleHQ+Cjwvc3ZnPg==">
-  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/warpcast-stable">
+  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/frame-action">
   <meta property="fc:frame:button:1" content="View 24h Data">
   <meta property="fc:frame:button:2" content="View 7d Data">
   <meta property="fc:frame:button:3" content="Check Me">
@@ -732,7 +732,7 @@ function getFrameHtml(frameType, traders = [], fid = 0, profile = null) {
   <meta charset="utf-8">
   <meta property="fc:frame" content="vNext">
   <meta property="fc:frame:image" content="${imageBase64}">
-  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/warpcast-stable">
+  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/frame-action">
   <meta property="fc:frame:button:1" content="${button1}">
   <meta property="fc:frame:button:2" content="${button2}">
   <meta property="fc:frame:button:3" content="${button3}">
