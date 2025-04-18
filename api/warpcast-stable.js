@@ -358,22 +358,22 @@ function getFrameHtml(frameType, traders = [], fid = 0, profile = null) {
     <!-- Background -->
     <rect width="1200" height="630" fill="#121218"/>
     
-    <!-- Profile circle (visible on all frames) positioned differently to fit -->
-    <circle cx="100" cy="80" r="62.5" fill="#509ec7"/>
-    <text x="100" y="85" font-family="Arial" font-size="20" font-weight="bold" text-anchor="middle" fill="#ffffff">WARP</text>
+    <!-- Profile circle (visible on all frames) positioned differently to fit - 22% larger -->
+    <circle cx="100" cy="80" r="76" fill="#509ec7"/>
+    <text x="100" y="85" font-family="Verdana" font-size="20" font-weight="bold" text-anchor="middle" fill="#ffffff">WARP</text>
     
     <!-- Title bar with background - moved right to make room for profile pic -->
     <rect x="180" y="60" width="950" height="100" rx="16" fill="#2a334a"/>
-    <text x="650" y="125" font-family="Arial" font-size="48" font-weight="bold" text-anchor="middle" fill="#e4f1ff">Warplet Top Traders</text>
+    <text x="650" y="125" font-family="Verdana" font-size="48" font-weight="bold" text-anchor="middle" fill="#e4f1ff">Warplet Top Traders</text>
     
-    <!-- Main content area -->
-    <rect x="100" y="200" width="1000" height="340" rx="16" fill="#1a1a24" stroke="#444455" stroke-width="3"/>
-    <text x="600" y="320" font-family="Arial" font-size="30" text-anchor="middle" fill="#ffffff">View the top trading performance</text>
-    <text x="600" y="360" font-family="Arial" font-size="30" text-anchor="middle" fill="#ffffff">on Farcaster using real-time data</text>
-    <text x="600" y="400" font-family="Arial" font-size="24" text-anchor="middle" fill="#7e8296">Click a button below to get started</text>
+    <!-- Main content area - shifted down 5px -->
+    <rect x="100" y="205" width="1000" height="340" rx="16" fill="#1a1a24" stroke="#444455" stroke-width="3"/>
+    <text x="600" y="325" font-family="Verdana" font-size="30" text-anchor="middle" fill="#ffffff">View the top trading performance</text>
+    <text x="600" y="365" font-family="Verdana" font-size="30" text-anchor="middle" fill="#ffffff">on Farcaster using real-time data</text>
+    <text x="600" y="405" font-family="Verdana" font-size="24" text-anchor="middle" fill="#7e8296">Click a button below to get started</text>
     
-    <!-- Footer with LARGER font -->
-    <text x="600" y="580" font-family="Arial" font-size="36" text-anchor="middle" fill="#7e8296">Frame created by 0xjudd</text>
+    <!-- Footer with 24px font -->
+    <text x="600" y="580" font-family="Verdana" font-size="24" text-anchor="middle" fill="#7e8296">Frame created by 0xjudd</text>
   </svg>`;
   
   // Create the base64 encoding of the SVG
@@ -699,8 +699,8 @@ function getFrameHtml(frameType, traders = [], fid = 0, profile = null) {
       <text x="600" y="370" font-family="Verdana" font-size="36" font-weight="bold" text-anchor="middle" fill="#eeeeee">Error Loading Data</text>
       <text x="600" y="420" font-family="Verdana" font-size="24" text-anchor="middle" fill="#b4b4cc">Please try again</text>
       
-      <!-- Footer with smaller font - positioned lower to avoid overlap -->
-      <text x="600" y="600" font-family="Verdana" font-size="18" text-anchor="middle" fill="#7e8296">Frame created by 0xjudd</text>
+      <!-- Footer with 24px font -->
+      <text x="600" y="600" font-family="Verdana" font-size="24" text-anchor="middle" fill="#7e8296">Frame created by 0xjudd</text>
     </svg>`;
   };
   
