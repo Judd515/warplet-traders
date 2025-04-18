@@ -9,9 +9,11 @@ import { insertTraderSchema } from "@shared/schema";
 import * as fs from 'fs';
 import * as path from 'path';
 
-// Import the simple frame handler
-// @ts-ignore - ignore TypeScript errors for this import
+// Import the frame handlers
+// @ts-ignore - ignore TypeScript errors for these imports
 import simpleFrameHandler from './api/simple-frame';
+import warpcastStableHandler from './api/warpcast-stable';
+import testNeynarHandler from './api/test-neynar';
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Endpoint to get top traders with PnL data for a specific timeframe
@@ -209,6 +211,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error in simple-frame handler:', error);
       res.status(500).send('Error processing frame request');
+    }
+  });
+
+  // Add route for the warpcast-stable frame handler
+  app.all('/api/warpcast-stable', (req, res) => {
+    try {
+      console.log('Warpcast stable frame request received:', req.method, JSON.stringify(req.body || {}));
+      // @ts-ignore - warpcastStableHandler is expecting Express request/response
+      return warpcastStableHandler(req, res);
+    } catch (error) {
+      console.error('Error in warpcast-stable handler:', error);
+      res.status(500).send('Error processing warpcast frame request');
+    }
+  });
+
+  // Add route for testing Neynar API
+  app.get('/api/test-neynar', (req, res) => {
+    try {
+      console.log('Test Neynar request received with query:', JSON.stringify(req.query));
+      // @ts-ignore - testNeynarHandler is expecting Express request/response
+      return testNeynarHandler(req, res);
+    } catch (error) {
+      console.error('Error in test-neynar handler:', error);
+      res.status(500).json({ error: 'Error testing Neynar API', message: error.message });
     }
   });
 
