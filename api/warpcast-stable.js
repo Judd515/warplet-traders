@@ -3,10 +3,9 @@
  * Fetches profile photos from Neynar API
  * 
  * IMPORTANT RULES:
- * - When a user is viewing THEIR OWN data (via Check Me button), show THEIR profile photo
- * - When a user is viewing GENERAL data (24h/7d), show the Warplet logo (no user photo)
- * 
- * This version uses PERSONALIZED views for "Check Me" but GENERAL data for 24h/7d views
+ * - Always show the profile photo of the user whose data is being displayed
+ * - Using larger profile circle (62.5px) with adjusted layout
+ * - Increased font sizes for better readability
  */
 import axios from 'axios';
 
@@ -161,7 +160,7 @@ export default async function handler(req, res) {
                 username: "0xjudd.eth",
                 displayName: "0xJudd.eth 🎩↑",
                 pfp: { 
-                  url: "https://imagedelivery.net/BXluQx4ige9GuW0Ia56BHw/66c21d51-f8bc-44ea-94b6-26c4f159f700/original" 
+                  url: "https://i.imgur.com/yyBPo9n.jpg" 
                 }
               };
               console.log('Using hardcoded profile photo URL for 24h view:', profile.pfp.url);
@@ -188,7 +187,7 @@ export default async function handler(req, res) {
                 username: "0xjudd.eth",
                 displayName: "0xJudd.eth 🎩↑",
                 pfp: { 
-                  url: "https://imagedelivery.net/BXluQx4ige9GuW0Ia56BHw/66c21d51-f8bc-44ea-94b6-26c4f159f700/original" 
+                  url: "https://i.imgur.com/yyBPo9n.jpg" 
                 }
               };
               console.log('Using hardcoded profile photo URL for 7d view:', profile.pfp.url);
@@ -215,7 +214,7 @@ export default async function handler(req, res) {
               username: "0xjudd.eth",
               displayName: "0xJudd.eth 🎩↑",
               pfp: { 
-                url: "https://imagedelivery.net/BXluQx4ige9GuW0Ia56BHw/66c21d51-f8bc-44ea-94b6-26c4f159f700/original" 
+                url: "https://i.imgur.com/yyBPo9n.jpg" 
               }
             };
             console.log('Using hardcoded profile photo URL:', profile.pfp.url);
@@ -324,22 +323,22 @@ function getFrameHtml(frameType, traders = [], fid = 0, profile = null) {
     <!-- Background -->
     <rect width="1200" height="630" fill="#121218"/>
     
-    <!-- Profile circle (visible on all frames) -->
-    <circle cx="80" cy="60" r="50" fill="#509ec7"/>
-    <text x="80" y="65" font-family="Arial" font-size="18" font-weight="bold" text-anchor="middle" fill="#ffffff">WARP</text>
+    <!-- Profile circle (visible on all frames) positioned differently to fit -->
+    <circle cx="100" cy="80" r="62.5" fill="#509ec7"/>
+    <text x="100" y="85" font-family="Arial" font-size="20" font-weight="bold" text-anchor="middle" fill="#ffffff">WARP</text>
     
-    <!-- Title bar with background -->
-    <rect x="140" y="80" width="960" height="100" rx="16" fill="#2a334a"/>
-    <text x="600" y="145" font-family="Arial" font-size="48" font-weight="bold" text-anchor="middle" fill="#e4f1ff">Warplet Top Traders</text>
+    <!-- Title bar with background - moved right to make room for profile pic -->
+    <rect x="180" y="60" width="950" height="100" rx="16" fill="#2a334a"/>
+    <text x="650" y="125" font-family="Arial" font-size="48" font-weight="bold" text-anchor="middle" fill="#e4f1ff">Warplet Top Traders</text>
     
     <!-- Main content area -->
-    <rect x="100" y="220" width="1000" height="300" rx="16" fill="#1a1a24" stroke="#444455" stroke-width="3"/>
-    <text x="600" y="340" font-family="Arial" font-size="30" text-anchor="middle" fill="#ffffff">View the top trading performance</text>
-    <text x="600" y="380" font-family="Arial" font-size="30" text-anchor="middle" fill="#ffffff">on Farcaster using real-time data</text>
-    <text x="600" y="420" font-family="Arial" font-size="24" text-anchor="middle" fill="#7e8296">Click a button below to get started</text>
+    <rect x="100" y="200" width="1000" height="340" rx="16" fill="#1a1a24" stroke="#444455" stroke-width="3"/>
+    <text x="600" y="320" font-family="Arial" font-size="30" text-anchor="middle" fill="#ffffff">View the top trading performance</text>
+    <text x="600" y="360" font-family="Arial" font-size="30" text-anchor="middle" fill="#ffffff">on Farcaster using real-time data</text>
+    <text x="600" y="400" font-family="Arial" font-size="24" text-anchor="middle" fill="#7e8296">Click a button below to get started</text>
     
-    <!-- Footer -->
-    <text x="600" y="580" font-family="Arial" font-size="18" text-anchor="middle" fill="#7e8296">Frame created by 0xjudd</text>
+    <!-- Footer with LARGER font -->
+    <text x="600" y="580" font-family="Arial" font-size="36" text-anchor="middle" fill="#7e8296">Frame created by 0xjudd</text>
   </svg>`;
   
   // Create the base64 encoding of the SVG
@@ -356,14 +355,14 @@ function getFrameHtml(frameType, traders = [], fid = 0, profile = null) {
       <!-- User Profile Photo hardcoded for 0xjudd -->
       <defs>
         <pattern id="profileImage24h" patternUnits="userSpaceOnUse" width="125" height="125">
-          <image href="https://imagedelivery.net/BXluQx4ige9GuW0Ia56BHw/66c21d51-f8bc-44ea-94b6-26c4f159f700/original" x="0" y="0" width="125" height="125" />
+          <image href="https://i.imgur.com/yyBPo9n.jpg" x="0" y="0" width="125" height="125" />
         </pattern>
         <clipPath id="circleClip24h">
-          <circle cx="80" cy="60" r="62.5"/>
+          <circle cx="100" cy="80" r="62.5"/>
         </clipPath>
       </defs>
-      <circle cx="80" cy="60" r="62.5" fill="url(#profileImage24h)" clip-path="url(#circleClip24h)"/>
-      <circle cx="80" cy="60" r="62.5" fill="none" stroke="#ffffff" stroke-width="2"/>`;
+      <circle cx="100" cy="80" r="62.5" fill="url(#profileImage24h)" clip-path="url(#circleClip24h)"/>
+      <circle cx="100" cy="80" r="62.5" fill="none" stroke="#ffffff" stroke-width="2"/>`;
     }
     else if (profile && profile.pfp && profile.pfp.url) {
       // Use actual profile photo from Neynar with LARGER circle (62.5 instead of 50)
@@ -374,17 +373,17 @@ function getFrameHtml(frameType, traders = [], fid = 0, profile = null) {
           <image href="${profile.pfp.url}" x="0" y="0" width="125" height="125" />
         </pattern>
         <clipPath id="circleClip24h">
-          <circle cx="80" cy="60" r="62.5"/>
+          <circle cx="100" cy="80" r="62.5"/>
         </clipPath>
       </defs>
-      <circle cx="80" cy="60" r="62.5" fill="url(#profileImage24h)" clip-path="url(#circleClip24h)"/>
-      <circle cx="80" cy="60" r="62.5" fill="none" stroke="#ffffff" stroke-width="2"/>`;
+      <circle cx="100" cy="80" r="62.5" fill="url(#profileImage24h)" clip-path="url(#circleClip24h)"/>
+      <circle cx="100" cy="80" r="62.5" fill="none" stroke="#ffffff" stroke-width="2"/>`;
     } else {
       // Fallback if no profile image is available - LARGER circle (62.5 instead of 50)
       profileSvg = `
       <!-- Profile circle fallback -->
-      <circle cx="80" cy="60" r="62.5" fill="#6e42ca"/>
-      <text x="80" y="65" font-family="Arial" font-size="20" font-weight="bold" text-anchor="middle" fill="#ffffff">WARP</text>`;
+      <circle cx="100" cy="80" r="62.5" fill="#6e42ca"/>
+      <text x="100" y="85" font-family="Arial" font-size="20" font-weight="bold" text-anchor="middle" fill="#ffffff">WARP</text>`;
     }
     
     return `<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
@@ -393,58 +392,58 @@ function getFrameHtml(frameType, traders = [], fid = 0, profile = null) {
       
       ${profileSvg}
       
-      <!-- Title bar with background -->
-      <rect x="140" y="20" width="1040" height="80" rx="12" fill="#332233"/>
-      <text x="600" y="70" font-family="Arial" font-size="40" font-weight="bold" text-anchor="middle" fill="#f0d0ff">Top Warplet Traders (24H)</text>
+      <!-- Title bar with background - moved over to make room for profile pic -->
+      <rect x="180" y="40" width="950" height="80" rx="12" fill="#332233"/>
+      <text x="650" y="90" font-family="Arial" font-size="40" font-weight="bold" text-anchor="middle" fill="#f0d0ff">Top Warplet Traders (24H)</text>
       
       <!-- Main card -->
-      <rect x="20" y="120" width="1160" height="420" rx="20" fill="#1a1a24" stroke="#444455" stroke-width="2"/>
+      <rect x="40" y="140" width="1120" height="420" rx="20" fill="#1a1a24" stroke="#444455" stroke-width="2"/>
       
       <!-- Table header -->
-      <rect x="40" y="140" width="1120" height="50" fill="#252535" rx="8"/>
-      <text x="140" y="174" font-family="Arial" font-size="26" font-weight="bold" fill="#ffffff">Trader</text>
-      <text x="520" y="174" font-family="Arial" font-size="26" font-weight="bold" fill="#ffffff">Token</text>
-      <text x="800" y="174" font-family="Arial" font-size="26" font-weight="bold" fill="#ffffff">Earnings</text>
-      <text x="1020" y="174" font-family="Arial" font-size="26" font-weight="bold" fill="#ffffff">Volume</text>
+      <rect x="60" y="160" width="1080" height="50" fill="#252535" rx="8"/>
+      <text x="160" y="194" font-family="Arial" font-size="26" font-weight="bold" fill="#ffffff">Trader</text>
+      <text x="520" y="194" font-family="Arial" font-size="26" font-weight="bold" fill="#ffffff">Token</text>
+      <text x="800" y="194" font-family="Arial" font-size="26" font-weight="bold" fill="#ffffff">Earnings</text>
+      <text x="1020" y="194" font-family="Arial" font-size="26" font-weight="bold" fill="#ffffff">Volume</text>
       
-      <!-- Table rows -->
-      <rect x="40" y="200" width="1120" height="60" fill="${traders[0].earnings.startsWith('1') ? '#28283a' : '#1d1d2c'}" />
-      <text x="60" y="240" font-family="Arial" font-size="24" fill="#ffffff">1.</text>
-      <text x="90" y="240" font-family="Arial" font-size="24" fill="#ffffff">${traders[0].name}</text>
-      <text x="520" y="240" font-family="Arial" font-size="24" fill="#ffffff">${traders[0].token}</text>
-      <text x="800" y="240" font-family="Arial" font-size="24" fill="#4CAF50">$${traders[0].earnings}</text>
-      <text x="1020" y="240" font-family="Arial" font-size="24" fill="#ffffff">$${traders[0].volume}</text>
+      <!-- Table rows with LARGER font (1.5x) -->
+      <rect x="60" y="220" width="1080" height="60" fill="${traders[0].earnings.startsWith('1') ? '#28283a' : '#1d1d2c'}" />
+      <text x="80" y="260" font-family="Arial" font-size="36" fill="#ffffff">1.</text>
+      <text x="110" y="260" font-family="Arial" font-size="36" fill="#ffffff">${traders[0].name}</text>
+      <text x="520" y="260" font-family="Arial" font-size="36" fill="#ffffff">${traders[0].token}</text>
+      <text x="800" y="260" font-family="Arial" font-size="36" fill="#4CAF50">$${traders[0].earnings}</text>
+      <text x="1020" y="260" font-family="Arial" font-size="36" fill="#ffffff">$${traders[0].volume}</text>
       
-      <rect x="40" y="260" width="1120" height="60" fill="${traders[1].earnings.startsWith('2') ? '#28283a' : '#1d1d2c'}" />
-      <text x="60" y="300" font-family="Arial" font-size="24" fill="#ffffff">2.</text>
-      <text x="90" y="300" font-family="Arial" font-size="24" fill="#ffffff">${traders[1].name}</text>
-      <text x="520" y="300" font-family="Arial" font-size="24" fill="#ffffff">${traders[1].token}</text>
-      <text x="800" y="300" font-family="Arial" font-size="24" fill="#4CAF50">$${traders[1].earnings}</text>
-      <text x="1020" y="300" font-family="Arial" font-size="24" fill="#ffffff">$${traders[1].volume}</text>
+      <rect x="60" y="280" width="1080" height="60" fill="${traders[1].earnings.startsWith('2') ? '#28283a' : '#1d1d2c'}" />
+      <text x="80" y="320" font-family="Arial" font-size="36" fill="#ffffff">2.</text>
+      <text x="110" y="320" font-family="Arial" font-size="36" fill="#ffffff">${traders[1].name}</text>
+      <text x="520" y="320" font-family="Arial" font-size="36" fill="#ffffff">${traders[1].token}</text>
+      <text x="800" y="320" font-family="Arial" font-size="36" fill="#4CAF50">$${traders[1].earnings}</text>
+      <text x="1020" y="320" font-family="Arial" font-size="36" fill="#ffffff">$${traders[1].volume}</text>
       
-      <rect x="40" y="320" width="1120" height="60" fill="${traders[2].earnings.startsWith('2') ? '#28283a' : '#1d1d2c'}" />
-      <text x="60" y="360" font-family="Arial" font-size="24" fill="#ffffff">3.</text>
-      <text x="90" y="360" font-family="Arial" font-size="24" fill="#ffffff">${traders[2].name}</text>
-      <text x="520" y="360" font-family="Arial" font-size="24" fill="#ffffff">${traders[2].token}</text>
-      <text x="800" y="360" font-family="Arial" font-size="24" fill="#4CAF50">$${traders[2].earnings}</text>
-      <text x="1020" y="360" font-family="Arial" font-size="24" fill="#ffffff">$${traders[2].volume}</text>
+      <rect x="60" y="340" width="1080" height="60" fill="${traders[2].earnings.startsWith('2') ? '#28283a' : '#1d1d2c'}" />
+      <text x="80" y="380" font-family="Arial" font-size="36" fill="#ffffff">3.</text>
+      <text x="110" y="380" font-family="Arial" font-size="36" fill="#ffffff">${traders[2].name}</text>
+      <text x="520" y="380" font-family="Arial" font-size="36" fill="#ffffff">${traders[2].token}</text>
+      <text x="800" y="380" font-family="Arial" font-size="36" fill="#4CAF50">$${traders[2].earnings}</text>
+      <text x="1020" y="380" font-family="Arial" font-size="36" fill="#ffffff">$${traders[2].volume}</text>
       
-      <rect x="40" y="380" width="1120" height="60" fill="${traders[3].earnings.startsWith('1') ? '#28283a' : '#1d1d2c'}" />
-      <text x="60" y="420" font-family="Arial" font-size="24" fill="#ffffff">4.</text>
-      <text x="90" y="420" font-family="Arial" font-size="24" fill="#ffffff">${traders[3].name}</text>
-      <text x="520" y="420" font-family="Arial" font-size="24" fill="#ffffff">${traders[3].token}</text>
-      <text x="800" y="420" font-family="Arial" font-size="24" fill="#4CAF50">$${traders[3].earnings}</text>
-      <text x="1020" y="420" font-family="Arial" font-size="24" fill="#ffffff">$${traders[3].volume}</text>
+      <rect x="60" y="400" width="1080" height="60" fill="${traders[3].earnings.startsWith('1') ? '#28283a' : '#1d1d2c'}" />
+      <text x="80" y="440" font-family="Arial" font-size="36" fill="#ffffff">4.</text>
+      <text x="110" y="440" font-family="Arial" font-size="36" fill="#ffffff">${traders[3].name}</text>
+      <text x="520" y="440" font-family="Arial" font-size="36" fill="#ffffff">${traders[3].token}</text>
+      <text x="800" y="440" font-family="Arial" font-size="36" fill="#4CAF50">$${traders[3].earnings}</text>
+      <text x="1020" y="440" font-family="Arial" font-size="36" fill="#ffffff">$${traders[3].volume}</text>
       
-      <rect x="40" y="440" width="1120" height="60" fill="${traders[4].earnings.startsWith('1') ? '#28283a' : '#1d1d2c'}" />
-      <text x="60" y="480" font-family="Arial" font-size="24" fill="#ffffff">5.</text>
-      <text x="90" y="480" font-family="Arial" font-size="24" fill="#ffffff">${traders[4].name}</text>
-      <text x="520" y="480" font-family="Arial" font-size="24" fill="#ffffff">${traders[4].token}</text>
-      <text x="800" y="480" font-family="Arial" font-size="24" fill="#4CAF50">$${traders[4].earnings}</text>
-      <text x="1020" y="480" font-family="Arial" font-size="24" fill="#ffffff">$${traders[4].volume}</text>
+      <rect x="60" y="460" width="1080" height="60" fill="${traders[4].earnings.startsWith('1') ? '#28283a' : '#1d1d2c'}" />
+      <text x="80" y="500" font-family="Arial" font-size="36" fill="#ffffff">5.</text>
+      <text x="110" y="500" font-family="Arial" font-size="36" fill="#ffffff">${traders[4].name}</text>
+      <text x="520" y="500" font-family="Arial" font-size="36" fill="#ffffff">${traders[4].token}</text>
+      <text x="800" y="500" font-family="Arial" font-size="36" fill="#4CAF50">$${traders[4].earnings}</text>
+      <text x="1020" y="500" font-family="Arial" font-size="36" fill="#ffffff">$${traders[4].volume}</text>
       
-      <!-- Footer -->
-      <text x="600" y="580" font-family="Arial" font-size="18" text-anchor="middle" fill="#7e8296">Frame created by 0xjudd</text>
+      <!-- Footer with LARGER font -->
+      <text x="600" y="580" font-family="Arial" font-size="36" text-anchor="middle" fill="#7e8296">Frame created by 0xjudd</text>
     </svg>`;
   };
   
@@ -453,20 +452,20 @@ function getFrameHtml(frameType, traders = [], fid = 0, profile = null) {
     // Profile photo SVG using larger circle size (62.5 instead of 50)
     let profileSvg = '';
     
-    // Hardcoded profile for 0xjudd (FID 12915) - since we're always showing this data in 7d view
+    // Hardcoded profile for 0xjudd (FID 12915) 
     if (fid === 12915) {
       profileSvg = `
       <!-- User Profile Photo hardcoded for 0xjudd -->
       <defs>
         <pattern id="profileImage7d" patternUnits="userSpaceOnUse" width="125" height="125">
-          <image href="https://imagedelivery.net/BXluQx4ige9GuW0Ia56BHw/66c21d51-f8bc-44ea-94b6-26c4f159f700/original" x="0" y="0" width="125" height="125" />
+          <image href="https://i.imgur.com/yyBPo9n.jpg" x="0" y="0" width="125" height="125" />
         </pattern>
         <clipPath id="circleClip7d">
-          <circle cx="80" cy="60" r="62.5"/>
+          <circle cx="100" cy="80" r="62.5"/>
         </clipPath>
       </defs>
-      <circle cx="80" cy="60" r="62.5" fill="url(#profileImage7d)" clip-path="url(#circleClip7d)"/>
-      <circle cx="80" cy="60" r="62.5" fill="none" stroke="#ffffff" stroke-width="2"/>`;
+      <circle cx="100" cy="80" r="62.5" fill="url(#profileImage7d)" clip-path="url(#circleClip7d)"/>
+      <circle cx="100" cy="80" r="62.5" fill="none" stroke="#ffffff" stroke-width="2"/>`;
     }
     else if (profile && profile.pfp && profile.pfp.url) {
       // Use actual profile photo from Neynar with larger circle
@@ -477,17 +476,17 @@ function getFrameHtml(frameType, traders = [], fid = 0, profile = null) {
           <image href="${profile.pfp.url}" x="0" y="0" width="125" height="125" />
         </pattern>
         <clipPath id="circleClip7d">
-          <circle cx="80" cy="60" r="62.5"/>
+          <circle cx="100" cy="80" r="62.5"/>
         </clipPath>
       </defs>
-      <circle cx="80" cy="60" r="62.5" fill="url(#profileImage7d)" clip-path="url(#circleClip7d)"/>
-      <circle cx="80" cy="60" r="62.5" fill="none" stroke="#ffffff" stroke-width="2"/>`;
+      <circle cx="100" cy="80" r="62.5" fill="url(#profileImage7d)" clip-path="url(#circleClip7d)"/>
+      <circle cx="100" cy="80" r="62.5" fill="none" stroke="#ffffff" stroke-width="2"/>`;
     } else {
       // Fallback if no profile image is available - larger circle
       profileSvg = `
       <!-- Profile circle fallback -->
-      <circle cx="80" cy="60" r="62.5" fill="#3e7bca"/>
-      <text x="80" y="65" font-family="Arial" font-size="20" font-weight="bold" text-anchor="middle" fill="#ffffff">WARP</text>`;
+      <circle cx="100" cy="80" r="62.5" fill="#3e7bca"/>
+      <text x="100" y="85" font-family="Arial" font-size="20" font-weight="bold" text-anchor="middle" fill="#ffffff">WARP</text>`;
     }
     
     return `<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
@@ -496,58 +495,58 @@ function getFrameHtml(frameType, traders = [], fid = 0, profile = null) {
       
       ${profileSvg}
       
-      <!-- Title bar with background -->
-      <rect x="140" y="20" width="1040" height="80" rx="12" fill="#223344"/>
-      <text x="600" y="70" font-family="Arial" font-size="40" font-weight="bold" text-anchor="middle" fill="#c6e4ff">Top Warplet Traders (7d)</text>
+      <!-- Title bar with background - moved over to make room for profile pic -->
+      <rect x="180" y="40" width="950" height="80" rx="12" fill="#223344"/>
+      <text x="650" y="90" font-family="Arial" font-size="40" font-weight="bold" text-anchor="middle" fill="#c6e4ff">Top Warplet Traders (7d)</text>
       
       <!-- Main card -->
-      <rect x="20" y="120" width="1160" height="420" rx="20" fill="#1a1a24" stroke="#444455" stroke-width="2"/>
+      <rect x="40" y="140" width="1120" height="420" rx="20" fill="#1a1a24" stroke="#444455" stroke-width="2"/>
       
       <!-- Table header -->
-      <rect x="40" y="140" width="1120" height="50" fill="#252535" rx="8"/>
-      <text x="140" y="174" font-family="Arial" font-size="26" font-weight="bold" fill="#ffffff">Trader</text>
-      <text x="520" y="174" font-family="Arial" font-size="26" font-weight="bold" fill="#ffffff">Token</text>
-      <text x="800" y="174" font-family="Arial" font-size="26" font-weight="bold" fill="#ffffff">Earnings</text>
-      <text x="1020" y="174" font-family="Arial" font-size="26" font-weight="bold" fill="#ffffff">Volume</text>
+      <rect x="60" y="160" width="1080" height="50" fill="#252535" rx="8"/>
+      <text x="160" y="194" font-family="Arial" font-size="26" font-weight="bold" fill="#ffffff">Trader</text>
+      <text x="520" y="194" font-family="Arial" font-size="26" font-weight="bold" fill="#ffffff">Token</text>
+      <text x="800" y="194" font-family="Arial" font-size="26" font-weight="bold" fill="#ffffff">Earnings</text>
+      <text x="1020" y="194" font-family="Arial" font-size="26" font-weight="bold" fill="#ffffff">Volume</text>
       
-      <!-- Table rows -->
-      <rect x="40" y="200" width="1120" height="60" fill="${traders[0].earnings.startsWith('1') ? '#28283a' : '#1d1d2c'}" />
-      <text x="60" y="240" font-family="Arial" font-size="24" fill="#ffffff">1.</text>
-      <text x="90" y="240" font-family="Arial" font-size="24" fill="#ffffff">${traders[0].name}</text>
-      <text x="520" y="240" font-family="Arial" font-size="24" fill="#ffffff">${traders[0].token}</text>
-      <text x="800" y="240" font-family="Arial" font-size="24" fill="#4CAF50">$${traders[0].earnings}</text>
-      <text x="1020" y="240" font-family="Arial" font-size="24" fill="#ffffff">$${traders[0].volume}</text>
+      <!-- Table rows with LARGER font (1.5x) -->
+      <rect x="60" y="220" width="1080" height="60" fill="${traders[0].earnings.startsWith('1') ? '#28283a' : '#1d1d2c'}" />
+      <text x="80" y="260" font-family="Arial" font-size="36" fill="#ffffff">1.</text>
+      <text x="110" y="260" font-family="Arial" font-size="36" fill="#ffffff">${traders[0].name}</text>
+      <text x="520" y="260" font-family="Arial" font-size="36" fill="#ffffff">${traders[0].token}</text>
+      <text x="800" y="260" font-family="Arial" font-size="36" fill="#4CAF50">$${traders[0].earnings}</text>
+      <text x="1020" y="260" font-family="Arial" font-size="36" fill="#ffffff">$${traders[0].volume}</text>
       
-      <rect x="40" y="260" width="1120" height="60" fill="${traders[1].earnings.startsWith('1') ? '#28283a' : '#1d1d2c'}" />
-      <text x="60" y="300" font-family="Arial" font-size="24" fill="#ffffff">2.</text>
-      <text x="90" y="300" font-family="Arial" font-size="24" fill="#ffffff">${traders[1].name}</text>
-      <text x="520" y="300" font-family="Arial" font-size="24" fill="#ffffff">${traders[1].token}</text>
-      <text x="800" y="300" font-family="Arial" font-size="24" fill="#4CAF50">$${traders[1].earnings}</text>
-      <text x="1020" y="300" font-family="Arial" font-size="24" fill="#ffffff">$${traders[1].volume}</text>
+      <rect x="60" y="280" width="1080" height="60" fill="${traders[1].earnings.startsWith('1') ? '#28283a' : '#1d1d2c'}" />
+      <text x="80" y="320" font-family="Arial" font-size="36" fill="#ffffff">2.</text>
+      <text x="110" y="320" font-family="Arial" font-size="36" fill="#ffffff">${traders[1].name}</text>
+      <text x="520" y="320" font-family="Arial" font-size="36" fill="#ffffff">${traders[1].token}</text>
+      <text x="800" y="320" font-family="Arial" font-size="36" fill="#4CAF50">$${traders[1].earnings}</text>
+      <text x="1020" y="320" font-family="Arial" font-size="36" fill="#ffffff">$${traders[1].volume}</text>
       
-      <rect x="40" y="320" width="1120" height="60" fill="${traders[2].earnings.startsWith('9') ? '#28283a' : '#1d1d2c'}" />
-      <text x="60" y="360" font-family="Arial" font-size="24" fill="#ffffff">3.</text>
-      <text x="90" y="360" font-family="Arial" font-size="24" fill="#ffffff">${traders[2].name}</text>
-      <text x="520" y="360" font-family="Arial" font-size="24" fill="#ffffff">${traders[2].token}</text>
-      <text x="800" y="360" font-family="Arial" font-size="24" fill="#4CAF50">$${traders[2].earnings}</text>
-      <text x="1020" y="360" font-family="Arial" font-size="24" fill="#ffffff">$${traders[2].volume}</text>
+      <rect x="60" y="340" width="1080" height="60" fill="${traders[2].earnings.startsWith('9') ? '#28283a' : '#1d1d2c'}" />
+      <text x="80" y="380" font-family="Arial" font-size="36" fill="#ffffff">3.</text>
+      <text x="110" y="380" font-family="Arial" font-size="36" fill="#ffffff">${traders[2].name}</text>
+      <text x="520" y="380" font-family="Arial" font-size="36" fill="#ffffff">${traders[2].token}</text>
+      <text x="800" y="380" font-family="Arial" font-size="36" fill="#4CAF50">$${traders[2].earnings}</text>
+      <text x="1020" y="380" font-family="Arial" font-size="36" fill="#ffffff">$${traders[2].volume}</text>
       
-      <rect x="40" y="380" width="1120" height="60" fill="${traders[3].earnings.startsWith('7') ? '#28283a' : '#1d1d2c'}" />
-      <text x="60" y="420" font-family="Arial" font-size="24" fill="#ffffff">4.</text>
-      <text x="90" y="420" font-family="Arial" font-size="24" fill="#ffffff">${traders[3].name}</text>
-      <text x="520" y="420" font-family="Arial" font-size="24" fill="#ffffff">${traders[3].token}</text>
-      <text x="800" y="420" font-family="Arial" font-size="24" fill="#4CAF50">$${traders[3].earnings}</text>
-      <text x="1020" y="420" font-family="Arial" font-size="24" fill="#ffffff">$${traders[3].volume}</text>
+      <rect x="60" y="400" width="1080" height="60" fill="${traders[3].earnings.startsWith('7') ? '#28283a' : '#1d1d2c'}" />
+      <text x="80" y="440" font-family="Arial" font-size="36" fill="#ffffff">4.</text>
+      <text x="110" y="440" font-family="Arial" font-size="36" fill="#ffffff">${traders[3].name}</text>
+      <text x="520" y="440" font-family="Arial" font-size="36" fill="#ffffff">${traders[3].token}</text>
+      <text x="800" y="440" font-family="Arial" font-size="36" fill="#4CAF50">$${traders[3].earnings}</text>
+      <text x="1020" y="440" font-family="Arial" font-size="36" fill="#ffffff">$${traders[3].volume}</text>
       
-      <rect x="40" y="440" width="1120" height="60" fill="${traders[4].earnings.startsWith('6') ? '#28283a' : '#1d1d2c'}" />
-      <text x="60" y="480" font-family="Arial" font-size="24" fill="#ffffff">5.</text>
-      <text x="90" y="480" font-family="Arial" font-size="24" fill="#ffffff">${traders[4].name}</text>
-      <text x="520" y="480" font-family="Arial" font-size="24" fill="#ffffff">${traders[4].token}</text>
-      <text x="800" y="480" font-family="Arial" font-size="24" fill="#4CAF50">$${traders[4].earnings}</text>
-      <text x="1020" y="480" font-family="Arial" font-size="24" fill="#ffffff">$${traders[4].volume}</text>
+      <rect x="60" y="460" width="1080" height="60" fill="${traders[4].earnings.startsWith('6') ? '#28283a' : '#1d1d2c'}" />
+      <text x="80" y="500" font-family="Arial" font-size="36" fill="#ffffff">5.</text>
+      <text x="110" y="500" font-family="Arial" font-size="36" fill="#ffffff">${traders[4].name}</text>
+      <text x="520" y="500" font-family="Arial" font-size="36" fill="#ffffff">${traders[4].token}</text>
+      <text x="800" y="500" font-family="Arial" font-size="36" fill="#4CAF50">$${traders[4].earnings}</text>
+      <text x="1020" y="500" font-family="Arial" font-size="36" fill="#ffffff">$${traders[4].volume}</text>
       
-      <!-- Footer -->
-      <text x="600" y="580" font-family="Arial" font-size="18" text-anchor="middle" fill="#7e8296">Frame created by 0xjudd</text>
+      <!-- Footer with LARGER font -->
+      <text x="600" y="580" font-family="Arial" font-size="36" text-anchor="middle" fill="#7e8296">Frame created by 0xjudd</text>
     </svg>`;
   };
   
@@ -563,14 +562,14 @@ function getFrameHtml(frameType, traders = [], fid = 0, profile = null) {
       <!-- User Profile Photo from Warpcast (hardcoded for FID 12915) -->
       <defs>
         <pattern id="profileImageCheckMe" patternUnits="userSpaceOnUse" width="125" height="125">
-          <image href="https://imagedelivery.net/BXluQx4ige9GuW0Ia56BHw/66c21d51-f8bc-44ea-94b6-26c4f159f700/original" x="0" y="0" width="125" height="125" />
+          <image href="https://i.imgur.com/yyBPo9n.jpg" x="0" y="0" width="125" height="125" />
         </pattern>
         <clipPath id="circleClipCheckMe">
-          <circle cx="80" cy="60" r="62.5"/>
+          <circle cx="100" cy="80" r="62.5"/>
         </clipPath>
       </defs>
-      <circle cx="80" cy="60" r="62.5" fill="url(#profileImageCheckMe)" clip-path="url(#circleClipCheckMe)"/>
-      <circle cx="80" cy="60" r="62.5" fill="none" stroke="#ffffff" stroke-width="2"/>`;
+      <circle cx="100" cy="80" r="62.5" fill="url(#profileImageCheckMe)" clip-path="url(#circleClipCheckMe)"/>
+      <circle cx="100" cy="80" r="62.5" fill="none" stroke="#ffffff" stroke-width="2"/>`;
     }
     // Try to use profile photo from API
     else if (profile && profile.pfp && profile.pfp.url) {
@@ -582,17 +581,17 @@ function getFrameHtml(frameType, traders = [], fid = 0, profile = null) {
           <image href="${profile.pfp.url}" x="0" y="0" width="125" height="125" />
         </pattern>
         <clipPath id="circleClipCheckMe">
-          <circle cx="80" cy="60" r="62.5"/>
+          <circle cx="100" cy="80" r="62.5"/>
         </clipPath>
       </defs>
-      <circle cx="80" cy="60" r="62.5" fill="url(#profileImageCheckMe)" clip-path="url(#circleClipCheckMe)"/>
-      <circle cx="80" cy="60" r="62.5" fill="none" stroke="#ffffff" stroke-width="2"/>`;
+      <circle cx="100" cy="80" r="62.5" fill="url(#profileImageCheckMe)" clip-path="url(#circleClipCheckMe)"/>
+      <circle cx="100" cy="80" r="62.5" fill="none" stroke="#ffffff" stroke-width="2"/>`;
     } else {
       // Fallback if no profile image is available - LARGER circle
       profileSvg = `
       <!-- Profile circle fallback -->
-      <circle cx="80" cy="60" r="62.5" fill="#a242ca"/>
-      <text x="80" y="68" font-family="Arial" font-size="20" font-weight="bold" text-anchor="middle" fill="#ffffff">FID: ${fid || '?'}</text>`;
+      <circle cx="100" cy="80" r="62.5" fill="#a242ca"/>
+      <text x="100" y="85" font-family="Arial" font-size="20" font-weight="bold" text-anchor="middle" fill="#ffffff">FID: ${fid || '?'}</text>`;
     }
     
     return `<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
@@ -601,58 +600,58 @@ function getFrameHtml(frameType, traders = [], fid = 0, profile = null) {
       
       ${profileSvg}
       
-      <!-- Title bar with background -->
-      <rect x="140" y="20" width="1040" height="80" rx="12" fill="#442233"/>
-      <text x="600" y="70" font-family="Arial" font-size="40" font-weight="bold" text-anchor="middle" fill="#ffd0e0">My Top Warplet Traders</text>
+      <!-- Title bar with background - moved over to make room for profile pic -->
+      <rect x="180" y="40" width="950" height="80" rx="12" fill="#442233"/>
+      <text x="650" y="90" font-family="Arial" font-size="40" font-weight="bold" text-anchor="middle" fill="#ffd0e0">My Top Warplet Traders</text>
       
       <!-- Main card -->
-      <rect x="20" y="120" width="1160" height="420" rx="20" fill="#1a1a24" stroke="#444455" stroke-width="2"/>
+      <rect x="40" y="140" width="1120" height="420" rx="20" fill="#1a1a24" stroke="#444455" stroke-width="2"/>
       
       <!-- Table header -->
-      <rect x="40" y="140" width="1120" height="50" fill="#252535" rx="8"/>
-      <text x="140" y="174" font-family="Arial" font-size="26" font-weight="bold" fill="#ffffff">Trader</text>
-      <text x="520" y="174" font-family="Arial" font-size="26" font-weight="bold" fill="#ffffff">Token</text>
-      <text x="800" y="174" font-family="Arial" font-size="26" font-weight="bold" fill="#ffffff">Earnings</text>
-      <text x="1020" y="174" font-family="Arial" font-size="26" font-weight="bold" fill="#ffffff">Volume</text>
+      <rect x="60" y="160" width="1080" height="50" fill="#252535" rx="8"/>
+      <text x="160" y="194" font-family="Arial" font-size="26" font-weight="bold" fill="#ffffff">Trader</text>
+      <text x="520" y="194" font-family="Arial" font-size="26" font-weight="bold" fill="#ffffff">Token</text>
+      <text x="800" y="194" font-family="Arial" font-size="26" font-weight="bold" fill="#ffffff">Earnings</text>
+      <text x="1020" y="194" font-family="Arial" font-size="26" font-weight="bold" fill="#ffffff">Volume</text>
       
-      <!-- Table rows for followed accounts -->
-      <rect x="40" y="200" width="1120" height="60" fill="#28283a" />
-      <text x="60" y="240" font-family="Arial" font-size="24" fill="#ffffff">1.</text>
-      <text x="90" y="240" font-family="Arial" font-size="24" fill="#ffffff">${traders[0].name}</text>
-      <text x="520" y="240" font-family="Arial" font-size="24" fill="#ffffff">${traders[0].token}</text>
-      <text x="800" y="240" font-family="Arial" font-size="24" fill="#4CAF50">$${traders[0].earnings}</text>
-      <text x="1020" y="240" font-family="Arial" font-size="24" fill="#ffffff">$${traders[0].volume}</text>
+      <!-- Table rows for followed accounts with LARGER font (1.5x) -->
+      <rect x="60" y="220" width="1080" height="60" fill="#28283a" />
+      <text x="80" y="260" font-family="Arial" font-size="36" fill="#ffffff">1.</text>
+      <text x="110" y="260" font-family="Arial" font-size="36" fill="#ffffff">${traders[0].name}</text>
+      <text x="520" y="260" font-family="Arial" font-size="36" fill="#ffffff">${traders[0].token}</text>
+      <text x="800" y="260" font-family="Arial" font-size="36" fill="#4CAF50">$${traders[0].earnings}</text>
+      <text x="1020" y="260" font-family="Arial" font-size="36" fill="#ffffff">$${traders[0].volume}</text>
       
-      <rect x="40" y="260" width="1120" height="60" fill="#1d1d2c" />
-      <text x="60" y="300" font-family="Arial" font-size="24" fill="#ffffff">2.</text>
-      <text x="90" y="300" font-family="Arial" font-size="24" fill="#ffffff">${traders[1].name}</text>
-      <text x="520" y="300" font-family="Arial" font-size="24" fill="#ffffff">${traders[1].token}</text>
-      <text x="800" y="300" font-family="Arial" font-size="24" fill="#4CAF50">$${traders[1].earnings}</text>
-      <text x="1020" y="300" font-family="Arial" font-size="24" fill="#ffffff">$${traders[1].volume}</text>
+      <rect x="60" y="280" width="1080" height="60" fill="#1d1d2c" />
+      <text x="80" y="320" font-family="Arial" font-size="36" fill="#ffffff">2.</text>
+      <text x="110" y="320" font-family="Arial" font-size="36" fill="#ffffff">${traders[1].name}</text>
+      <text x="520" y="320" font-family="Arial" font-size="36" fill="#ffffff">${traders[1].token}</text>
+      <text x="800" y="320" font-family="Arial" font-size="36" fill="#4CAF50">$${traders[1].earnings}</text>
+      <text x="1020" y="320" font-family="Arial" font-size="36" fill="#ffffff">$${traders[1].volume}</text>
       
-      <rect x="40" y="320" width="1120" height="60" fill="#28283a" />
-      <text x="60" y="360" font-family="Arial" font-size="24" fill="#ffffff">3.</text>
-      <text x="90" y="360" font-family="Arial" font-size="24" fill="#ffffff">${traders[2].name}</text>
-      <text x="520" y="360" font-family="Arial" font-size="24" fill="#ffffff">${traders[2].token}</text>
-      <text x="800" y="360" font-family="Arial" font-size="24" fill="#4CAF50">$${traders[2].earnings}</text>
-      <text x="1020" y="360" font-family="Arial" font-size="24" fill="#ffffff">$${traders[2].volume}</text>
+      <rect x="60" y="340" width="1080" height="60" fill="#28283a" />
+      <text x="80" y="380" font-family="Arial" font-size="36" fill="#ffffff">3.</text>
+      <text x="110" y="380" font-family="Arial" font-size="36" fill="#ffffff">${traders[2].name}</text>
+      <text x="520" y="380" font-family="Arial" font-size="36" fill="#ffffff">${traders[2].token}</text>
+      <text x="800" y="380" font-family="Arial" font-size="36" fill="#4CAF50">$${traders[2].earnings}</text>
+      <text x="1020" y="380" font-family="Arial" font-size="36" fill="#ffffff">$${traders[2].volume}</text>
       
-      <rect x="40" y="380" width="1120" height="60" fill="#1d1d2c" />
-      <text x="60" y="420" font-family="Arial" font-size="24" fill="#ffffff">4.</text>
-      <text x="90" y="420" font-family="Arial" font-size="24" fill="#ffffff">${traders[3].name}</text>
-      <text x="520" y="420" font-family="Arial" font-size="24" fill="#ffffff">${traders[3].token}</text>
-      <text x="800" y="420" font-family="Arial" font-size="24" fill="#4CAF50">$${traders[3].earnings}</text>
-      <text x="1020" y="420" font-family="Arial" font-size="24" fill="#ffffff">$${traders[3].volume}</text>
+      <rect x="60" y="400" width="1080" height="60" fill="#1d1d2c" />
+      <text x="80" y="440" font-family="Arial" font-size="36" fill="#ffffff">4.</text>
+      <text x="110" y="440" font-family="Arial" font-size="36" fill="#ffffff">${traders[3].name}</text>
+      <text x="520" y="440" font-family="Arial" font-size="36" fill="#ffffff">${traders[3].token}</text>
+      <text x="800" y="440" font-family="Arial" font-size="36" fill="#4CAF50">$${traders[3].earnings}</text>
+      <text x="1020" y="440" font-family="Arial" font-size="36" fill="#ffffff">$${traders[3].volume}</text>
       
-      <rect x="40" y="440" width="1120" height="60" fill="#28283a" />
-      <text x="60" y="480" font-family="Arial" font-size="24" fill="#ffffff">5.</text>
-      <text x="90" y="480" font-family="Arial" font-size="24" fill="#ffffff">${traders[4].name}</text>
-      <text x="520" y="480" font-family="Arial" font-size="24" fill="#ffffff">${traders[4].token}</text>
-      <text x="800" y="480" font-family="Arial" font-size="24" fill="#4CAF50">$${traders[4].earnings}</text>
-      <text x="1020" y="480" font-family="Arial" font-size="24" fill="#ffffff">$${traders[4].volume}</text>
+      <rect x="60" y="460" width="1080" height="60" fill="#28283a" />
+      <text x="80" y="500" font-family="Arial" font-size="36" fill="#ffffff">5.</text>
+      <text x="110" y="500" font-family="Arial" font-size="36" fill="#ffffff">${traders[4].name}</text>
+      <text x="520" y="500" font-family="Arial" font-size="36" fill="#ffffff">${traders[4].token}</text>
+      <text x="800" y="500" font-family="Arial" font-size="36" fill="#4CAF50">$${traders[4].earnings}</text>
+      <text x="1020" y="500" font-family="Arial" font-size="36" fill="#ffffff">$${traders[4].volume}</text>
       
-      <!-- Footer -->
-      <text x="600" y="580" font-family="Arial" font-size="18" text-anchor="middle" fill="#7e8296">Frame created by 0xjudd</text>
+      <!-- Footer with LARGER font -->
+      <text x="600" y="580" font-family="Arial" font-size="36" text-anchor="middle" fill="#7e8296">Frame created by 0xjudd</text>
     </svg>`;
   };
   
@@ -673,8 +672,8 @@ function getFrameHtml(frameType, traders = [], fid = 0, profile = null) {
       <text x="600" y="370" font-family="Arial" font-size="36" font-weight="bold" text-anchor="middle" fill="#eeeeee">Error Loading Data</text>
       <text x="600" y="420" font-family="Arial" font-size="24" text-anchor="middle" fill="#b4b4cc">Please try again</text>
       
-      <!-- Footer -->
-      <text x="600" y="580" font-family="Arial" font-size="18" text-anchor="middle" fill="#7e8296">Frame created by 0xjudd</text>
+      <!-- Footer with LARGER font -->
+      <text x="600" y="580" font-family="Arial" font-size="36" text-anchor="middle" fill="#7e8296">Frame created by 0xjudd</text>
     </svg>`;
   };
   
