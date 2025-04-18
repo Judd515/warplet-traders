@@ -1,7 +1,13 @@
 # Deployment Update Instructions
 
 ## Issue Analysis
-The buttons in the Warpcast frame are currently not working because of a mismatch between the endpoint URLs in the frame HTML and the actual API endpoints on the Vercel deployment.
+The buttons in the Warpcast frame are currently not working because of issues with profile image loading and processing. The error seems to have occurred when we made changes to load profile images.
+
+## Root Cause
+The problem appears to be in how profile images are loaded and used in the SVG:
+1. Profile image URLs may have invalid characters for SVG
+2. The CommonJS vs ES Modules syntax differences in the frame handlers
+3. Race conditions in the profile loading process
 
 ## Update Process
 
@@ -46,7 +52,7 @@ To verify if a solution works before deployment:
 
 2. Test locally to verify this works with the ultra-minimal endpoint
 
-## Solution Recommended
+## Solution Recommended (Option 1)
 For immediate results, we recommend updating your Vercel deployment to use `api/ultra-minimal.js` which has a simpler, more reliable implementation. This file already exists in the repo and should work without modifications.
 
 1. Update frames to point to `/api/ultra-minimal`
@@ -54,3 +60,26 @@ For immediate results, we recommend updating your Vercel deployment to use `api/
 3. Share the updated frame URL
 
 This provides a stable solution while we can work on a more robust implementation for future updates.
+
+## Enhanced Solution with Profile Support (Option 2)
+We've created a new file that properly handles profile images while maintaining button functionality:
+
+### Using `api/simple-profile-frame.js`
+This new file combines:
+1. The reliable button handling from ultra-minimal
+2. Profile image loading and rendering capability
+3. All the latest styling with Verdana fonts and proper spacing
+4. Stable SVG generation with proper character escaping
+
+To deploy this solution:
+
+1. Push the `api/simple-profile-frame.js` file to your GitHub repository
+2. Deploy to Vercel
+3. Update your Warpcast frame URL to use `/api/simple-profile-frame`
+
+This is the most comprehensive solution as it:
+- Uses the Neynar API to properly load and display profile images
+- Has built-in caching to reduce API calls
+- Includes fallback profiles for common users
+- Handles the "Check Me" button to display the user's personal profile
+- Is completely self-contained, avoiding module import/export issues
