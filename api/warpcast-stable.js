@@ -12,9 +12,9 @@ async function fetchUserProfile(fid) {
       return null;
     }
     
-    // Fetch user profile
+    // Fetch user profile - using the bulk endpoint with a single FID
     const response = await axios.get(
-      `https://api.neynar.com/v2/farcaster/user?fid=${fid}`,
+      `https://api.neynar.com/v2/farcaster/user/bulk?fids=${fid}`,
       {
         headers: {
           accept: 'application/json',
@@ -23,8 +23,15 @@ async function fetchUserProfile(fid) {
       }
     );
     
-    if (response.data && response.data.user) {
-      return response.data.user;
+    if (response.data && response.data.users && response.data.users.length > 0) {
+      const user = response.data.users[0];
+      // Create a profile object in the format our app expects
+      return {
+        fid: user.fid,
+        username: user.username,
+        displayName: user.display_name,
+        pfp: { url: user.pfp_url }
+      };
     } else {
       console.log('No user data returned from Neynar API');
       return null;
