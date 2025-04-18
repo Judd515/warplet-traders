@@ -208,8 +208,8 @@ function getFrameHtml(frameType, traders = [], fid = 0, profile = null) {
     <rect width="1200" height="630" fill="#121218"/>
     
     <!-- Profile circle (visible on all frames) -->
-    <circle cx="80" cy="60" r="40" fill="#509ec7"/>
-    <text x="80" y="65" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle" fill="#ffffff">WARP</text>
+    <circle cx="80" cy="60" r="50" fill="#509ec7"/>
+    <text x="80" y="65" font-family="Arial" font-size="18" font-weight="bold" text-anchor="middle" fill="#ffffff">WARP</text>
     
     <!-- Title bar with background -->
     <rect x="140" y="80" width="960" height="100" rx="16" fill="#2a334a"/>
@@ -238,21 +238,21 @@ function getFrameHtml(frameType, traders = [], fid = 0, profile = null) {
       profileSvg = `
       <!-- User Profile Photo from Warpcast via Neynar API -->
       <defs>
-        <pattern id="profileImage24h" patternUnits="userSpaceOnUse" width="80" height="80">
-          <image href="${profile.pfp.url}" x="0" y="0" width="80" height="80" />
+        <pattern id="profileImage24h" patternUnits="userSpaceOnUse" width="100" height="100">
+          <image href="${profile.pfp.url}" x="0" y="0" width="100" height="100" />
         </pattern>
         <clipPath id="circleClip24h">
-          <circle cx="80" cy="60" r="40"/>
+          <circle cx="80" cy="60" r="50"/>
         </clipPath>
       </defs>
-      <circle cx="80" cy="60" r="40" fill="url(#profileImage24h)" clip-path="url(#circleClip24h)"/>
-      <circle cx="80" cy="60" r="40" fill="none" stroke="#ffffff" stroke-width="2"/>`;
+      <circle cx="80" cy="60" r="50" fill="url(#profileImage24h)" clip-path="url(#circleClip24h)"/>
+      <circle cx="80" cy="60" r="50" fill="none" stroke="#ffffff" stroke-width="2"/>`;
     } else {
       // Fallback if no profile image is available
       profileSvg = `
       <!-- Profile circle fallback -->
-      <circle cx="80" cy="60" r="40" fill="#6e42ca"/>
-      <text x="80" y="65" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle" fill="#ffffff">WARP</text>`;
+      <circle cx="80" cy="60" r="50" fill="#6e42ca"/>
+      <text x="80" y="65" font-family="Arial" font-size="18" font-weight="bold" text-anchor="middle" fill="#ffffff">WARP</text>`;
     }
     
     return `<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
@@ -326,21 +326,21 @@ function getFrameHtml(frameType, traders = [], fid = 0, profile = null) {
       profileSvg = `
       <!-- User Profile Photo from Warpcast via Neynar API -->
       <defs>
-        <pattern id="profileImage7d" patternUnits="userSpaceOnUse" width="80" height="80">
-          <image href="${profile.pfp.url}" x="0" y="0" width="80" height="80" />
+        <pattern id="profileImage7d" patternUnits="userSpaceOnUse" width="100" height="100">
+          <image href="${profile.pfp.url}" x="0" y="0" width="100" height="100" />
         </pattern>
         <clipPath id="circleClip7d">
-          <circle cx="80" cy="60" r="40"/>
+          <circle cx="80" cy="60" r="50"/>
         </clipPath>
       </defs>
-      <circle cx="80" cy="60" r="40" fill="url(#profileImage7d)" clip-path="url(#circleClip7d)"/>
-      <circle cx="80" cy="60" r="40" fill="none" stroke="#ffffff" stroke-width="2"/>`;
+      <circle cx="80" cy="60" r="50" fill="url(#profileImage7d)" clip-path="url(#circleClip7d)"/>
+      <circle cx="80" cy="60" r="50" fill="none" stroke="#ffffff" stroke-width="2"/>`;
     } else {
       // Fallback if no profile image is available
       profileSvg = `
       <!-- Profile circle fallback -->
-      <circle cx="80" cy="60" r="40" fill="#3e7bca"/>
-      <text x="80" y="65" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle" fill="#ffffff">WARP</text>`;
+      <circle cx="80" cy="60" r="50" fill="#3e7bca"/>
+      <text x="80" y="65" font-family="Arial" font-size="18" font-weight="bold" text-anchor="middle" fill="#ffffff">WARP</text>`;
     }
     
     return `<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
@@ -414,21 +414,21 @@ function getFrameHtml(frameType, traders = [], fid = 0, profile = null) {
       profileSvg = `
       <!-- User Profile Photo from Warpcast via Neynar API -->
       <defs>
-        <pattern id="profileImageCheckMe" patternUnits="userSpaceOnUse" width="80" height="80">
-          <image href="${profile.pfp.url}" x="0" y="0" width="80" height="80" />
+        <pattern id="profileImageCheckMe" patternUnits="userSpaceOnUse" width="100" height="100">
+          <image href="${profile.pfp.url}" x="0" y="0" width="100" height="100" />
         </pattern>
         <clipPath id="circleClipCheckMe">
-          <circle cx="80" cy="60" r="40"/>
+          <circle cx="80" cy="60" r="50"/>
         </clipPath>
       </defs>
-      <circle cx="80" cy="60" r="40" fill="url(#profileImageCheckMe)" clip-path="url(#circleClipCheckMe)"/>
-      <circle cx="80" cy="60" r="40" fill="none" stroke="#ffffff" stroke-width="2"/>`;
+      <circle cx="80" cy="60" r="50" fill="url(#profileImageCheckMe)" clip-path="url(#circleClipCheckMe)"/>
+      <circle cx="80" cy="60" r="50" fill="none" stroke="#ffffff" stroke-width="2"/>`;
     } else {
       // Fallback if no profile image is available
       profileSvg = `
       <!-- Profile circle fallback -->
-      <circle cx="80" cy="60" r="40" fill="#a242ca"/>
-      <text x="80" y="68" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle" fill="#ffffff">FID: ${fid || '?'}</text>`;
+      <circle cx="80" cy="60" r="50" fill="#a242ca"/>
+      <text x="80" y="68" font-family="Arial" font-size="18" font-weight="bold" text-anchor="middle" fill="#ffffff">FID: ${fid || '?'}</text>`;
     }
     
     return `<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
