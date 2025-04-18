@@ -1,9 +1,41 @@
 /**
- * Ultra-stable frame implementation for Warpcast
- * No API dependencies - guaranteed to work
+ * Enhanced frame implementation for Warpcast
+ * Fetches profile photos from Neynar API
  */
+import axios from 'axios';
 
-export default function handler(req, res) {
+// Helper function to fetch user profile from Neynar API
+async function fetchUserProfile(fid) {
+  try {
+    if (!process.env.NEYNAR_API_KEY) {
+      console.log('No NEYNAR_API_KEY found, using placeholder profile');
+      return null;
+    }
+    
+    // Fetch user profile
+    const response = await axios.get(
+      `https://api.neynar.com/v2/farcaster/user?fid=${fid}`,
+      {
+        headers: {
+          accept: 'application/json',
+          api_key: process.env.NEYNAR_API_KEY
+        }
+      }
+    );
+    
+    if (response.data && response.data.user) {
+      return response.data.user;
+    } else {
+      console.log('No user data returned from Neynar API');
+      return null;
+    }
+  } catch (error) {
+    console.error('Error fetching user profile:', error);
+    return null;
+  }
+}
+
+export default async function handler(req, res) {
   // Set headers for CORS and caching
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -64,24 +96,60 @@ export default function handler(req, res) {
       
       // Simple frame switching based on button
       if (buttonIndex === 1) {
-        return res.status(200).send(getFrameHtml('24h', traders24h, fid));
+        try {
+          // Try to fetch profile for 24h view
+          let profile = null;
+          if (fid) {
+            profile = await fetchUserProfile(fid);
+          }
+          return res.status(200).send(getFrameHtml('24h', traders24h, fid, profile));
+        } catch (error) {
+          console.error('Error fetching profile for 24h view:', error);
+          return res.status(200).send(getFrameHtml('24h', traders24h, fid));
+        }
       } else if (buttonIndex === 2) {
-        return res.status(200).send(getFrameHtml('7d', traders7d, fid));
+        try {
+          // Try to fetch profile for 7d view
+          let profile = null;
+          if (fid) {
+            profile = await fetchUserProfile(fid);
+          }
+          return res.status(200).send(getFrameHtml('7d', traders7d, fid, profile));
+        } catch (error) {
+          console.error('Error fetching profile for 7d view:', error);
+          return res.status(200).send(getFrameHtml('7d', traders7d, fid));
+        }
       } else if (buttonIndex === 3) {
-        // For "Check Me", we need to generate more personalized data based on FID
-        // In a full implementation, this would query Neynar for who the user follows
-        // For now, create personalized mock data that shows it's using their FID
-        // Generate data that appears to be the user's actual follows
-        // Create names based on the user's FID to make it feel personalized
-        // This doesn't connect to Neynar API, but shows "Your Follows" with FID-dependent names
-        const personalTraders = [
-          { name: `@friend_${fid}_1`, token: 'ETH', earnings: '3,720', volume: '48.5K' },
-          { name: `@follow_${fid}_2`, token: 'BTC', earnings: '2,940', volume: '37.6K' },
-          { name: `@user_${fid}_3`, token: 'USDC', earnings: '2,350', volume: '29.8K' },
-          { name: `@fc_${fid}_4`, token: 'ARB', earnings: '1,840', volume: '22.3K' },
-          { name: `@cast_${fid}_5`, token: 'DEGEN', earnings: '1,250', volume: '15.9K' }
-        ];
-        return res.status(200).send(getFrameHtml('check-me', personalTraders, fid));
+        try {
+          // For "Check Me", get user profile first
+          let profile = null;
+          if (fid) {
+            console.log(`Fetching profile for FID: ${fid}`);
+            profile = await fetchUserProfile(fid);
+            console.log('Profile fetched:', profile ? 'success' : 'failed');
+          }
+          
+          // Create personalized mock data that shows it's using their FID
+          const personalTraders = [
+            { name: `@friend_${fid}_1`, token: 'ETH', earnings: '3,720', volume: '48.5K' },
+            { name: `@follow_${fid}_2`, token: 'BTC', earnings: '2,940', volume: '37.6K' },
+            { name: `@user_${fid}_3`, token: 'USDC', earnings: '2,350', volume: '29.8K' },
+            { name: `@fc_${fid}_4`, token: 'ARB', earnings: '1,840', volume: '22.3K' },
+            { name: `@cast_${fid}_5`, token: 'DEGEN', earnings: '1,250', volume: '15.9K' }
+          ];
+          
+          return res.status(200).send(getFrameHtml('check-me', personalTraders, fid, profile));
+        } catch (error) {
+          console.error('Error in Check Me handler:', error);
+          const personalTraders = [
+            { name: `@friend_${fid}_1`, token: 'ETH', earnings: '3,720', volume: '48.5K' },
+            { name: `@follow_${fid}_2`, token: 'BTC', earnings: '2,940', volume: '37.6K' },
+            { name: `@user_${fid}_3`, token: 'USDC', earnings: '2,350', volume: '29.8K' },
+            { name: `@fc_${fid}_4`, token: 'ARB', earnings: '1,840', volume: '22.3K' },
+            { name: `@cast_${fid}_5`, token: 'DEGEN', earnings: '1,250', volume: '15.9K' }
+          ];
+          return res.status(200).send(getFrameHtml('check-me', personalTraders, fid));
+        }
       } else if (buttonIndex === 4) {
         const shareUrl = "https://warpcast.com/~/compose?text=Top%20Warplet%20Earners%20(7d)%0A%0A1.%20%40thcradio%20(BTC)%3A%20%2412%2C580%20%2F%20%24144.5K%20volume%0A2.%20%40wakaflocka%20(USDC)%3A%20%2410%2C940%20%2F%20%24128.7K%20volume%0A3.%20%40chrislarsc.eth%20(ETH)%3A%20%249%2C450%20%2F%20%24112.2K%20volume%0A4.%20%40hellno.eth%20(DEGEN)%3A%20%247%2C840%20%2F%20%2494.6K%20volume%0A5.%20%40karima%20(ARB)%3A%20%246%2C250%20%2F%20%2482.9K%20volume%0A%0Ahttps%3A%2F%2Fwarplet-traders.vercel.app";
         return res.status(200).send(getRedirectHtml(shareUrl));
@@ -126,7 +194,7 @@ function getRedirectHtml(url) {
 }
 
 // Get frame HTML for a specific frame type
-function getFrameHtml(frameType, traders = [], fid = 0) {
+function getFrameHtml(frameType, traders = [], fid = 0, profile = null) {
   // Pre-generated SVG content for maximum stability
   const mainSvg = `<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
     <!-- Background -->
@@ -154,14 +222,37 @@ function getFrameHtml(frameType, traders = [], fid = 0) {
   const base64 = (svg) => Buffer.from(svg).toString('base64');
   
   // Generate the 24h trader SVG
-  const generate24hSvg = (traders) => {
+  const generate24hSvg = (traders, fid = 0, profile = null) => {
+    // Profile photo SVG if available
+    let profileSvg = '';
+    
+    if (profile && profile.pfp && profile.pfp.url) {
+      // Use actual profile photo from Neynar
+      profileSvg = `
+      <!-- User Profile Photo from Warpcast via Neynar API -->
+      <defs>
+        <pattern id="profileImage" patternUnits="userSpaceOnUse" width="80" height="80">
+          <image href="${profile.pfp.url}" x="0" y="0" width="80" height="80" />
+        </pattern>
+        <clipPath id="circleClip">
+          <circle cx="80" cy="60" r="40"/>
+        </clipPath>
+      </defs>
+      <circle cx="80" cy="60" r="40" fill="url(#profileImage)" clip-path="url(#circleClip)"/>
+      <circle cx="80" cy="60" r="40" fill="none" stroke="#ffffff" stroke-width="2"/>`;
+    } else {
+      // Fallback if no profile image is available
+      profileSvg = `
+      <!-- Profile circle fallback -->
+      <circle cx="80" cy="60" r="40" fill="#6e42ca"/>
+      <text x="80" y="65" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle" fill="#ffffff">WARP</text>`;
+    }
+    
     return `<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
       <!-- Background -->
       <rect width="1200" height="630" fill="#121218"/>
       
-      <!-- Profile circle (will be visible on all frames) -->
-      <circle cx="80" cy="60" r="40" fill="#6e42ca"/>
-      <text x="80" y="65" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle" fill="#ffffff">WARP</text>
+      ${profileSvg}
       
       <!-- Title bar with background -->
       <rect x="140" y="20" width="1040" height="80" rx="12" fill="#332233"/>
@@ -219,14 +310,37 @@ function getFrameHtml(frameType, traders = [], fid = 0) {
   };
   
   // Generate the 7d trader SVG
-  const generate7dSvg = (traders) => {
+  const generate7dSvg = (traders, fid = 0, profile = null) => {
+    // Profile photo SVG if available
+    let profileSvg = '';
+    
+    if (profile && profile.pfp && profile.pfp.url) {
+      // Use actual profile photo from Neynar
+      profileSvg = `
+      <!-- User Profile Photo from Warpcast via Neynar API -->
+      <defs>
+        <pattern id="profileImage" patternUnits="userSpaceOnUse" width="80" height="80">
+          <image href="${profile.pfp.url}" x="0" y="0" width="80" height="80" />
+        </pattern>
+        <clipPath id="circleClip">
+          <circle cx="80" cy="60" r="40"/>
+        </clipPath>
+      </defs>
+      <circle cx="80" cy="60" r="40" fill="url(#profileImage)" clip-path="url(#circleClip)"/>
+      <circle cx="80" cy="60" r="40" fill="none" stroke="#ffffff" stroke-width="2"/>`;
+    } else {
+      // Fallback if no profile image is available
+      profileSvg = `
+      <!-- Profile circle fallback -->
+      <circle cx="80" cy="60" r="40" fill="#3e7bca"/>
+      <text x="80" y="65" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle" fill="#ffffff">WARP</text>`;
+    }
+    
     return `<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
       <!-- Background -->
       <rect width="1200" height="630" fill="#121218"/>
       
-      <!-- Profile circle (will be visible on all frames) -->
-      <circle cx="80" cy="60" r="40" fill="#3e7bca"/>
-      <text x="80" y="65" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle" fill="#ffffff">WARP</text>
+      ${profileSvg}
       
       <!-- Title bar with background -->
       <rect x="140" y="20" width="1040" height="80" rx="12" fill="#223344"/>
@@ -284,14 +398,37 @@ function getFrameHtml(frameType, traders = [], fid = 0) {
   };
   
   // Generate the Check Me SVG
-  const generateCheckMeSvg = (traders, fid) => {
+  const generateCheckMeSvg = (traders, fid, profile = null) => {
+    // Profile photo SVG if available
+    let profileSvg = '';
+    
+    if (profile && profile.pfp && profile.pfp.url) {
+      // Use actual profile photo from Neynar
+      profileSvg = `
+      <!-- User Profile Photo from Warpcast via Neynar API -->
+      <defs>
+        <pattern id="profileImage" patternUnits="userSpaceOnUse" width="80" height="80">
+          <image href="${profile.pfp.url}" x="0" y="0" width="80" height="80" />
+        </pattern>
+        <clipPath id="circleClip">
+          <circle cx="80" cy="60" r="40"/>
+        </clipPath>
+      </defs>
+      <circle cx="80" cy="60" r="40" fill="url(#profileImage)" clip-path="url(#circleClip)"/>
+      <circle cx="80" cy="60" r="40" fill="none" stroke="#ffffff" stroke-width="2"/>`;
+    } else {
+      // Fallback if no profile image is available
+      profileSvg = `
+      <!-- Profile circle fallback -->
+      <circle cx="80" cy="60" r="40" fill="#a242ca"/>
+      <text x="80" y="68" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle" fill="#ffffff">FID: ${fid || '?'}</text>`;
+    }
+    
     return `<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
       <!-- Background -->
       <rect width="1200" height="630" fill="#121218"/>
       
-      <!-- Profile circle -->
-      <circle cx="80" cy="60" r="40" fill="#a242ca"/>
-      <text x="80" y="68" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle" fill="#ffffff">FID: ${fid || '?'}</text>
+      ${profileSvg}
       
       <!-- Title bar with background -->
       <rect x="140" y="20" width="1040" height="80" rx="12" fill="#442233"/>
@@ -380,7 +517,7 @@ function getFrameHtml(frameType, traders = [], fid = 0) {
   } else if (frameType === '7d') {
     imageContent = generate7dSvg(traders);
   } else if (frameType === 'check-me') {
-    imageContent = generateCheckMeSvg(traders, fid);
+    imageContent = generateCheckMeSvg(traders, fid, profile);
   } else if (frameType === 'error') {
     imageContent = generateErrorSvg();
   } else {
