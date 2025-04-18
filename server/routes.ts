@@ -15,6 +15,7 @@ import simpleFrameHandler from './api/simple-frame';
 import warpcastStableHandler from './api/warpcast-stable';
 import testNeynarHandler from './api/test-neynar';
 import frameActionHandler from './api/frame-action';
+import profileHandlerHandler from './api/profile-handler';
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Endpoint to get top traders with PnL data for a specific timeframe
@@ -248,6 +249,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error in frame-action handler:', error);
       res.status(500).send('Error processing frame action request');
+    }
+  });
+  
+  // Add route for profile-handler
+  app.all('/api/profile-handler', (req, res) => {
+    try {
+      console.log('Profile handler request received:', req.method, JSON.stringify(req.body || {}));
+      // @ts-ignore - profileHandlerHandler is expecting Express request/response
+      return profileHandlerHandler(req, res);
+    } catch (error) {
+      console.error('Error in profile-handler:', error);
+      res.status(500).send('Error processing profile handler request');
     }
   });
 

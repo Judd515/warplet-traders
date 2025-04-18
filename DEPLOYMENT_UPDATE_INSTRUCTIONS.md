@@ -64,18 +64,20 @@ This provides a stable solution while we can work on a more robust implementatio
 ## Enhanced Solution with Profile Support (Option 2)
 We've created a new file that properly handles profile images while maintaining button functionality:
 
-### Using `api/simple-profile-frame.js`
+### Using `api/profile-handler.js` (RECOMMENDED)
 This new file combines:
 1. The reliable button handling from ultra-minimal
-2. Profile image loading and rendering capability
+2. Profile image loading and rendering capability using Neynar API
 3. All the latest styling with Verdana fonts and proper spacing
 4. Stable SVG generation with proper character escaping
 
 To deploy this solution:
 
-1. Push the `api/simple-profile-frame.js` file to your GitHub repository
+1. Push the `api/profile-handler.js` file to your GitHub repository
+   - Make sure to use ES Module syntax: `import axios from 'axios'` instead of `require`
+   - Use `export default async function handler(req, res) {` instead of `module.exports`
 2. Deploy to Vercel
-3. Update your Warpcast frame URL to use `/api/simple-profile-frame`
+3. Update your Warpcast frame URL to use `/api/profile-handler`
 
 This is the most comprehensive solution as it:
 - Uses the Neynar API to properly load and display profile images
@@ -83,3 +85,8 @@ This is the most comprehensive solution as it:
 - Includes fallback profiles for common users
 - Handles the "Check Me" button to display the user's personal profile
 - Is completely self-contained, avoiding module import/export issues
+- Has proper error handling for all API calls
+
+**IMPORTANT**: When updating your production Vercel deployment, make sure the API endpoints use ES Module syntax, not CommonJS. 
+Your Vercel environment is configured to use ES modules. Using the correct module syntax (`import`/`export` instead of 
+`require`/`module.exports`) will prevent errors during deployment.
