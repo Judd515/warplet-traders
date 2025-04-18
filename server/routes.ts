@@ -16,6 +16,7 @@ import warpcastStableHandler from './api/warpcast-stable';
 import testNeynarHandler from './api/test-neynar';
 import frameActionHandler from './api/frame-action';
 import profileHandlerHandler from './api/profile-handler';
+import externalImageHandler from './api/external-image-frame';
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Endpoint to get top traders with PnL data for a specific timeframe
@@ -261,6 +262,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error in profile-handler:', error);
       res.status(500).send('Error processing profile handler request');
+    }
+  });
+  
+  // Add route for external image frame handler
+  app.all('/api/external-image-frame', (req, res) => {
+    try {
+      console.log('External image frame request received:', req.method, JSON.stringify(req.body || {}));
+      // @ts-ignore - externalImageHandler is expecting Express request/response
+      return externalImageHandler(req, res);
+    } catch (error) {
+      console.error('Error in external-image-frame handler:', error);
+      res.status(500).send('Error processing external image frame request');
     }
   });
 

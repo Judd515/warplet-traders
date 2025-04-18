@@ -90,3 +90,28 @@ This is the most comprehensive solution as it:
 **IMPORTANT**: When updating your production Vercel deployment, make sure the API endpoints use ES Module syntax, not CommonJS. 
 Your Vercel environment is configured to use ES modules. Using the correct module syntax (`import`/`export` instead of 
 `require`/`module.exports`) will prevent errors during deployment.
+
+## External Image Solution (Option 3)
+After further debugging, we've confirmed that **button click issues** can be avoided by using external image URLs instead of embedded base64 SVGs. This was a key finding from reviewing previous code that worked correctly.
+
+### Using `api/external-image-frame.js` (RECOMMENDED)
+This new file:
+1. Uses external image URLs instead of embedded base64 SVGs
+2. Has reliable button click handling that won't return frame errors
+3. Supports the "Check Me" button functionality
+4. Is implemented with ES module syntax for Vercel compatibility
+
+To deploy this solution:
+
+1. Make sure these image files exist in your `public/images/` directory:
+   - main.png
+   - 24h.png
+   - 7d.png
+   - check-me.png
+   - share.png
+   
+2. Push the `api/external-image-frame.js` file to your GitHub repository
+
+3. Update your Warpcast frame URL to use `/api/external-image-frame`
+
+This solution avoids the common "Unknown error communicating with the frame server" issue while still providing all the required functionality.
