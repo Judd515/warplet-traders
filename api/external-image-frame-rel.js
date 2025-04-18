@@ -1,6 +1,7 @@
 /**
  * External Image Frame Handler
  * Based on the previously working implementation that used external image URLs
+ * With relative URLs for post_url to support any domain
  */
 
 export default function handler(req, res) {
@@ -48,7 +49,7 @@ function generateMainFrame() {
   <meta charset="utf-8">
   <meta property="fc:frame" content="vNext">
   <meta property="fc:frame:image" content="https://warplet-traders.vercel.app/images/main.png">
-  <meta property="fc:frame:post_url" content="/api/external-image-frame">
+  <meta property="fc:frame:post_url" content="/api/external-image-frame-rel">
   <meta property="fc:frame:button:1" content="View 24h Data">
   <meta property="fc:frame:button:2" content="View 7d Data">
   <meta property="fc:frame:button:3" content="Check Me">
@@ -69,7 +70,7 @@ function generate24hFrame() {
   <meta charset="utf-8">
   <meta property="fc:frame" content="vNext">
   <meta property="fc:frame:image" content="https://warplet-traders.vercel.app/images/24h.png">
-  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/external-image-frame">
+  <meta property="fc:frame:post_url" content="/api/external-image-frame-rel">
   <meta property="fc:frame:button:1" content="Back to Main">
   <meta property="fc:frame:button:2" content="View 7d Data">
   <meta property="fc:frame:button:3" content="Check Me">
@@ -90,7 +91,7 @@ function generate7dFrame() {
   <meta charset="utf-8">
   <meta property="fc:frame" content="vNext">
   <meta property="fc:frame:image" content="https://warplet-traders.vercel.app/images/7d.png">
-  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/external-image-frame">
+  <meta property="fc:frame:post_url" content="/api/external-image-frame-rel">
   <meta property="fc:frame:button:1" content="View 24h Data">
   <meta property="fc:frame:button:2" content="Back to Main">
   <meta property="fc:frame:button:3" content="Check Me">
@@ -113,7 +114,7 @@ function generateCheckMeFrame(fid) {
   <meta charset="utf-8">
   <meta property="fc:frame" content="vNext">
   <meta property="fc:frame:image" content="https://warplet-traders.vercel.app/images/check-me.png">
-  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/external-image-frame">
+  <meta property="fc:frame:post_url" content="/api/external-image-frame-rel">
   <meta property="fc:frame:button:1" content="View 24h Data">
   <meta property="fc:frame:button:2" content="View 7d Data">
   <meta property="fc:frame:button:3" content="Back to Main">
@@ -135,7 +136,7 @@ function generateShareFrame() {
   <meta charset="utf-8">
   <meta property="fc:frame" content="vNext">
   <meta property="fc:frame:image" content="https://warplet-traders.vercel.app/images/share.png">
-  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/external-image-frame">
+  <meta property="fc:frame:post_url" content="/api/external-image-frame-rel">
   <meta property="fc:frame:button:1" content="View 24h Data">
   <meta property="fc:frame:button:2" content="View 7d Data">
   <meta property="fc:frame:button:3" content="Back to Main">

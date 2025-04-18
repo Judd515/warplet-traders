@@ -2,10 +2,9 @@
 # Excludes all API files except essentials
 
 # Keep only these essential API files:
-# - warpcast-stable.js
+# - external-image-frame.js (NEW - best solution using external images)
 # - health.js
 # - index.js
-# - frame-action.js
 # - minimal.js
 
 # Exclude all other API files
@@ -17,22 +16,33 @@ api/edge-frame.js
 api/edge.config.js
 api/edge.js
 api/frame-action-vercel.js
+api/frame-action.js
 api/frame-debug.js
 api/frame-service.js
 api/minimal-headers.js
 api/one-file-frame-real-data.js
 api/one-file-frame.js
+api/profile-cache.js
+api/profile-handler.js
 api/refresh-data.js
 api/schema.js
 api/serverless-handler.js
 api/serverless-storage.js
 api/simple-frame.js
+api/simple-profile-frame.js
 api/storage.js
+api/test-neynar.js
 api/traders.js
 api/ultra-minimal.js
 api/ultra-stable.js
+api/ultra-stable-backup.js
 api/vercel-minimal-frame.js
 api/vercel-real-data.js
+api/warpcast-stable.js
+api/warpcast-stable-updated.js
+
+# Explicitly include these files
+!api/external-image-frame.js
 
 # Exclude all JS files in the root used for deployment/building
 build-frame.js

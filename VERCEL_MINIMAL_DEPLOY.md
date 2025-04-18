@@ -1,81 +1,92 @@
-# Vercel Minimal Deployment Guide
+# Vercel Minimal Deployment Instructions
 
-This guide helps you deploy your Warplet Top Traders frame to Vercel's Hobby plan, which has a limit of 12 serverless functions per project.
+## Issue: Hobby Plan Function Limit
+You're encountering the Vercel Hobby plan's 12 Serverless Function limit. To solve this, we need to create a minimal deployment package containing only the essential files.
 
-## The Problem
+## Minimal Deployment Solution
 
-Vercel's Hobby plan limits you to no more than 12 serverless functions per deployment. Our project has more API endpoints than this limit allows, causing deployments to fail with the error:
-
-```
-Error: No more than 12 Serverless Functions can be added to a Deployment on the Hobby plan. 
-Create a team (Pro plan) to deploy more. Learn More: https://vercel.link/function-count-limit
-```
-
-## The Solution
-
-We've created a deployment script that will:
-
-1. Back up all your API files
-2. Create a `.vercelignore` file that excludes all but the essential API endpoints
-3. Let you deploy only the most important functions to stay under the limit
-
-## Deployment Steps
-
-### 1. Prepare for Deployment
-
-Run the script to create a minimal deployment package:
+### Step 1: Create a separate deployment branch
+Create a branch specifically for deployment with only the necessary files:
 
 ```bash
-node create-minimal-deploy.js
+git checkout -b minimal-deploy
 ```
 
-This will:
-- Create a backup of all API files in `.api_backup/`
-- Generate a `.vercelignore` file that excludes non-essential API endpoints
+### Step 2: Prepare a minimal .vercelignore file
+Create or update your .vercelignore file to exclude most API functions:
 
-### 2. Deploy to Vercel
+```
+# Exclude all API files except the ones we need
+api/all-routes.js
+api/base64.js
+api/db.js
+api/direct-html.js
+api/edge.js
+api/edge-frame.js
+api/frame-action.js
+api/frame-debug.js
+api/frame-service.js
+api/minimal-headers.js
+api/one-file-frame.js
+api/one-file-frame-real-data.js
+api/serverless-handler.js
+api/serverless-storage.js
+api/simple-frame.js
+api/simple-profile-frame.js
+api/storage.js
+api/test-neynar.js
+api/traders.js
+api/ultra-minimal.js
+api/ultra-stable.js
+api/ultra-stable-backup.js
+api/vercel-minimal-frame.js
+api/vercel-real-data.js
+api/warpcast-stable.js
+api/warpcast-stable-updated.js
+api/profile-cache.js
+api/profile-handler.js
 
-Run the Vercel deployment command:
+# Keep only the essential files we need
+!api/external-image-frame.js
+!api/minimal.js
+!api/health.js
+!api/index.js
+```
+
+### Step 3: Push only essential files to deployment branch
+Keep only the essential files we need for deployment:
+
+1. The external-image-frame.js implementation
+2. A health check endpoint
+3. Your public images folder
+4. Your Vercel configuration
+
+### Step 4: Update the post_url in external-image-frame.js
+Make sure the post_url in the frame HTML references your Vercel domain:
+
+```javascript
+<meta property="fc:frame:post_url" content="https://your-vercel-app.vercel.app/api/external-image-frame">
+```
+
+### Step 5: Deploy the minimal branch
+Push your minimal-deploy branch to GitHub and deploy it to Vercel:
 
 ```bash
-vercel --prod
+git push origin minimal-deploy
 ```
 
-### 3. Restore Your Dev Environment (After Deployment)
+Then in Vercel, you can either:
+1. Create a new project pointing to this branch
+2. Update your existing project to deploy from this branch
 
-After successful deployment, restore your development environment:
+## Essential Files for Deployment
+1. **api/external-image-frame.js** - The main frame handler using external image URLs
+2. **api/health.js** - Simple health check endpoint
+3. **public/images/** - Directory with all your image assets
+4. **.vercelignore** - Configured to exclude unnecessary functions
 
-```bash
-node restore-api-files.js
-```
+## Post-Deployment
+After deploying, test your frame by accessing:
+- https://your-vercel-app.vercel.app/api/external-image-frame
 
-This will:
-- Restore all API files from the backup
-- Reset the `.vercelignore` file
-
-## Essential Endpoints
-
-The minimal deployment includes only these essential endpoints:
-
-1. `api/warpcast-stable.js` - Our ultra-stable endpoint with no external API dependencies
-2. `api/health.js` - Health check endpoint
-3. `api/index.js` - Main API entry point
-4. `api/frame-action.js` - Frame action handler
-5. `api/minimal.js` - Minimal implementation
-
-## Production URLs
-
-After deployment, your frame will be available at:
-
-- Main URL: `https://warplet-traders.vercel.app`
-- Ultra-stable URL: `https://warplet-traders.vercel.app/warpcast-frame.html`
-
-## Troubleshooting
-
-If you encounter issues:
-
-1. Check the Vercel deployment logs
-2. Verify that the `.vercelignore` file was created correctly
-3. Make sure you have the latest changes pushed to your repository
-
-If all else fails, you can manually edit the `.vercelignore` file to exclude specific API endpoints.
+This approach ensures you stay within the 12-function limit while still having a fully functional frame implementation.

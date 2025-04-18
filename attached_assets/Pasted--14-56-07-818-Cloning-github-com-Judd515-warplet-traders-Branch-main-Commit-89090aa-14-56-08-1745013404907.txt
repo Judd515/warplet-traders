@@ -1,0 +1,36 @@
+[14:56:07.818] Cloning github.com/Judd515/warplet-traders (Branch: main, Commit: 89090aa)
+[14:56:08.683] Cloning completed: 864.000ms
+[14:56:08.758] Found .vercelignore
+[14:56:08.772] Removed 34 ignored files defined in .vercelignore
+[14:56:09.433] Restored build cache from previous deployment (91EWakVCHXd1kKcSq1j45qwPobtP)
+[14:56:09.533] Running build in Washington, D.C., USA (East) – iad1
+[14:56:09.990] Running "vercel build"
+[14:56:10.525] Vercel CLI 41.6.0
+[14:56:10.688] WARN! When using Next.js, it is recommended to place JavaScript Functions inside of the `pages/api` (provided by Next.js) directory instead of `api` (provided by Vercel). Other languages (Python, Go, etc) should still go in the `api` directory.
+[14:56:10.689] Learn More: https://nextjs.org/docs/api-routes/introduction
+[14:56:11.537] Running "install" command: `npm ci --omit=dev`...
+[14:56:20.617] 
+[14:56:20.617] added 395 packages, and audited 396 packages in 9s
+[14:56:20.619] 
+[14:56:20.619] 52 packages are looking for funding
+[14:56:20.619]   run `npm fund` for details
+[14:56:20.621] 
+[14:56:20.621] 1 moderate severity vulnerability
+[14:56:20.622] 
+[14:56:20.622] To address all issues, run:
+[14:56:20.622]   npm audit fix
+[14:56:20.623] 
+[14:56:20.623] Run `npm audit` for details.
+[14:56:20.809] Skipping build step
+[14:56:20.839] Installing dependencies...
+[14:56:22.307] npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+[14:56:22.376] npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+[14:56:24.064] 
+[14:56:24.065] added 94 packages in 3s
+[14:56:24.065] 
+[14:56:24.066] 61 packages are looking for funding
+[14:56:24.066]   run `npm fund` for details
+[14:56:26.274] Build Completed in /vercel/output [15s]
+[14:56:26.437] Deploying outputs...
+[14:56:27.708] Error: No more than 12 Serverless Functions can be added to a Deployment on the Hobby plan. Create a team (Pro plan) to deploy more. Learn More: https://vercel.link/function-count-limit
+[14:56:28.048] 
