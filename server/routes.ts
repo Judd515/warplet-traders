@@ -14,6 +14,7 @@ import * as path from 'path';
 import simpleFrameHandler from './api/simple-frame';
 import warpcastStableHandler from './api/warpcast-stable';
 import testNeynarHandler from './api/test-neynar';
+import frameActionHandler from './api/frame-action';
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Endpoint to get top traders with PnL data for a specific timeframe
@@ -235,6 +236,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error in test-neynar handler:', error);
       res.status(500).json({ error: 'Error testing Neynar API', message: error.message });
+    }
+  });
+  
+  // Add route for frame-action handler
+  app.all('/api/frame-action', (req, res) => {
+    try {
+      console.log('Frame action request received:', req.method, JSON.stringify(req.body || {}));
+      // @ts-ignore - frameActionHandler is expecting Express request/response
+      return frameActionHandler(req, res);
+    } catch (error) {
+      console.error('Error in frame-action handler:', error);
+      res.status(500).send('Error processing frame action request');
     }
   });
 
