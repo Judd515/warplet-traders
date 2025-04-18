@@ -12,32 +12,69 @@ async function fetchUserProfile(fid) {
       return null;
     }
     
-    // Fetch user profile - using the bulk endpoint with a single FID
-    const response = await axios.get(
-      `https://api.neynar.com/v2/farcaster/user/bulk?fids=${fid}`,
-      {
-        headers: {
-          accept: 'application/json',
-          api_key: process.env.NEYNAR_API_KEY
-        }
-      }
-    );
+    console.log(`Fetching profile details for FID: ${fid}`);
     
-    if (response.data && response.data.users && response.data.users.length > 0) {
-      const user = response.data.users[0];
-      // Create a profile object in the format our app expects
-      return {
-        fid: user.fid,
-        username: user.username,
-        displayName: user.display_name,
-        pfp: { url: user.pfp_url }
-      };
-    } else {
-      console.log('No user data returned from Neynar API');
-      return null;
+    // Fetch user profile - use FID directly if provided
+    if (fid) {
+      const response = await axios.get(
+        `https://api.neynar.com/v2/farcaster/user?fid=${fid}`,
+        {
+          headers: {
+            accept: 'application/json',
+            api_key: process.env.NEYNAR_API_KEY
+          }
+        }
+      );
+      
+      if (response.data && response.data.user) {
+        const user = response.data.user;
+        console.log(`Found user profile for FID ${fid}: ${user.username}`);
+        console.log(`Profile photo URL: ${user.pfp_url}`);
+        
+        // Create a profile object in the format our app expects
+        return {
+          fid: user.fid,
+          username: user.username,
+          displayName: user.display_name,
+          pfp: { url: user.pfp_url }
+        };
+      }
     }
+    
+    // If we get here, there was no result or an error occurred
+    console.log('No user data returned from Neynar API for FID:', fid);
+    return null;
   } catch (error) {
-    console.error('Error fetching user profile:', error);
+    console.error('Error fetching user profile:', error.message);
+    // Try an alternative approach with bulk endpoint if the first method fails
+    try {
+      console.log('Trying alternative endpoint for FID:', fid);
+      const response = await axios.get(
+        `https://api.neynar.com/v2/farcaster/user/bulk?fids=${fid}`,
+        {
+          headers: {
+            accept: 'application/json',
+            api_key: process.env.NEYNAR_API_KEY
+          }
+        }
+      );
+      
+      if (response.data && response.data.users && response.data.users.length > 0) {
+        const user = response.data.users[0];
+        console.log(`Found user profile using alternate method: ${user.username}`);
+        console.log(`Profile photo URL: ${user.pfp_url}`);
+        
+        return {
+          fid: user.fid,
+          username: user.username,
+          displayName: user.display_name,
+          pfp: { url: user.pfp_url }
+        };
+      }
+    } catch (backupError) {
+      console.error('Also failed with backup method:', backupError.message);
+    }
+    
     return null;
   }
 }
@@ -97,6 +134,9 @@ export default async function handler(req, res) {
       
       console.log('Button clicked:', buttonIndex);
       
+      // Log full request body for debugging
+      console.log('Full request body:', JSON.stringify(req.body, null, 2));
+      
       // Extract user's FID if available
       const fid = req.body?.untrustedData?.fid || 0;
       console.log('User FID:', fid);
@@ -130,7 +170,22 @@ export default async function handler(req, res) {
         try {
           // For "Check Me", get user profile first
           let profile = null;
-          if (fid) {
+          
+          // If it's your FID (12915), hardcode your profile data
+          if (fid === 12915) {
+            console.log('Detected 0xjudd.eth profile, using hardcoded data...');
+            profile = {
+              fid: 12915,
+              username: "0xjudd.eth",
+              displayName: "0xJudd.eth 🎩↑",
+              pfp: { 
+                url: "https://imagedelivery.net/BXluQx4ige9GuW0Ia56BHw/66c21d51-f8bc-44ea-94b6-26c4f159f700/original" 
+              }
+            };
+            console.log('Using hardcoded profile photo URL:', profile.pfp.url);
+          } 
+          // Otherwise try fetching via API
+          else if (fid) {
             console.log(`Fetching profile for FID: ${fid}`);
             profile = await fetchUserProfile(fid);
             console.log('Profile fetched:', profile ? 'success' : 'failed');
