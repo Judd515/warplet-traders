@@ -394,7 +394,7 @@ function getFrameHtml(frameType, traders = [], fid = 0, profile = null) {
       };
     }
     
-    // Profile photo SVG with custom positioning - smaller and positioned better
+    // Profile photo SVG with custom positioning - 22% larger (r=49 instead of r=40)
     let profileSvg = '';
     
     if (profile && profile.pfp && profile.pfp.url) {
@@ -402,21 +402,21 @@ function getFrameHtml(frameType, traders = [], fid = 0, profile = null) {
       profileSvg = `
       <!-- User Profile Photo from Warpcast via Neynar API -->
       <defs>
-        <pattern id="profileImage24h" patternUnits="userSpaceOnUse" width="100" height="100">
-          <image href="${profile.pfp.url}" x="0" y="0" width="100" height="100" />
+        <pattern id="profileImage24h" patternUnits="userSpaceOnUse" width="120" height="120">
+          <image href="${profile.pfp.url}" x="0" y="0" width="120" height="120" />
         </pattern>
         <clipPath id="circleClip24h">
-          <circle cx="60" cy="65" r="40"/>
+          <circle cx="60" cy="65" r="49"/>
         </clipPath>
       </defs>
-      <circle cx="60" cy="65" r="40" fill="url(#profileImage24h)" clip-path="url(#circleClip24h)"/>
-      <circle cx="60" cy="65" r="40" fill="none" stroke="#ffffff" stroke-width="2"/>`;
+      <circle cx="60" cy="65" r="49" fill="url(#profileImage24h)" clip-path="url(#circleClip24h)"/>
+      <circle cx="60" cy="65" r="49" fill="none" stroke="#ffffff" stroke-width="2"/>`;
     } else {
       // Fallback if no profile image is available
       profileSvg = `
       <!-- Profile circle fallback -->
-      <circle cx="60" cy="65" r="40" fill="#6e42ca"/>
-      <text x="60" y="70" font-family="Verdana" font-size="18" font-weight="bold" text-anchor="middle" fill="#ffffff">WARP</text>`;
+      <circle cx="60" cy="65" r="49" fill="#6e42ca"/>
+      <text x="60" y="70" font-family="Verdana" font-size="20" font-weight="bold" text-anchor="middle" fill="#ffffff">WARP</text>`;
     }
     
     return `<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
@@ -429,54 +429,54 @@ function getFrameHtml(frameType, traders = [], fid = 0, profile = null) {
       <rect x="120" y="30" width="1030" height="70" rx="12" fill="#332233"/>
       <text x="650" y="75" font-family="Verdana" font-size="36" font-weight="bold" text-anchor="middle" fill="#f0d0ff">Top Warplet Traders (24H)</text>
       
-      <!-- Main card -->
-      <rect x="40" y="120" width="1120" height="400" rx="20" fill="#1a1a24" stroke="#444455" stroke-width="2"/>
+      <!-- Main card - shifted down 5px -->
+      <rect x="40" y="125" width="1120" height="400" rx="20" fill="#1a1a24" stroke="#444455" stroke-width="2"/>
       
-      <!-- Table header -->
-      <rect x="60" y="140" width="1080" height="50" fill="#252535" rx="8"/>
-      <text x="160" y="174" font-family="Verdana" font-size="26" font-weight="bold" fill="#ffffff">Trader</text>
-      <text x="520" y="174" font-family="Verdana" font-size="26" font-weight="bold" fill="#ffffff">Token</text>
-      <text x="800" y="174" font-family="Verdana" font-size="26" font-weight="bold" fill="#ffffff">Earnings</text>
-      <text x="1020" y="174" font-family="Verdana" font-size="26" font-weight="bold" fill="#ffffff">Volume</text>
+      <!-- Table header - shifted down 5px -->
+      <rect x="60" y="145" width="1080" height="50" fill="#252535" rx="8"/>
+      <text x="160" y="179" font-family="Verdana" font-size="26" font-weight="bold" fill="#ffffff">Trader</text>
+      <text x="520" y="179" font-family="Verdana" font-size="26" font-weight="bold" fill="#ffffff">Token</text>
+      <text x="800" y="179" font-family="Verdana" font-size="26" font-weight="bold" fill="#ffffff">Earnings</text>
+      <text x="1020" y="179" font-family="Verdana" font-size="26" font-weight="bold" fill="#ffffff">Volume</text>
       
-      <!-- Table rows with LARGER font (1.5x) -->
-      <rect x="60" y="200" width="1080" height="60" fill="${traders[0].earnings.startsWith('1') ? '#28283a' : '#1d1d2c'}" />
-      <text x="80" y="240" font-family="Verdana" font-size="36" fill="#ffffff">1.</text>
-      <text x="110" y="240" font-family="Verdana" font-size="36" fill="#ffffff">${traders[0].name}</text>
-      <text x="520" y="240" font-family="Verdana" font-size="36" fill="#ffffff">${traders[0].token}</text>
-      <text x="800" y="240" font-family="Verdana" font-size="36" fill="#4CAF50">$${traders[0].earnings}</text>
-      <text x="1020" y="240" font-family="Verdana" font-size="36" fill="#ffffff">$${traders[0].volume}</text>
+      <!-- Table rows with LARGER font (1.5x) - shifted down 5px -->
+      <rect x="60" y="205" width="1080" height="60" fill="${traders[0].earnings.startsWith('1') ? '#28283a' : '#1d1d2c'}" />
+      <text x="80" y="245" font-family="Verdana" font-size="36" fill="#ffffff">1.</text>
+      <text x="110" y="245" font-family="Verdana" font-size="36" fill="#ffffff">${traders[0].name}</text>
+      <text x="520" y="245" font-family="Verdana" font-size="36" fill="#ffffff">${traders[0].token}</text>
+      <text x="800" y="245" font-family="Verdana" font-size="36" fill="#4CAF50">$${traders[0].earnings}</text>
+      <text x="1020" y="245" font-family="Verdana" font-size="36" fill="#ffffff">$${traders[0].volume}</text>
       
-      <rect x="60" y="260" width="1080" height="60" fill="${traders[1].earnings.startsWith('2') ? '#28283a' : '#1d1d2c'}" />
-      <text x="80" y="300" font-family="Verdana" font-size="36" fill="#ffffff">2.</text>
-      <text x="110" y="300" font-family="Verdana" font-size="36" fill="#ffffff">${traders[1].name}</text>
-      <text x="520" y="300" font-family="Verdana" font-size="36" fill="#ffffff">${traders[1].token}</text>
-      <text x="800" y="300" font-family="Verdana" font-size="36" fill="#4CAF50">$${traders[1].earnings}</text>
-      <text x="1020" y="300" font-family="Verdana" font-size="36" fill="#ffffff">$${traders[1].volume}</text>
+      <rect x="60" y="265" width="1080" height="60" fill="${traders[1].earnings.startsWith('2') ? '#28283a' : '#1d1d2c'}" />
+      <text x="80" y="305" font-family="Verdana" font-size="36" fill="#ffffff">2.</text>
+      <text x="110" y="305" font-family="Verdana" font-size="36" fill="#ffffff">${traders[1].name}</text>
+      <text x="520" y="305" font-family="Verdana" font-size="36" fill="#ffffff">${traders[1].token}</text>
+      <text x="800" y="305" font-family="Verdana" font-size="36" fill="#4CAF50">$${traders[1].earnings}</text>
+      <text x="1020" y="305" font-family="Verdana" font-size="36" fill="#ffffff">$${traders[1].volume}</text>
       
-      <rect x="60" y="320" width="1080" height="60" fill="${traders[2].earnings.startsWith('2') ? '#28283a' : '#1d1d2c'}" />
-      <text x="80" y="360" font-family="Verdana" font-size="36" fill="#ffffff">3.</text>
-      <text x="110" y="360" font-family="Verdana" font-size="36" fill="#ffffff">${traders[2].name}</text>
-      <text x="520" y="360" font-family="Verdana" font-size="36" fill="#ffffff">${traders[2].token}</text>
-      <text x="800" y="360" font-family="Verdana" font-size="36" fill="#4CAF50">$${traders[2].earnings}</text>
-      <text x="1020" y="360" font-family="Verdana" font-size="36" fill="#ffffff">$${traders[2].volume}</text>
+      <rect x="60" y="325" width="1080" height="60" fill="${traders[2].earnings.startsWith('2') ? '#28283a' : '#1d1d2c'}" />
+      <text x="80" y="365" font-family="Verdana" font-size="36" fill="#ffffff">3.</text>
+      <text x="110" y="365" font-family="Verdana" font-size="36" fill="#ffffff">${traders[2].name}</text>
+      <text x="520" y="365" font-family="Verdana" font-size="36" fill="#ffffff">${traders[2].token}</text>
+      <text x="800" y="365" font-family="Verdana" font-size="36" fill="#4CAF50">$${traders[2].earnings}</text>
+      <text x="1020" y="365" font-family="Verdana" font-size="36" fill="#ffffff">$${traders[2].volume}</text>
       
-      <rect x="60" y="380" width="1080" height="60" fill="${traders[3].earnings.startsWith('1') ? '#28283a' : '#1d1d2c'}" />
-      <text x="80" y="420" font-family="Verdana" font-size="36" fill="#ffffff">4.</text>
-      <text x="110" y="420" font-family="Verdana" font-size="36" fill="#ffffff">${traders[3].name}</text>
-      <text x="520" y="420" font-family="Verdana" font-size="36" fill="#ffffff">${traders[3].token}</text>
-      <text x="800" y="420" font-family="Verdana" font-size="36" fill="#4CAF50">$${traders[3].earnings}</text>
-      <text x="1020" y="420" font-family="Verdana" font-size="36" fill="#ffffff">$${traders[3].volume}</text>
+      <rect x="60" y="385" width="1080" height="60" fill="${traders[3].earnings.startsWith('1') ? '#28283a' : '#1d1d2c'}" />
+      <text x="80" y="425" font-family="Verdana" font-size="36" fill="#ffffff">4.</text>
+      <text x="110" y="425" font-family="Verdana" font-size="36" fill="#ffffff">${traders[3].name}</text>
+      <text x="520" y="425" font-family="Verdana" font-size="36" fill="#ffffff">${traders[3].token}</text>
+      <text x="800" y="425" font-family="Verdana" font-size="36" fill="#4CAF50">$${traders[3].earnings}</text>
+      <text x="1020" y="425" font-family="Verdana" font-size="36" fill="#ffffff">$${traders[3].volume}</text>
       
-      <rect x="60" y="440" width="1080" height="60" fill="${traders[4].earnings.startsWith('1') ? '#28283a' : '#1d1d2c'}" />
-      <text x="80" y="480" font-family="Verdana" font-size="36" fill="#ffffff">5.</text>
-      <text x="110" y="480" font-family="Verdana" font-size="36" fill="#ffffff">${traders[4].name}</text>
-      <text x="520" y="480" font-family="Verdana" font-size="36" fill="#ffffff">${traders[4].token}</text>
-      <text x="800" y="480" font-family="Verdana" font-size="36" fill="#4CAF50">$${traders[4].earnings}</text>
-      <text x="1020" y="480" font-family="Verdana" font-size="36" fill="#ffffff">$${traders[4].volume}</text>
+      <rect x="60" y="445" width="1080" height="60" fill="${traders[4].earnings.startsWith('1') ? '#28283a' : '#1d1d2c'}" />
+      <text x="80" y="485" font-family="Verdana" font-size="36" fill="#ffffff">5.</text>
+      <text x="110" y="485" font-family="Verdana" font-size="36" fill="#ffffff">${traders[4].name}</text>
+      <text x="520" y="485" font-family="Verdana" font-size="36" fill="#ffffff">${traders[4].token}</text>
+      <text x="800" y="485" font-family="Verdana" font-size="36" fill="#4CAF50">$${traders[4].earnings}</text>
+      <text x="1020" y="485" font-family="Verdana" font-size="36" fill="#ffffff">$${traders[4].volume}</text>
       
-      <!-- Footer with smaller font - positioned lower to avoid overlap -->
-      <text x="600" y="600" font-family="Verdana" font-size="18" text-anchor="middle" fill="#7e8296">Frame created by 0xjudd</text>
+      <!-- Footer with 24px font - positioned lower to avoid overlap -->
+      <text x="600" y="600" font-family="Verdana" font-size="24" text-anchor="middle" fill="#7e8296">Frame created by 0xjudd</text>
     </svg>`;
   };
   
@@ -495,7 +495,7 @@ function getFrameHtml(frameType, traders = [], fid = 0, profile = null) {
       };
     }
     
-    // Profile photo SVG with custom positioning - smaller and positioned better
+    // Profile photo SVG with custom positioning - 22% larger (r=49 instead of r=40)
     let profileSvg = '';
     
     if (profile && profile.pfp && profile.pfp.url) {
@@ -503,21 +503,21 @@ function getFrameHtml(frameType, traders = [], fid = 0, profile = null) {
       profileSvg = `
       <!-- User Profile Photo from Warpcast via Neynar API -->
       <defs>
-        <pattern id="profileImage7d" patternUnits="userSpaceOnUse" width="100" height="100">
-          <image href="${profile.pfp.url}" x="0" y="0" width="100" height="100" />
+        <pattern id="profileImage7d" patternUnits="userSpaceOnUse" width="120" height="120">
+          <image href="${profile.pfp.url}" x="0" y="0" width="120" height="120" />
         </pattern>
         <clipPath id="circleClip7d">
-          <circle cx="60" cy="65" r="40"/>
+          <circle cx="60" cy="65" r="49"/>
         </clipPath>
       </defs>
-      <circle cx="60" cy="65" r="40" fill="url(#profileImage7d)" clip-path="url(#circleClip7d)"/>
-      <circle cx="60" cy="65" r="40" fill="none" stroke="#ffffff" stroke-width="2"/>`;
+      <circle cx="60" cy="65" r="49" fill="url(#profileImage7d)" clip-path="url(#circleClip7d)"/>
+      <circle cx="60" cy="65" r="49" fill="none" stroke="#ffffff" stroke-width="2"/>`;
     } else {
       // Fallback if no profile image is available
       profileSvg = `
       <!-- Profile circle fallback -->
-      <circle cx="60" cy="65" r="40" fill="#3e7bca"/>
-      <text x="60" y="70" font-family="Verdana" font-size="18" font-weight="bold" text-anchor="middle" fill="#ffffff">WARP</text>`;
+      <circle cx="60" cy="65" r="49" fill="#3e7bca"/>
+      <text x="60" y="70" font-family="Verdana" font-size="20" font-weight="bold" text-anchor="middle" fill="#ffffff">WARP</text>`;
     }
     
     return `<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
@@ -530,54 +530,54 @@ function getFrameHtml(frameType, traders = [], fid = 0, profile = null) {
       <rect x="120" y="30" width="1030" height="70" rx="12" fill="#223344"/>
       <text x="650" y="75" font-family="Verdana" font-size="36" font-weight="bold" text-anchor="middle" fill="#c6e4ff">Top Warplet Traders (7d)</text>
       
-      <!-- Main card -->
-      <rect x="40" y="120" width="1120" height="400" rx="20" fill="#1a1a24" stroke="#444455" stroke-width="2"/>
+      <!-- Main card - shifted down 5px -->
+      <rect x="40" y="125" width="1120" height="400" rx="20" fill="#1a1a24" stroke="#444455" stroke-width="2"/>
       
-      <!-- Table header -->
-      <rect x="60" y="140" width="1080" height="50" fill="#252535" rx="8"/>
-      <text x="160" y="174" font-family="Verdana" font-size="26" font-weight="bold" fill="#ffffff">Trader</text>
-      <text x="520" y="174" font-family="Verdana" font-size="26" font-weight="bold" fill="#ffffff">Token</text>
-      <text x="800" y="174" font-family="Verdana" font-size="26" font-weight="bold" fill="#ffffff">Earnings</text>
-      <text x="1020" y="174" font-family="Verdana" font-size="26" font-weight="bold" fill="#ffffff">Volume</text>
+      <!-- Table header - shifted down 5px -->
+      <rect x="60" y="145" width="1080" height="50" fill="#252535" rx="8"/>
+      <text x="160" y="179" font-family="Verdana" font-size="26" font-weight="bold" fill="#ffffff">Trader</text>
+      <text x="520" y="179" font-family="Verdana" font-size="26" font-weight="bold" fill="#ffffff">Token</text>
+      <text x="800" y="179" font-family="Verdana" font-size="26" font-weight="bold" fill="#ffffff">Earnings</text>
+      <text x="1020" y="179" font-family="Verdana" font-size="26" font-weight="bold" fill="#ffffff">Volume</text>
       
-      <!-- Table rows with LARGER font (1.5x) -->
-      <rect x="60" y="200" width="1080" height="60" fill="${traders[0].earnings.startsWith('1') ? '#28283a' : '#1d1d2c'}" />
-      <text x="80" y="240" font-family="Verdana" font-size="36" fill="#ffffff">1.</text>
-      <text x="110" y="240" font-family="Verdana" font-size="36" fill="#ffffff">${traders[0].name}</text>
-      <text x="520" y="240" font-family="Verdana" font-size="36" fill="#ffffff">${traders[0].token}</text>
-      <text x="800" y="240" font-family="Verdana" font-size="36" fill="#4CAF50">$${traders[0].earnings}</text>
-      <text x="1020" y="240" font-family="Verdana" font-size="36" fill="#ffffff">$${traders[0].volume}</text>
+      <!-- Table rows with LARGER font (1.5x) - shifted down 5px -->
+      <rect x="60" y="205" width="1080" height="60" fill="${traders[0].earnings.startsWith('1') ? '#28283a' : '#1d1d2c'}" />
+      <text x="80" y="245" font-family="Verdana" font-size="36" fill="#ffffff">1.</text>
+      <text x="110" y="245" font-family="Verdana" font-size="36" fill="#ffffff">${traders[0].name}</text>
+      <text x="520" y="245" font-family="Verdana" font-size="36" fill="#ffffff">${traders[0].token}</text>
+      <text x="800" y="245" font-family="Verdana" font-size="36" fill="#4CAF50">$${traders[0].earnings}</text>
+      <text x="1020" y="245" font-family="Verdana" font-size="36" fill="#ffffff">$${traders[0].volume}</text>
       
-      <rect x="60" y="260" width="1080" height="60" fill="${traders[1].earnings.startsWith('1') ? '#28283a' : '#1d1d2c'}" />
-      <text x="80" y="300" font-family="Verdana" font-size="36" fill="#ffffff">2.</text>
-      <text x="110" y="300" font-family="Verdana" font-size="36" fill="#ffffff">${traders[1].name}</text>
-      <text x="520" y="300" font-family="Verdana" font-size="36" fill="#ffffff">${traders[1].token}</text>
-      <text x="800" y="300" font-family="Verdana" font-size="36" fill="#4CAF50">$${traders[1].earnings}</text>
-      <text x="1020" y="300" font-family="Verdana" font-size="36" fill="#ffffff">$${traders[1].volume}</text>
+      <rect x="60" y="265" width="1080" height="60" fill="${traders[1].earnings.startsWith('1') ? '#28283a' : '#1d1d2c'}" />
+      <text x="80" y="305" font-family="Verdana" font-size="36" fill="#ffffff">2.</text>
+      <text x="110" y="305" font-family="Verdana" font-size="36" fill="#ffffff">${traders[1].name}</text>
+      <text x="520" y="305" font-family="Verdana" font-size="36" fill="#ffffff">${traders[1].token}</text>
+      <text x="800" y="305" font-family="Verdana" font-size="36" fill="#4CAF50">$${traders[1].earnings}</text>
+      <text x="1020" y="305" font-family="Verdana" font-size="36" fill="#ffffff">$${traders[1].volume}</text>
       
-      <rect x="60" y="320" width="1080" height="60" fill="${traders[2].earnings.startsWith('9') ? '#28283a' : '#1d1d2c'}" />
-      <text x="80" y="360" font-family="Verdana" font-size="36" fill="#ffffff">3.</text>
-      <text x="110" y="360" font-family="Verdana" font-size="36" fill="#ffffff">${traders[2].name}</text>
-      <text x="520" y="360" font-family="Verdana" font-size="36" fill="#ffffff">${traders[2].token}</text>
-      <text x="800" y="360" font-family="Verdana" font-size="36" fill="#4CAF50">$${traders[2].earnings}</text>
-      <text x="1020" y="360" font-family="Verdana" font-size="36" fill="#ffffff">$${traders[2].volume}</text>
+      <rect x="60" y="325" width="1080" height="60" fill="${traders[2].earnings.startsWith('9') ? '#28283a' : '#1d1d2c'}" />
+      <text x="80" y="365" font-family="Verdana" font-size="36" fill="#ffffff">3.</text>
+      <text x="110" y="365" font-family="Verdana" font-size="36" fill="#ffffff">${traders[2].name}</text>
+      <text x="520" y="365" font-family="Verdana" font-size="36" fill="#ffffff">${traders[2].token}</text>
+      <text x="800" y="365" font-family="Verdana" font-size="36" fill="#4CAF50">$${traders[2].earnings}</text>
+      <text x="1020" y="365" font-family="Verdana" font-size="36" fill="#ffffff">$${traders[2].volume}</text>
       
-      <rect x="60" y="380" width="1080" height="60" fill="${traders[3].earnings.startsWith('7') ? '#28283a' : '#1d1d2c'}" />
-      <text x="80" y="420" font-family="Verdana" font-size="36" fill="#ffffff">4.</text>
-      <text x="110" y="420" font-family="Verdana" font-size="36" fill="#ffffff">${traders[3].name}</text>
-      <text x="520" y="420" font-family="Verdana" font-size="36" fill="#ffffff">${traders[3].token}</text>
-      <text x="800" y="420" font-family="Verdana" font-size="36" fill="#4CAF50">$${traders[3].earnings}</text>
-      <text x="1020" y="420" font-family="Verdana" font-size="36" fill="#ffffff">$${traders[3].volume}</text>
+      <rect x="60" y="385" width="1080" height="60" fill="${traders[3].earnings.startsWith('7') ? '#28283a' : '#1d1d2c'}" />
+      <text x="80" y="425" font-family="Verdana" font-size="36" fill="#ffffff">4.</text>
+      <text x="110" y="425" font-family="Verdana" font-size="36" fill="#ffffff">${traders[3].name}</text>
+      <text x="520" y="425" font-family="Verdana" font-size="36" fill="#ffffff">${traders[3].token}</text>
+      <text x="800" y="425" font-family="Verdana" font-size="36" fill="#4CAF50">$${traders[3].earnings}</text>
+      <text x="1020" y="425" font-family="Verdana" font-size="36" fill="#ffffff">$${traders[3].volume}</text>
       
-      <rect x="60" y="440" width="1080" height="60" fill="${traders[4].earnings.startsWith('6') ? '#28283a' : '#1d1d2c'}" />
-      <text x="80" y="480" font-family="Verdana" font-size="36" fill="#ffffff">5.</text>
-      <text x="110" y="480" font-family="Verdana" font-size="36" fill="#ffffff">${traders[4].name}</text>
-      <text x="520" y="480" font-family="Verdana" font-size="36" fill="#ffffff">${traders[4].token}</text>
-      <text x="800" y="480" font-family="Verdana" font-size="36" fill="#4CAF50">$${traders[4].earnings}</text>
-      <text x="1020" y="480" font-family="Verdana" font-size="36" fill="#ffffff">$${traders[4].volume}</text>
+      <rect x="60" y="445" width="1080" height="60" fill="${traders[4].earnings.startsWith('6') ? '#28283a' : '#1d1d2c'}" />
+      <text x="80" y="485" font-family="Verdana" font-size="36" fill="#ffffff">5.</text>
+      <text x="110" y="485" font-family="Verdana" font-size="36" fill="#ffffff">${traders[4].name}</text>
+      <text x="520" y="485" font-family="Verdana" font-size="36" fill="#ffffff">${traders[4].token}</text>
+      <text x="800" y="485" font-family="Verdana" font-size="36" fill="#4CAF50">$${traders[4].earnings}</text>
+      <text x="1020" y="485" font-family="Verdana" font-size="36" fill="#ffffff">$${traders[4].volume}</text>
       
-      <!-- Footer with smaller font - positioned lower to avoid overlap -->
-      <text x="600" y="600" font-family="Verdana" font-size="18" text-anchor="middle" fill="#7e8296">Frame created by 0xjudd</text>
+      <!-- Footer with 24px font size -->
+      <text x="600" y="600" font-family="Verdana" font-size="24" text-anchor="middle" fill="#7e8296">Frame created by 0xjudd</text>
     </svg>`;
   };
   
@@ -596,7 +596,7 @@ function getFrameHtml(frameType, traders = [], fid = 0, profile = null) {
       };
     }
     
-    // Profile photo SVG with custom positioning - smaller and positioned better
+    // Profile photo SVG with custom positioning - 22% larger (r=49 instead of r=40)
     let profileSvg = '';
     
     if (profile && profile.pfp && profile.pfp.url) {
@@ -604,21 +604,21 @@ function getFrameHtml(frameType, traders = [], fid = 0, profile = null) {
       profileSvg = `
       <!-- User Profile Photo from Warpcast via Neynar API -->
       <defs>
-        <pattern id="profileImageCheckMe" patternUnits="userSpaceOnUse" width="100" height="100">
-          <image href="${profile.pfp.url}" x="0" y="0" width="100" height="100" />
+        <pattern id="profileImageCheckMe" patternUnits="userSpaceOnUse" width="120" height="120">
+          <image href="${profile.pfp.url}" x="0" y="0" width="120" height="120" />
         </pattern>
         <clipPath id="circleClipCheckMe">
-          <circle cx="60" cy="65" r="40"/>
+          <circle cx="60" cy="65" r="49"/>
         </clipPath>
       </defs>
-      <circle cx="60" cy="65" r="40" fill="url(#profileImageCheckMe)" clip-path="url(#circleClipCheckMe)"/>
-      <circle cx="60" cy="65" r="40" fill="none" stroke="#ffffff" stroke-width="2"/>`;
+      <circle cx="60" cy="65" r="49" fill="url(#profileImageCheckMe)" clip-path="url(#circleClipCheckMe)"/>
+      <circle cx="60" cy="65" r="49" fill="none" stroke="#ffffff" stroke-width="2"/>`;
     } else {
       // Fallback if no profile image is available
       profileSvg = `
       <!-- Profile circle fallback -->
-      <circle cx="60" cy="65" r="40" fill="#a242ca"/>
-      <text x="60" y="70" font-family="Verdana" font-size="18" font-weight="bold" text-anchor="middle" fill="#ffffff">FID: ${fid || '?'}</text>`;
+      <circle cx="60" cy="65" r="49" fill="#a242ca"/>
+      <text x="60" y="70" font-family="Verdana" font-size="20" font-weight="bold" text-anchor="middle" fill="#ffffff">FID: ${fid || '?'}</text>`;
     }
     
     return `<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
@@ -631,54 +631,54 @@ function getFrameHtml(frameType, traders = [], fid = 0, profile = null) {
       <rect x="120" y="30" width="1030" height="70" rx="12" fill="#442233"/>
       <text x="650" y="75" font-family="Verdana" font-size="36" font-weight="bold" text-anchor="middle" fill="#ffd0e0">My Top Warplet Traders</text>
       
-      <!-- Main card -->
-      <rect x="40" y="120" width="1120" height="400" rx="20" fill="#1a1a24" stroke="#444455" stroke-width="2"/>
+      <!-- Main card - shifted down 5px -->
+      <rect x="40" y="125" width="1120" height="400" rx="20" fill="#1a1a24" stroke="#444455" stroke-width="2"/>
       
-      <!-- Table header -->
-      <rect x="60" y="140" width="1080" height="50" fill="#252535" rx="8"/>
-      <text x="160" y="174" font-family="Verdana" font-size="26" font-weight="bold" fill="#ffffff">Trader</text>
-      <text x="520" y="174" font-family="Verdana" font-size="26" font-weight="bold" fill="#ffffff">Token</text>
-      <text x="800" y="174" font-family="Verdana" font-size="26" font-weight="bold" fill="#ffffff">Earnings</text>
-      <text x="1020" y="174" font-family="Verdana" font-size="26" font-weight="bold" fill="#ffffff">Volume</text>
+      <!-- Table header - shifted down 5px -->
+      <rect x="60" y="145" width="1080" height="50" fill="#252535" rx="8"/>
+      <text x="160" y="179" font-family="Verdana" font-size="26" font-weight="bold" fill="#ffffff">Trader</text>
+      <text x="520" y="179" font-family="Verdana" font-size="26" font-weight="bold" fill="#ffffff">Token</text>
+      <text x="800" y="179" font-family="Verdana" font-size="26" font-weight="bold" fill="#ffffff">Earnings</text>
+      <text x="1020" y="179" font-family="Verdana" font-size="26" font-weight="bold" fill="#ffffff">Volume</text>
       
-      <!-- Table rows for followed accounts with LARGER font (1.5x) -->
-      <rect x="60" y="200" width="1080" height="60" fill="#28283a" />
-      <text x="80" y="240" font-family="Verdana" font-size="36" fill="#ffffff">1.</text>
-      <text x="110" y="240" font-family="Verdana" font-size="36" fill="#ffffff">${traders[0].name}</text>
-      <text x="520" y="240" font-family="Verdana" font-size="36" fill="#ffffff">${traders[0].token}</text>
-      <text x="800" y="240" font-family="Verdana" font-size="36" fill="#4CAF50">$${traders[0].earnings}</text>
-      <text x="1020" y="240" font-family="Verdana" font-size="36" fill="#ffffff">$${traders[0].volume}</text>
+      <!-- Table rows for followed accounts with LARGER font (1.5x) - shifted down 5px -->
+      <rect x="60" y="205" width="1080" height="60" fill="#28283a" />
+      <text x="80" y="245" font-family="Verdana" font-size="36" fill="#ffffff">1.</text>
+      <text x="110" y="245" font-family="Verdana" font-size="36" fill="#ffffff">${traders[0].name}</text>
+      <text x="520" y="245" font-family="Verdana" font-size="36" fill="#ffffff">${traders[0].token}</text>
+      <text x="800" y="245" font-family="Verdana" font-size="36" fill="#4CAF50">$${traders[0].earnings}</text>
+      <text x="1020" y="245" font-family="Verdana" font-size="36" fill="#ffffff">$${traders[0].volume}</text>
       
-      <rect x="60" y="260" width="1080" height="60" fill="#1d1d2c" />
-      <text x="80" y="300" font-family="Verdana" font-size="36" fill="#ffffff">2.</text>
-      <text x="110" y="300" font-family="Verdana" font-size="36" fill="#ffffff">${traders[1].name}</text>
-      <text x="520" y="300" font-family="Verdana" font-size="36" fill="#ffffff">${traders[1].token}</text>
-      <text x="800" y="300" font-family="Verdana" font-size="36" fill="#4CAF50">$${traders[1].earnings}</text>
-      <text x="1020" y="300" font-family="Verdana" font-size="36" fill="#ffffff">$${traders[1].volume}</text>
+      <rect x="60" y="265" width="1080" height="60" fill="#1d1d2c" />
+      <text x="80" y="305" font-family="Verdana" font-size="36" fill="#ffffff">2.</text>
+      <text x="110" y="305" font-family="Verdana" font-size="36" fill="#ffffff">${traders[1].name}</text>
+      <text x="520" y="305" font-family="Verdana" font-size="36" fill="#ffffff">${traders[1].token}</text>
+      <text x="800" y="305" font-family="Verdana" font-size="36" fill="#4CAF50">$${traders[1].earnings}</text>
+      <text x="1020" y="305" font-family="Verdana" font-size="36" fill="#ffffff">$${traders[1].volume}</text>
       
-      <rect x="60" y="320" width="1080" height="60" fill="#28283a" />
-      <text x="80" y="360" font-family="Verdana" font-size="36" fill="#ffffff">3.</text>
-      <text x="110" y="360" font-family="Verdana" font-size="36" fill="#ffffff">${traders[2].name}</text>
-      <text x="520" y="360" font-family="Verdana" font-size="36" fill="#ffffff">${traders[2].token}</text>
-      <text x="800" y="360" font-family="Verdana" font-size="36" fill="#4CAF50">$${traders[2].earnings}</text>
-      <text x="1020" y="360" font-family="Verdana" font-size="36" fill="#ffffff">$${traders[2].volume}</text>
+      <rect x="60" y="325" width="1080" height="60" fill="#28283a" />
+      <text x="80" y="365" font-family="Verdana" font-size="36" fill="#ffffff">3.</text>
+      <text x="110" y="365" font-family="Verdana" font-size="36" fill="#ffffff">${traders[2].name}</text>
+      <text x="520" y="365" font-family="Verdana" font-size="36" fill="#ffffff">${traders[2].token}</text>
+      <text x="800" y="365" font-family="Verdana" font-size="36" fill="#4CAF50">$${traders[2].earnings}</text>
+      <text x="1020" y="365" font-family="Verdana" font-size="36" fill="#ffffff">$${traders[2].volume}</text>
       
-      <rect x="60" y="380" width="1080" height="60" fill="#1d1d2c" />
-      <text x="80" y="420" font-family="Verdana" font-size="36" fill="#ffffff">4.</text>
-      <text x="110" y="420" font-family="Verdana" font-size="36" fill="#ffffff">${traders[3].name}</text>
-      <text x="520" y="420" font-family="Verdana" font-size="36" fill="#ffffff">${traders[3].token}</text>
-      <text x="800" y="420" font-family="Verdana" font-size="36" fill="#4CAF50">$${traders[3].earnings}</text>
-      <text x="1020" y="420" font-family="Verdana" font-size="36" fill="#ffffff">$${traders[3].volume}</text>
+      <rect x="60" y="385" width="1080" height="60" fill="#1d1d2c" />
+      <text x="80" y="425" font-family="Verdana" font-size="36" fill="#ffffff">4.</text>
+      <text x="110" y="425" font-family="Verdana" font-size="36" fill="#ffffff">${traders[3].name}</text>
+      <text x="520" y="425" font-family="Verdana" font-size="36" fill="#ffffff">${traders[3].token}</text>
+      <text x="800" y="425" font-family="Verdana" font-size="36" fill="#4CAF50">$${traders[3].earnings}</text>
+      <text x="1020" y="425" font-family="Verdana" font-size="36" fill="#ffffff">$${traders[3].volume}</text>
       
-      <rect x="60" y="440" width="1080" height="60" fill="#28283a" />
-      <text x="80" y="480" font-family="Verdana" font-size="36" fill="#ffffff">5.</text>
-      <text x="110" y="480" font-family="Verdana" font-size="36" fill="#ffffff">${traders[4].name}</text>
-      <text x="520" y="480" font-family="Verdana" font-size="36" fill="#ffffff">${traders[4].token}</text>
-      <text x="800" y="480" font-family="Verdana" font-size="36" fill="#4CAF50">$${traders[4].earnings}</text>
-      <text x="1020" y="480" font-family="Verdana" font-size="36" fill="#ffffff">$${traders[4].volume}</text>
+      <rect x="60" y="445" width="1080" height="60" fill="#28283a" />
+      <text x="80" y="485" font-family="Verdana" font-size="36" fill="#ffffff">5.</text>
+      <text x="110" y="485" font-family="Verdana" font-size="36" fill="#ffffff">${traders[4].name}</text>
+      <text x="520" y="485" font-family="Verdana" font-size="36" fill="#ffffff">${traders[4].token}</text>
+      <text x="800" y="485" font-family="Verdana" font-size="36" fill="#4CAF50">$${traders[4].earnings}</text>
+      <text x="1020" y="485" font-family="Verdana" font-size="36" fill="#ffffff">$${traders[4].volume}</text>
       
-      <!-- Footer with smaller font - positioned lower to avoid overlap -->
-      <text x="600" y="600" font-family="Verdana" font-size="18" text-anchor="middle" fill="#7e8296">Frame created by 0xjudd</text>
+      <!-- Footer with 24px font -->
+      <text x="600" y="600" font-family="Verdana" font-size="24" text-anchor="middle" fill="#7e8296">Frame created by 0xjudd</text>
     </svg>`;
   };
   
