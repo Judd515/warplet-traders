@@ -17,6 +17,7 @@ import testNeynarHandler from './api/test-neynar';
 import frameActionHandler from './api/frame-action';
 import profileHandlerHandler from './api/profile-handler';
 import externalImageHandler from './api/external-image-frame';
+import realDataFrameHandler from './api/real-data-frame';
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Endpoint to get top traders with PnL data for a specific timeframe
@@ -274,6 +275,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error in external-image-frame handler:', error);
       res.status(500).send('Error processing external image frame request');
+    }
+  });
+  
+  // Add route for real-data frame handler
+  app.all('/api/real-data-frame', async (req, res) => {
+    try {
+      console.log('Real data frame request received:', req.method, JSON.stringify(req.body || {}));
+      // @ts-ignore - realDataFrameHandler is expecting Express request/response
+      return await realDataFrameHandler(req, res);
+    } catch (error) {
+      console.error('Error in real-data-frame handler:', error);
+      res.status(500).send('Error processing real data frame request');
     }
   });
 

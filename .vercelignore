@@ -43,6 +43,7 @@ api/warpcast-stable-updated.js
 
 # Explicitly include these files
 !api/external-image-frame.js
+!api/real-data-frame.js
 
 # Exclude all JS files in the root used for deployment/building
 build-frame.js

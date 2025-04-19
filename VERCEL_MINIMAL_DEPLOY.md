@@ -47,8 +47,7 @@ api/profile-cache.js
 api/profile-handler.js
 
 # Keep only the essential files we need
-!api/external-image-frame.js
-!api/minimal.js
+!api/real-data-frame.js
 !api/health.js
 !api/index.js
 ```
@@ -56,16 +55,16 @@ api/profile-handler.js
 ### Step 3: Push only essential files to deployment branch
 Keep only the essential files we need for deployment:
 
-1. The external-image-frame.js implementation
+1. The real-data-frame.js implementation - uses real API data from Neynar and Dune
 2. A health check endpoint
 3. Your public images folder
 4. Your Vercel configuration
 
-### Step 4: Update the post_url in external-image-frame.js
+### Step 4: Update the post_url in real-data-frame.js
 Make sure the post_url in the frame HTML references your Vercel domain:
 
 ```javascript
-<meta property="fc:frame:post_url" content="https://your-vercel-app.vercel.app/api/external-image-frame">
+<meta property="fc:frame:post_url" content="https://your-vercel-app.vercel.app/api/real-data-frame">
 ```
 
 ### Step 5: Deploy the minimal branch
@@ -80,13 +79,13 @@ Then in Vercel, you can either:
 2. Update your existing project to deploy from this branch
 
 ## Essential Files for Deployment
-1. **api/external-image-frame.js** - The main frame handler using external image URLs
+1. **api/real-data-frame.js** - The main frame handler using real API data (Neynar & Dune)
 2. **api/health.js** - Simple health check endpoint
 3. **public/images/** - Directory with all your image assets
 4. **.vercelignore** - Configured to exclude unnecessary functions
 
 ## Post-Deployment
 After deploying, test your frame by accessing:
-- https://your-vercel-app.vercel.app/api/external-image-frame
+- https://your-vercel-app.vercel.app/api/real-data-frame
 
 This approach ensures you stay within the 12-function limit while still having a fully functional frame implementation.
