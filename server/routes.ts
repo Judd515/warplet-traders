@@ -11,13 +11,14 @@ import * as path from 'path';
 
 // Import the frame handlers
 // @ts-ignore - ignore TypeScript errors for these imports
-import simpleFrameHandler from './api/simple-frame';
-import warpcastStableHandler from './api/warpcast-stable';
-import testNeynarHandler from './api/test-neynar';
-import frameActionHandler from './api/frame-action';
-import profileHandlerHandler from './api/profile-handler';
-import externalImageHandler from './api/external-image-frame';
-import realDataFrameHandler from './api/real-data-frame';
+import simpleFrameHandler from '../api/simple-frame';
+import warpcastStableHandler from '../api/warpcast-stable';
+import testNeynarHandler from '../api/test-neynar';
+import frameActionHandler from '../api/frame-action';
+import profileHandlerHandler from '../api/profile-handler';
+import externalImageHandler from '../api/external-image-frame';
+import realDataFrameHandler from '../api/real-data-frame';
+import absoluteMinimalHandler from '../api/absolute-minimal';
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Endpoint to get top traders with PnL data for a specific timeframe
@@ -287,6 +288,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error in real-data-frame handler:', error);
       res.status(500).send('Error processing real data frame request');
+    }
+  });
+  
+  // Add route for absolute-minimal frame handler
+  app.all('/api/absolute-minimal', (req, res) => {
+    try {
+      console.log('Absolute minimal frame request received:', req.method, JSON.stringify(req.body || {}));
+      // @ts-ignore - absoluteMinimalHandler is expecting Express request/response
+      return absoluteMinimalHandler(req, res);
+    } catch (error) {
+      console.error('Error in absolute-minimal handler:', error);
+      res.status(500).send('Error processing absolute minimal frame request');
     }
   });
 
