@@ -175,14 +175,12 @@ async function getTraderData(timeframe) {
     throw new Error('Failed to get Dune query results after retries');
   }
   
-  // Process the results
-  const response = { data: { data: { query_result: { data: results } } } };
-  
+  // Process the results into the expected format
   // Extract and process the data
-  const results = response?.data?.data?.query_result?.data || [];
+  const formattedResults = results || [];
   
   // Process and sort data
-  const traderData = results
+  const traderData = formattedResults
     .map(item => ({
       username: item.username || 'Unknown',
       address: item.address || '',
