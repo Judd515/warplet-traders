@@ -4,10 +4,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { storage } from './storage';
 
-// Import handlers using require (more compatible)
+// Import handlers - using dynamic imports for ESM compatibility
 // @ts-ignore - ignore type errors for these imports
-const oneFileFrameHandler = require('../api/one-file-frame');
-const oneFileFrameRealDataHandler = require('../api/one-file-frame-real-data');
+import oneFileFrameHandler from '../api/one-file-frame.js';
+import oneFileFrameRealDataHandler from '../api/one-file-frame-real-data.js';
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Endpoint to get top traders with PnL data for a specific timeframe
