@@ -1,218 +1,150 @@
 /**
- * Working Frame Handler with Real Data
- * Built on the working absolute-fix.js implementation
+ * Ultra-minimalist Frame Handler with Real Data
+ * This implementation uses the image-endpoint.js to render real-time data
  */
 
-import axios from 'axios';
-
-// Configuration
-const DUNE_API_KEY = process.env.DUNE_API_KEY || '';
-const NEYNAR_API_KEY = process.env.NEYNAR_API_KEY || '';
-const BASE_URL = 'https://warplet-traders.vercel.app';
-
-// Minimal in-memory cache
-const dataCache = {
-  '24h': null,
-  '7d': null,
-  lastUpdated: null
-};
-
-export default async function handler(req, res) {
+export default function handler(req, res) {
   // Set appropriate headers
   res.setHeader('Content-Type', 'text/html');
   res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
   
+  // Base URL for the app
+  const baseUrl = 'https://warplet-traders.vercel.app';
+  
   try {
-    // Determine action based on request
+    // Default view is main
     let view = 'main';
-    let fid = null;
     
+    // Handle button clicks
     if (req.method === 'POST' && req.body?.untrustedData) {
-      const { buttonIndex, fid: userFid } = req.body.untrustedData;
-      fid = userFid;
+      const { buttonIndex, fid } = req.body.untrustedData;
       
-      // Ultra-simple button handling
+      // Button 1 logic
       if (buttonIndex === 1) {
-        view = '24h';
-      } else if (buttonIndex === 2) {
-        view = '7d';
-      } else if (buttonIndex === 3) {
-        // Get trader data for share message
-        const timeframe = view === '24h' ? '24h' : view === '7d' ? '7d' : '24h';
-        const traderData = await fetchTraderData(timeframe);
-        const shareText = formatShareText(traderData, timeframe);
+        // Different actions based on button context
+        // We reconstruct the current view based on the button text in the untrustedData
+        const buttonText = req.body.untrustedData.buttonText || '';
         
+        if (buttonText.includes('24h')) {
+          view = '24h';
+        } else if (buttonText.includes('7d')) {
+          view = '7d';
+        } else if (buttonText.includes('Try Again')) {
+          view = 'main';
+        }
+      } 
+      // Button 2 logic
+      else if (buttonIndex === 2) {
+        const buttonText = req.body.untrustedData.buttonText || '';
+        
+        if (buttonText.includes('7d')) {
+          view = '7d';
+        } else {
+          view = 'main';
+        }
+      }
+      // Button 3 (Share) logic
+      else if (buttonIndex === 3) {
         // Redirect to share URL
+        const shareText = encodeURIComponent(
+          `Check out the top Warplet traders on BASE!\n\nhttps://warplet-traders.vercel.app/api/absolute-fix`
+        );
         return res.redirect(302, `https://warpcast.com/~/compose?text=${shareText}`);
       }
     }
     
-    // Generate appropriate frame HTML
-    const frame = await generateFrame(view, fid);
-    return res.status(200).send(frame);
+    // Generate frame HTML based on the view
+    if (view === '24h') {
+      return res.status(200).send(generate24hFrame());
+    } else if (view === '7d') {
+      return res.status(200).send(generate7dFrame());
+    } else {
+      return res.status(200).send(generateMainFrame());
+    }
   } catch (error) {
     console.error('Error:', error);
     return res.status(200).send(generateErrorFrame());
   }
 }
 
-// Fetch trader data
-async function fetchTraderData(timeframe = '24h') {
-  try {
-    // Check cache first (5 min TTL)
-    if (dataCache[timeframe] && 
-        dataCache.lastUpdated && 
-        (Date.now() - dataCache.lastUpdated) < 5 * 60 * 1000) {
-      return dataCache[timeframe];
-    }
-    
-    // Fetch data from Dune Analytics
-    const queryId = timeframe === '24h' ? '3184028' : '3184030';
-    
-    const response = await axios.post(
-      'https://api.dune.com/api/v1/graphql',
-      {
-        query: `query DuneQuery {
-          query_result(query_id: ${queryId}, 
-          parameters: { text_trading_period: "${timeframe}" }) {
-            data
-          }
-        }`
-      },
-      { 
-        headers: { 
-          'x-dune-api-key': DUNE_API_KEY 
-        }
-      }
-    );
-    
-    // Extract results
-    const results = response?.data?.data?.query_result?.data || [];
-    
-    // Process and sort data
-    const processedData = results
-      .map(item => ({
-        username: item.username || 'Unknown',
-        address: item.address || '',
-        earnings: item.earnings || 0,
-        volume: item.volume || 0,
-        token: item.token || 'ETH'
-      }))
-      .sort((a, b) => b.earnings - a.earnings)
-      .slice(0, 5);
-    
-    // Update cache
-    dataCache[timeframe] = processedData;
-    dataCache.lastUpdated = Date.now();
-    
-    return processedData;
-  } catch (error) {
-    console.error(`Error fetching trader data: ${error.message}`);
-    
-    // Return fallback data to ensure the frame continues to work
-    return [
-      { username: 'api_error', address: '', earnings: 0, volume: 0, token: 'ETH' }
-    ];
-  }
-}
-
-// Format share text
-function formatShareText(traders, timeframe) {
-  const traderList = traders
-    .map((trader, index) => {
-      const formattedEarnings = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        maximumFractionDigits: 0
-      }).format(trader.earnings);
-      
-      const formattedVolume = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        notation: 'compact',
-        maximumFractionDigits: 1
-      }).format(trader.volume);
-      
-      return `${index + 1}. @${trader.username}: ${formattedEarnings} / ${formattedVolume} volume`;
-    })
-    .join('\n');
+// Generate main frame
+function generateMainFrame() {
+  const baseUrl = 'https://warplet-traders.vercel.app';
   
-  return encodeURIComponent(
-    `Check out the top Warplet traders on BASE (${timeframe})!\n\n${traderList}\n\nhttps://warplet-traders.vercel.app/api/absolute-fix`
-  );
-}
-
-// Generate frame HTML
-async function generateFrame(view, fid) {
-  try {
-    // Base URL for the app
-    const baseUrl = 'https://warplet-traders.vercel.app';
-    
-    // Select the proper image and buttons based on the view
-    let image = `${baseUrl}/images/main.png`;
-    let button1 = 'View 24h Data';
-    let button2 = 'View 7d Data';
-    let button3 = 'Share';
-    
-    if (view === '24h') {
-      // Use static images that we KNOW work
-      image = `${baseUrl}/images/24h.png`;
-      
-      // Fetch data just for the share functionality
-      try {
-        await fetchTraderData('24h');
-      } catch (e) {
-        console.error('Error pre-fetching 24h data:', e);
-      }
-      
-      button1 = 'View 7d Data';
-      button2 = 'Main View';
-      button3 = 'Share';
-    } else if (view === '7d') {
-      // Use static images that we KNOW work
-      image = `${baseUrl}/images/7d.png`;
-      
-      // Fetch data just for the share functionality
-      try {
-        await fetchTraderData('7d');
-      } catch (e) {
-        console.error('Error pre-fetching 7d data:', e);
-      }
-      
-      button1 = 'View 24h Data';
-      button2 = 'Main View';
-      button3 = 'Share';
-    }
-    
-    // Return the HTML for the frame
-    return `<!DOCTYPE html>
+  // Use dynamic image for real-time data
+  const imageUrl = `${baseUrl}/api/image-endpoint?view=main&t=${Date.now()}`;
+  
+  return `<!DOCTYPE html>
 <html>
 <head>
   <meta property="fc:frame" content="vNext" />
-  <meta property="fc:frame:image" content="${image}" />
+  <meta property="fc:frame:image" content="${imageUrl}" />
   <meta property="fc:frame:post_url" content="${baseUrl}/api/absolute-fix" />
-  <meta property="fc:frame:button:1" content="${button1}" />
-  <meta property="fc:frame:button:2" content="${button2}" />
-  <meta property="fc:frame:button:3" content="${button3}" />
+  <meta property="fc:frame:button:1" content="View 24h Data" />
+  <meta property="fc:frame:button:2" content="View 7d Data" />
+  <meta property="fc:frame:button:3" content="Share" />
 </head>
 <body>
   <h1>Warplet Top Traders</h1>
 </body>
 </html>`;
-  } catch (error) {
-    console.error('Error generating frame:', error);
-    return generateErrorFrame();
-  }
 }
 
-// Generate error frame
-function generateErrorFrame() {
+// Generate 24h frame
+function generate24hFrame() {
+  const baseUrl = 'https://warplet-traders.vercel.app';
+  
+  // Use dynamic image for real-time data
+  const imageUrl = `${baseUrl}/api/image-endpoint?view=24h&t=${Date.now()}`;
+  
   return `<!DOCTYPE html>
 <html>
 <head>
   <meta property="fc:frame" content="vNext" />
-  <meta property="fc:frame:image" content="${BASE_URL}/images/error.png" />
-  <meta property="fc:frame:post_url" content="${BASE_URL}/api/absolute-fix" />
+  <meta property="fc:frame:image" content="${imageUrl}" />
+  <meta property="fc:frame:post_url" content="${baseUrl}/api/absolute-fix" />
+  <meta property="fc:frame:button:1" content="View 7d Data" />
+  <meta property="fc:frame:button:2" content="Main View" />
+  <meta property="fc:frame:button:3" content="Share" />
+</head>
+<body>
+  <h1>24h Top Traders</h1>
+</body>
+</html>`;
+}
+
+// Generate 7d frame
+function generate7dFrame() {
+  const baseUrl = 'https://warplet-traders.vercel.app';
+  
+  // Use dynamic image for real-time data
+  const imageUrl = `${baseUrl}/api/image-endpoint?view=7d&t=${Date.now()}`;
+  
+  return `<!DOCTYPE html>
+<html>
+<head>
+  <meta property="fc:frame" content="vNext" />
+  <meta property="fc:frame:image" content="${imageUrl}" />
+  <meta property="fc:frame:post_url" content="${baseUrl}/api/absolute-fix" />
+  <meta property="fc:frame:button:1" content="View 24h Data" />
+  <meta property="fc:frame:button:2" content="Main View" />
+  <meta property="fc:frame:button:3" content="Share" />
+</head>
+<body>
+  <h1>7d Top Traders</h1>
+</body>
+</html>`;
+}
+
+// Generate error frame
+function generateErrorFrame() {
+  const baseUrl = 'https://warplet-traders.vercel.app';
+  return `<!DOCTYPE html>
+<html>
+<head>
+  <meta property="fc:frame" content="vNext" />
+  <meta property="fc:frame:image" content="${baseUrl}/images/error.png" />
+  <meta property="fc:frame:post_url" content="${baseUrl}/api/absolute-fix" />
   <meta property="fc:frame:button:1" content="Try Again" />
 </head>
 <body>
