@@ -48,7 +48,7 @@ function generateMainFrame() {
   <meta charset="utf-8">
   <meta property="fc:frame" content="vNext">
   <meta property="fc:frame:image" content="https://warplet-traders.vercel.app/images/main.png">
-  <meta property="fc:frame:post_url" content="/api/external-image-frame">
+  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/external-image-frame">
   <meta property="fc:frame:button:1" content="View 24h Data">
   <meta property="fc:frame:button:2" content="View 7d Data">
   <meta property="fc:frame:button:3" content="Check Me">
