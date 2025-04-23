@@ -29,6 +29,30 @@ export default async function handler(req, res) {
     let view = 'global';
     let fid = 0;
     
+    // For GET requests, return the frame HTML directly
+    if (req.method === 'GET') {
+      console.log('GET request received, returning frame HTML');
+      // Return the main frame HTML
+      return res.status(200).send(`<!DOCTYPE html>
+<html>
+<head>
+  <meta property="fc:frame" content="vNext" />
+  <meta property="fc:frame:image" content="${baseUrl}/images/global.svg" />
+  <meta property="fc:frame:post_url" content="${baseUrl}/api/working-with-redesign" />
+  <meta property="fc:frame:button:1" content="Check Me" />
+  <meta property="fc:frame:button:2" content="Share" />
+  <meta property="fc:frame:button:3" content="Tip" />
+  <meta property="og:image" content="${baseUrl}/images/global.svg" />
+  <meta property="fc:frame:image:aspect_ratio" content="1.91:1" />
+</head>
+<body>
+  <h1>Warplet Top Traders</h1>
+  <p>This is a Warpcast Frame showcasing top Warplet traders on BASE.</p>
+  <p>View this URL directly on Warpcast to interact with the frame.</p>
+</body>
+</html>`);
+    }
+    
     // Handle button clicks
     if (req.method === 'POST' && req.body?.untrustedData) {
       console.log('Received POST with untrustedData:', JSON.stringify(req.body.untrustedData));

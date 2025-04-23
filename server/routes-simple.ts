@@ -8,6 +8,15 @@ import * as path from 'path';
 // to avoid ESM/CommonJS compatibility issues
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Serve the main frame HTML directly for the root URL and frame path
+  app.get("/", (req, res) => {
+    res.sendFile("frame.html", { root: "./public" });
+  });
+  
+  app.get("/frame", (req, res) => {
+    res.sendFile("frame.html", { root: "./public" });
+  });
+  
   // Endpoint to get top traders with PnL data for a specific timeframe
   app.get("/api/traders", async (req, res) => {
     try {
