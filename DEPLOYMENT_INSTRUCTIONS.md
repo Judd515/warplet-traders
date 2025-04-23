@@ -1,43 +1,45 @@
 # Deployment Instructions for Warplet Traders
 
-## For Local Development
+This document contains instructions for deploying the Warplet Traders frame to Vercel.
 
-In local development, all URLs in the frame will be relative:
+## Files to Deploy
 
-```html
-<meta property="fc:frame:post_url" content="/api/simple-frame">
+The important files for deployment are:
+
+1. `/api/index.js` - Main frame handler
+2. `/api/image.js` - Image generation endpoint
+3. `/public/images/error.svg` - Error state image
+4. `/vercel.json` - Vercel configuration
+
+## Environment Variables
+
+Make sure to set up the following environment variables in your Vercel project:
+
+1. `DUNE_API_KEY` - Your Dune Analytics API key
+2. `NODE_ENV` - Set to "production"
+
+## Deployment Steps
+
+1. Connect your GitHub repository to Vercel
+2. Configure environment variables
+3. Deploy with the following settings:
+   - Framework preset: Other
+   - Root directory: ./
+   - Build command: None
+   - Output directory: ./
+
+## Troubleshooting
+
+- If you get 404 errors, check that your vercel.json routes are correct
+- If buttons aren't working, check that your fc:frame:post_url is correct in the HTML
+- If image generation fails, verify your Dune API key is set correctly
+
+## Testing
+
+After deployment, test your frame by visiting:
+
+```
+https://YOUR-VERCEL-URL/api
 ```
 
-This works fine for local testing with `localhost:5000`.
-
-## For Vercel Deployment
-
-When deploying to Vercel, the frames need absolute URLs. The application is set up to handle this automatically:
-
-1. The server detects when it's running in production mode and switches to absolute URLs
-2. The main entry point `public/clean-frame.html` has been configured to work in both environments
-3. A production-ready version `public/prod-frame.html` is also available with absolute URLs
-
-### Important Deployment Notes
-
-- Use `public/clean-frame.html` as the main entry point
-- Make sure environment variables are set up properly in Vercel
-- The `all-routes.js` file in `/deploy/api` includes all necessary routes for the Vercel deployment
-- The application will automatically use absolute URLs in production
-
-## Debugging URL Issues in Frames
-
-If your frame isn't working in production:
-
-1. Verify that the frame's post_url is an absolute URL in production
-2. Check that the API endpoints are accessible from Warpcast
-3. Use the debug endpoints to verify request/response flow
-
-## Frame HTML Testing
-
-You can test both versions of the frame HTML:
-
-- Local development: `http://localhost:5000/clean-frame.html`
-- Production-style frame: `http://localhost:5000/prod-frame.html`
-
-The production version uses absolute URLs even in local development, which can help identify issues early.
+This should display a valid frame that can be shared on Warpcast.

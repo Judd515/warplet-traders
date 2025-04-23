@@ -44,6 +44,85 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Add route for the clean implementation
+  app.all('/clean', async (req, res) => {
+    try {
+      console.log('Clean implementation request received:', req.method, req.body ? JSON.stringify(req.body) : '{}');
+      
+      // Import and use our handler from the API folder
+      try {
+        // Dynamic import to avoid ESM/CommonJS compatibility issues
+        const handlerModule = await import('../api/index.js');
+        if (handlerModule && handlerModule.default) {
+          // Call the handler
+          return handlerModule.default(req, res);
+        } else {
+          throw new Error('Clean handler module not properly exported');
+        }
+      } catch (moduleError) {
+        console.error('Error importing or executing the clean handler module:', moduleError);
+        
+        // Fallback to basic frame if the module can't be loaded
+        const baseUrl = req.protocol + '://' + req.get('host');
+        
+        return res.status(200).send(`<!DOCTYPE html>
+<html>
+<head>
+  <meta property="fc:frame" content="vNext" />
+  <meta property="fc:frame:image" content="${baseUrl}/images/error.svg" />
+  <meta property="fc:frame:post_url" content="${baseUrl}/clean" />
+  <meta property="fc:frame:button:1" content="Try Again" />
+</head>
+<body>
+  <h1>Error loading handler module</h1>
+</body>
+</html>`);
+      }
+    } catch (error) {
+      console.error('Error in clean handler:', error);
+      res.status(500).send('Error processing clean frame request');
+    }
+  });
+  
+  // Add route for the clean image endpoint
+  app.all('/clean/image', async (req, res) => {
+    try {
+      console.log('Clean image request received:', req.method, req.query);
+      
+      // Import and use our handler from the API folder
+      try {
+        // Dynamic import to avoid ESM/CommonJS compatibility issues
+        const handlerModule = await import('../api/image.js');
+        if (handlerModule && handlerModule.default) {
+          // Call the handler
+          return handlerModule.default(req, res);
+        } else {
+          throw new Error('Clean image handler module not properly exported');
+        }
+      } catch (moduleError) {
+        console.error('Error importing or executing the clean image handler module:', moduleError);
+        
+        // Fallback to basic error SVG
+        res.setHeader('Content-Type', 'image/svg+xml');
+        return res.status(200).send(`
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#1e293b" />
+  <text x="600" y="280" font-family="Verdana" font-size="40" fill="#ef4444" text-anchor="middle">Error loading data</text>
+  <text x="600" y="340" font-family="Verdana" font-size="28" fill="#94a3b8" text-anchor="middle">Please try again later</text>
+</svg>`);
+      }
+    } catch (error) {
+      console.error('Error in clean image handler:', error);
+      res.setHeader('Content-Type', 'image/svg+xml');
+      res.status(200).send(`
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#1e293b" />
+  <text x="600" y="280" font-family="Verdana" font-size="40" fill="#ef4444" text-anchor="middle">Error processing image request</text>
+  <text x="600" y="340" font-family="Verdana" font-size="28" fill="#94a3b8" text-anchor="middle">Please try again later</text>
+</svg>`);
+    }
+  });
+
   // Add route for the working-with-redesign handler
   app.all('/api/working-with-redesign', async (req, res) => {
     try {
