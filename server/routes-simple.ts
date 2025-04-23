@@ -36,112 +36,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Add route for the working-with-redesign handler
-  app.all('/api/working-with-redesign', (req, res) => {
+  app.all('/api/working-with-redesign', async (req, res) => {
     try {
       console.log('Working with redesign frame request received:', req.method, req.body ? JSON.stringify(req.body) : '{}');
       
-      // Implement the frame handler inline to avoid import issues
-      
-      // Set appropriate headers
-      res.setHeader('Content-Type', 'text/html');
-      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-      
-      // Base URL for the app
-      const baseUrl = 'https://warplet-traders.vercel.app';
-      
+      // Import and use our handler from the API folder
       try {
-        // Default view is main
-        let view = 'main';
-        
-        // Handle button clicks
-        if (req.method === 'POST' && req.body?.untrustedData) {
-          const { buttonIndex, buttonText } = req.body.untrustedData;
-          console.log('Button click:', buttonIndex, buttonText);
-          
-          // Button 1 logic - "Check Me" or "Try Again"
-          if (buttonIndex === 1) {
-            const btnText = buttonText || '';
-            
-            if (btnText.includes('Try Again')) {
-              view = 'main';
-            } else {
-              view = 'user';
-            }
-          } 
-          // Button 2 logic - "Share"
-          else if (buttonIndex === 2) {
-            // Redirect to share URL
-            const shareText = encodeURIComponent(
-              `Check out the top Warplet traders on BASE!\n\nhttps://warplet-traders.vercel.app/api/working-with-redesign`
-            );
-            return res.redirect(302, `https://warpcast.com/~/compose?text=${shareText}`);
-          }
-          // Button 3 logic - "Tip"
-          else if (buttonIndex === 3) {
-            return res.redirect(302, 'https://warpcast.com/0xjudd');
-          }
-        }
-        
-        // Helper function to generate main frame
-        function generateMainFrame() {
-          return `<!DOCTYPE html>
-<html>
-<head>
-  <meta property="fc:frame" content="vNext" />
-  <meta property="fc:frame:image" content="${baseUrl}/images/global.svg" />
-  <meta property="fc:frame:post_url" content="${baseUrl}/api/working-with-redesign" />
-  <meta property="fc:frame:button:1" content="Check Me" />
-  <meta property="fc:frame:button:2" content="Share" />
-  <meta property="fc:frame:button:3" content="Tip" />
-</head>
-<body>
-  <h1>Warplet Top Traders</h1>
-</body>
-</html>`;
-        }
-        
-        // Helper function to generate user-specific frame
-        function generateUserFrame() {
-          return `<!DOCTYPE html>
-<html>
-<head>
-  <meta property="fc:frame" content="vNext" />
-  <meta property="fc:frame:image" content="${baseUrl}/images/user.svg" />
-  <meta property="fc:frame:post_url" content="${baseUrl}/api/working-with-redesign" />
-  <meta property="fc:frame:button:1" content="Check Me" />
-  <meta property="fc:frame:button:2" content="Share" />
-  <meta property="fc:frame:button:3" content="Tip" />
-</head>
-<body>
-  <h1>My Top Traders</h1>
-</body>
-</html>`;
-        }
-        
-        // Helper function to generate error frame
-        function generateErrorFrame() {
-          return `<!DOCTYPE html>
-<html>
-<head>
-  <meta property="fc:frame" content="vNext" />
-  <meta property="fc:frame:image" content="${baseUrl}/images/error.svg" />
-  <meta property="fc:frame:post_url" content="${baseUrl}/api/working-with-redesign" />
-  <meta property="fc:frame:button:1" content="Try Again" />
-</head>
-<body>
-  <h1>Error loading data</h1>
-</body>
-</html>`;
-        }
-        
-        // Return the appropriate frame
-        if (view === 'user') {
-          return res.status(200).send(generateUserFrame());
+        // Dynamic import to avoid ESM/CommonJS compatibility issues
+        const handlerModule = await import('../api/working-with-redesign.js');
+        if (handlerModule && handlerModule.default) {
+          // Call the handler
+          return await handlerModule.default(req, res);
         } else {
-          return res.status(200).send(generateMainFrame());
+          throw new Error('Handler module not properly exported');
         }
-      } catch (innerError) {
-        console.error('Inner error:', innerError);
+      } catch (moduleError) {
+        console.error('Error importing or executing the handler module:', moduleError);
+        
+        // Fallback to basic frame if the module can't be loaded
+        const baseUrl = req.protocol + '://' + req.get('host');
+        
         return res.status(200).send(`<!DOCTYPE html>
 <html>
 <head>
@@ -151,7 +65,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   <meta property="fc:frame:button:1" content="Try Again" />
 </head>
 <body>
-  <h1>Error loading data</h1>
+  <h1>Error loading handler module</h1>
 </body>
 </html>`);
       }
