@@ -1,19 +1,68 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Test Frame</title>
-  
-  <!-- Minimalist frame meta tags -->
-  <meta property="fc:frame" content="vNext">
-  <meta property="fc:frame:image" content="https://placehold.co/1200x630/1e293b/FFFFFF?text=Test+Frame">
-  <meta property="fc:frame:button:1" content="Test Button">
-  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api">
+  <title>Warplet Traders Frame - Test</title>
+  <!-- Frame meta tags -->
+  <meta property="fc:frame" content="vNext" />
+  <meta property="fc:frame:image" content="http://localhost:5000/images/global.svg" />
+  <meta property="fc:frame:post_url" content="http://localhost:5000/api/working-with-redesign" />
+  <meta property="fc:frame:button:1" content="Check Me" />
+  <meta property="fc:frame:button:2" content="Share" />
+  <meta property="fc:frame:button:3" content="Tip" />
+  <meta property="og:image" content="http://localhost:5000/images/global.svg" />
+  <meta property="fc:frame:image:aspect_ratio" content="1.91:1" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    code {
+      background-color: #f5f5f5;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+    .frame-info {
+      background-color: #f0f8ff;
+      border: 1px solid #add8e6;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    h2 {
+      color: #1e40af;
+    }
+  </style>
 </head>
-<body style="font-family: system-ui; background: #1e293b; color: white; padding: 2rem; text-align: center;">
-  <h1>Test Frame</h1>
-  <p>This is a minimal test frame with a single button to test API connectivity.</p>
-  <p>If the button works, it proves the API is functioning correctly.</p>
+<body>
+  <h1>Warplet Traders - Local Test Frame</h1>
+  
+  <div class="frame-info">
+    <h2>Testing Instructions</h2>
+    <p>This page includes the necessary meta tags to be recognized as a Warpcast Frame when accessed in a Frame validator.</p>
+    <p>To test in the Warpcast Frame validator:</p>
+    <ol>
+      <li>Deploy this page to a publicly accessible URL (localhost won't work for validation)</li>
+      <li>Copy the deployed URL of this page</li>
+      <li>Visit <a href="https://warpcast.com/~/developers/frames" target="_blank">https://warpcast.com/~/developers/frames</a></li>
+      <li>Paste the URL in the validator input field</li>
+      <li>Test the frame interactions</li>
+    </ol>
+  </div>
+  
+  <div class="frame-info">
+    <h2>Tech Stack</h2>
+    <p>This project is built with:</p>
+    <ul>
+      <li>Express.js backend</li>
+      <li>Dune Analytics API for trading data</li>
+      <li>Neynar API for Farcaster social graph</li>
+      <li>Dynamic SVG generation</li>
+    </ul>
+  </div>
+  
+  <p><strong>Note:</strong> Local testing with <code>localhost</code> URLs won't work in the actual Warpcast validator, as it needs to access your frame publicly.</p>
 </body>
 </html>
