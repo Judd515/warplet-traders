@@ -55,26 +55,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         // Handle button clicks
         if (req.method === 'POST' && req.body?.untrustedData) {
-          const { buttonIndex } = req.body.untrustedData;
+          const { buttonIndex, buttonText } = req.body.untrustedData;
+          console.log('Button click:', buttonIndex, buttonText);
           
-          // "Check Me" button
+          // Button 1 logic - "Check Me" or "Try Again"
           if (buttonIndex === 1) {
-            view = 'user';
+            const btnText = buttonText || '';
+            
+            if (btnText.includes('Try Again')) {
+              view = 'main';
+            } else {
+              view = 'user';
+            }
           } 
-          // "Main View" button
+          // Button 2 logic - "Share"
           else if (buttonIndex === 2) {
-            view = 'main';
-          }
-          // "Share" button
-          else if (buttonIndex === 3) {
             // Redirect to share URL
             const shareText = encodeURIComponent(
               `Check out the top Warplet traders on BASE!\n\nhttps://warplet-traders.vercel.app/api/working-with-redesign`
             );
             return res.redirect(302, `https://warpcast.com/~/compose?text=${shareText}`);
           }
-          // "Tip" button
-          else if (buttonIndex === 4) {
+          // Button 3 logic - "Tip"
+          else if (buttonIndex === 3) {
             return res.redirect(302, 'https://warpcast.com/0xjudd');
           }
         }
@@ -88,9 +91,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   <meta property="fc:frame:image" content="${baseUrl}/images/global.svg" />
   <meta property="fc:frame:post_url" content="${baseUrl}/api/working-with-redesign" />
   <meta property="fc:frame:button:1" content="Check Me" />
-  <meta property="fc:frame:button:2" content="Main View" />
-  <meta property="fc:frame:button:3" content="Share" />
-  <meta property="fc:frame:button:4" content="Tip" />
+  <meta property="fc:frame:button:2" content="Share" />
+  <meta property="fc:frame:button:3" content="Tip" />
 </head>
 <body>
   <h1>Warplet Top Traders</h1>
@@ -107,9 +109,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   <meta property="fc:frame:image" content="${baseUrl}/images/user.svg" />
   <meta property="fc:frame:post_url" content="${baseUrl}/api/working-with-redesign" />
   <meta property="fc:frame:button:1" content="Check Me" />
-  <meta property="fc:frame:button:2" content="Main View" />
-  <meta property="fc:frame:button:3" content="Share" />
-  <meta property="fc:frame:button:4" content="Tip" />
+  <meta property="fc:frame:button:2" content="Share" />
+  <meta property="fc:frame:button:3" content="Tip" />
 </head>
 <body>
   <h1>My Top Traders</h1>
