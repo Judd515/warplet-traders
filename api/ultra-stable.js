@@ -103,7 +103,7 @@ function get24hFrameHtml(traders, fid) {
 <html>
 <head>
   <meta property="fc:frame" content="vNext" />
-  <meta property="fc:frame:image" content="https://warplet-traders.vercel.app/images/traders-24h.png" />
+  <meta property="fc:frame:image" content="https://warplet-traders.vercel.app/images/24h.png" />
   <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/ultra-stable" />
   <meta property="fc:frame:button:1" content="View 7d" />
   <meta property="fc:frame:button:2" content="Check Me" />
@@ -121,7 +121,7 @@ function get7dFrameHtml(traders, fid) {
 <html>
 <head>
   <meta property="fc:frame" content="vNext" />
-  <meta property="fc:frame:image" content="https://warplet-traders.vercel.app/images/traders-7d.png" />
+  <meta property="fc:frame:image" content="https://warplet-traders.vercel.app/images/7d.png" />
   <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/ultra-stable" />
   <meta property="fc:frame:button:1" content="View 24h" />
   <meta property="fc:frame:button:2" content="Check Me" />
@@ -139,7 +139,7 @@ function getCheckMeFrameHtml(traders, fid) {
 <html>
 <head>
   <meta property="fc:frame" content="vNext" />
-  <meta property="fc:frame:image" content="https://warplet-traders.vercel.app/images/user-specific.png" />
+  <meta property="fc:frame:image" content="https://warplet-traders.vercel.app/images/check-me.png" />
   <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/ultra-stable" />
   <meta property="fc:frame:button:1" content="View 24h" />
   <meta property="fc:frame:button:2" content="View 7d" />
