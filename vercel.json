@@ -1,23 +1,23 @@
 {
   "version": 2,
   "functions": {
-    "api/*.js": {
+    "api/minimal-frame.js": {
       "memory": 128,
       "maxDuration": 10
     }
   },
   "routes": [
     {
-      "src": "/api",
-      "dest": "/api/index.js"
+      "src": "/api/minimal-frame",
+      "dest": "/api/minimal-frame.js"
     },
     {
-      "src": "/api/image",
-      "dest": "/api/image.js"
+      "src": "/api",
+      "dest": "/api/minimal-frame.js"
     },
     {
       "src": "/",
-      "dest": "/api/index.js"
+      "dest": "/api/minimal-frame.js"
     }
   ]
 }

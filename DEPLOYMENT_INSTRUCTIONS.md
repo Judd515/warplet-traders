@@ -1,45 +1,42 @@
-# Deployment Instructions for Warplet Traders
+# Minimal Deployment Instructions for Warplet Traders
 
-This document contains instructions for deploying the Warplet Traders frame to Vercel.
+This document contains simplified instructions for deploying the Warplet Traders frame to Vercel.
 
 ## Files to Deploy
 
-The important files for deployment are:
+The essential files for deployment are:
 
-1. `/api/index.js` - Main frame handler
-2. `/api/image.js` - Image generation endpoint
-3. `/public/images/error.svg` - Error state image
-4. `/vercel.json` - Vercel configuration
-
-## Environment Variables
-
-Make sure to set up the following environment variables in your Vercel project:
-
-1. `DUNE_API_KEY` - Your Dune Analytics API key
-2. `NODE_ENV` - Set to "production"
+1. `/api/minimal-frame.js` - Ultra-minimal frame handler 
+2. `/public/static-image.svg` - Static frame image
+3. `/vercel.json` - Vercel routing configuration
 
 ## Deployment Steps
 
 1. Connect your GitHub repository to Vercel
-2. Configure environment variables
-3. Deploy with the following settings:
+2. Deploy with the following settings:
    - Framework preset: Other
    - Root directory: ./
    - Build command: None
    - Output directory: ./
 
-## Troubleshooting
-
-- If you get 404 errors, check that your vercel.json routes are correct
-- If buttons aren't working, check that your fc:frame:post_url is correct in the HTML
-- If image generation fails, verify your Dune API key is set correctly
-
-## Testing
+## Testing After Deployment
 
 After deployment, test your frame by visiting:
 
 ```
-https://YOUR-VERCEL-URL/api
+https://warplet-traders.vercel.app/api
 ```
 
-This should display a valid frame that can be shared on Warpcast.
+or
+
+```
+https://warplet-traders.vercel.app/api/minimal-frame
+```
+
+Both URLs should display a valid frame that can be shared on Warpcast.
+
+## Troubleshooting
+
+- If you get 404 errors, verify that vercel.json has the correct routes
+- Ensure the static-image.svg file is present in your public directory
+- Check that minimal-frame.js is properly exported and accessible

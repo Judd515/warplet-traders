@@ -283,6 +283,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Add route for minimal frame
+  app.all('/minimal-frame', async (req, res) => {
+    try {
+      console.log('Minimal frame request received:', req.method, req.body ? JSON.stringify(req.body) : '{}');
+      
+      // Import and use our handler from the API folder
+      try {
+        // Dynamic import to avoid ESM/CommonJS compatibility issues
+        const handlerModule = await import('../api/minimal-frame.js');
+        if (handlerModule && handlerModule.default) {
+          // Call the handler
+          return handlerModule.default(req, res);
+        } else {
+          throw new Error('Minimal frame handler module not properly exported');
+        }
+      } catch (moduleError) {
+        console.error('Error importing or executing the minimal frame handler module:', moduleError);
+        
+        // Fallback to basic frame if the module can't be loaded
+        const baseUrl = req.protocol + '://' + req.get('host');
+        
+        return res.status(200).send(`<!DOCTYPE html>
+<html>
+<head>
+  <meta property="fc:frame" content="vNext" />
+  <meta property="fc:frame:image" content="${baseUrl}/static-image.svg" />
+  <meta property="fc:frame:post_url" content="${baseUrl}/minimal-frame" />
+  <meta property="fc:frame:button:1" content="Try Again" />
+</head>
+<body>
+  <h1>Error loading handler module</h1>
+</body>
+</html>`);
+      }
+    } catch (error) {
+      console.error('Error in minimal frame handler:', error);
+      res.status(500).send('Error processing minimal frame request');
+    }
+  });
+
   // Add route for the image endpoint
   app.all('/api/image-endpoint', async (req, res) => {
     try {
