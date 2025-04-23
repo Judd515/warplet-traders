@@ -83,6 +83,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).send('Error processing redesigned frame request');
     }
   });
+  
+  // Add route for the fast-frame handler (optimized for quick response)
+  app.all('/api/fast-frame', async (req, res) => {
+    try {
+      console.log('Fast Frame request received:', req.method, req.body ? JSON.stringify(req.body) : '{}');
+      
+      // Import and use the fast-frame handler
+      try {
+        // Dynamic import to avoid ESM/CommonJS compatibility issues
+        const handlerModule = await import('../api/fast-frame.js');
+        if (handlerModule && handlerModule.default) {
+          // Call the handler
+          return handlerModule.default(req, res);
+        } else {
+          throw new Error('Fast frame handler module not properly exported');
+        }
+      } catch (moduleError) {
+        console.error('Error importing or executing the fast-frame handler:', moduleError);
+        
+        // Fallback to basic frame if the module can't be loaded
+        const baseUrl = req.protocol + '://' + req.get('host');
+        
+        return res.status(200).send(`<!DOCTYPE html>
+<html>
+<head>
+  <meta property="fc:frame" content="vNext" />
+  <meta property="fc:frame:image" content="${baseUrl}/images/error.svg" />
+  <meta property="fc:frame:post_url" content="${baseUrl}/api/fast-frame" />
+  <meta property="fc:frame:button:1" content="Try Again" />
+</head>
+<body>
+  <h1>Error loading fast frame handler</h1>
+</body>
+</html>`);
+      }
+    } catch (error) {
+      console.error('Error in fast-frame handler:', error);
+      res.status(500).send('Error processing fast frame request');
+    }
+  });
 
   const httpServer = createServer(app);
   return httpServer;
