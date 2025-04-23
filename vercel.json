@@ -1,23 +1,23 @@
 {
   "version": 2,
   "functions": {
-    "api/minimal-frame.js": {
-      "memory": 128,
+    "api/stable-data-frame.js": {
+      "memory": 256,
       "maxDuration": 10
     }
   },
   "routes": [
     {
-      "src": "/api/minimal-frame",
-      "dest": "/api/minimal-frame.js"
+      "src": "/api/stable-data-frame",
+      "dest": "/api/stable-data-frame.js"
     },
     {
       "src": "/api",
-      "dest": "/api/minimal-frame.js"
+      "dest": "/api/stable-data-frame.js"
     },
     {
       "src": "/",
-      "dest": "/api/minimal-frame.js"
+      "dest": "/api/stable-data-frame.js"
     }
   ]
 }

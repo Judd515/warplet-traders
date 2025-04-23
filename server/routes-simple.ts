@@ -283,6 +283,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Add route for stable data frame
+  app.all('/api/stable-data-frame', async (req, res) => {
+    try {
+      console.log('Stable data frame request received:', req.method, req.body ? JSON.stringify(req.body) : '{}');
+      
+      // Import and use the stable-data-frame handler
+      try {
+        // Dynamic import to avoid ESM/CommonJS compatibility issues
+        const handlerModule = await import('../api/stable-data-frame.js');
+        if (handlerModule && handlerModule.default) {
+          // Call the handler
+          return handlerModule.default(req, res);
+        } else {
+          throw new Error('Stable data frame handler module not properly exported');
+        }
+      } catch (moduleError) {
+        console.error('Error importing or executing the stable data frame handler:', moduleError);
+        
+        // Fallback to basic frame if the module can't be loaded
+        const baseUrl = req.protocol + '://' + req.get('host');
+        
+        return res.status(200).send(`<!DOCTYPE html>
+<html>
+<head>
+  <meta property="fc:frame" content="vNext" />
+  <meta property="fc:frame:image" content="${baseUrl}/static-image.svg" />
+  <meta property="fc:frame:post_url" content="${baseUrl}/api/stable-data-frame" />
+  <meta property="fc:frame:button:1" content="Try Again" />
+  <meta property="fc:frame:button:2" content="Share" />
+  <meta property="fc:frame:button:3" content="Tip" />
+</head>
+<body>
+  <h1>Error loading handler module</h1>
+</body>
+</html>`);
+      }
+    } catch (error) {
+      console.error('Error in stable data frame handler:', error);
+      res.status(500).send('Error processing stable data frame request');
+    }
+  });
+
   // Add route for minimal frame
   app.all('/minimal-frame', async (req, res) => {
     try {
