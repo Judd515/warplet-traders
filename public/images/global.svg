@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#ffffff" />
+  
+  <!-- Profile Circle -->
+  <circle cx="90" cy="90" r="60" fill="#8b5cf6" />
+  
+  <!-- Profile Text Alternative -->
+  <text x="90" y="80" font-family="Verdana" font-size="14" fill="white" text-anchor="middle">Profile Photo</text>
+  <text x="90" y="100" font-family="Verdana" font-size="14" fill="white" text-anchor="middle">of user FID</text>
+  
+  <!-- Title Background -->
+  <rect x="160" y="60" width="500" height="60" rx="10" fill="#dbeafe" />
+  
+  <!-- Title Text -->
+  <text x="410" y="100" font-family="Verdana" font-size="26" font-weight="bold" fill="#000000" text-anchor="middle">My Top Warplet Traders</text>
+  
+  <!-- Table Container -->
+  <rect x="90" y="160" width="1020" height="320" rx="20" fill="none" stroke="#000000" stroke-width="2" />
+  
+  <!-- Table Header -->
+  <rect x="91" y="161" width="1018" height="40" fill="#f5f5f5" />
+  <line x1="90" y1="200" x2="1110" y2="200" stroke="#000000" stroke-width="1" />
+  
+  <!-- Table Header Text -->
+  <text x="270" y="185" font-family="Verdana" font-size="18" fill="#000000" text-anchor="middle">User</text>
+  <text x="600" y="185" font-family="Verdana" font-size="18" fill="#000000" text-anchor="middle">Token</text>
+  <text x="930" y="185" font-family="Verdana" font-size="18" fill="#000000" text-anchor="middle">Earnings</text>
+  
+  <!-- Example data -->
+  <text x="270" y="240" font-family="Verdana" font-size="18" fill="#000000" text-anchor="middle">@chrislarsc.eth</text>
+  <text x="600" y="240" font-family="Verdana" font-size="18" fill="#000000" text-anchor="middle">ETH</text>
+  <text x="930" y="240" font-family="Verdana" font-size="18" fill="#000000" text-anchor="middle">$9,450</text>
+  
+  <text x="270" y="280" font-family="Verdana" font-size="18" fill="#000000" text-anchor="middle">@thcradio</text>
+  <text x="600" y="280" font-family="Verdana" font-size="18" fill="#000000" text-anchor="middle">BTC</text>
+  <text x="930" y="280" font-family="Verdana" font-size="18" fill="#000000" text-anchor="middle">$12,580</text>
+  
+  <text x="270" y="320" font-family="Verdana" font-size="18" fill="#000000" text-anchor="middle">@wakaflocka</text>
+  <text x="600" y="320" font-family="Verdana" font-size="18" fill="#000000" text-anchor="middle">USDC</text>
+  <text x="930" y="320" font-family="Verdana" font-size="18" fill="#000000" text-anchor="middle">$10,940</text>
+  
+  <!-- Buttons -->
+  <rect x="150" y="520" width="150" height="40" rx="5" fill="white" stroke="#000000" stroke-width="1" />
+  <text x="225" y="545" font-family="Verdana" font-size="16" fill="#000000" text-anchor="middle">Check Me</text>
+  
+  <rect x="350" y="520" width="150" height="40" rx="5" fill="white" stroke="#000000" stroke-width="1" />
+  <text x="425" y="545" font-family="Verdana" font-size="16" fill="#000000" text-anchor="middle">Share</text>
+  
+  <rect x="550" y="520" width="150" height="40" rx="5" fill="white" stroke="#000000" stroke-width="1" />
+  <text x="625" y="545" font-family="Verdana" font-size="16" fill="#000000" text-anchor="middle">Tip</text>
+  
+  <!-- Footer -->
+  <rect x="750" y="520" width="150" height="30" rx="5" fill="white" />
+  <text x="825" y="540" font-family="Verdana" font-size="12" fill="#000000" text-anchor="middle">Frame created by 0xJudd</text>
+</svg>
