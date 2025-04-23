@@ -155,10 +155,10 @@ async function generateFrame(view, fid) {
     let button3 = 'Share';
     
     if (view === '24h') {
-      // If we have real data, use the real-data-frame endpoint
-      image = `${baseUrl}/api/real-data-frame?type=24h`;
+      // Use static images that we KNOW work
+      image = `${baseUrl}/images/24h.png`;
       
-      // Fetch data as backup
+      // Fetch data just for the share functionality
       try {
         await fetchTraderData('24h');
       } catch (e) {
@@ -169,10 +169,10 @@ async function generateFrame(view, fid) {
       button2 = 'Main View';
       button3 = 'Share';
     } else if (view === '7d') {
-      // If we have real data, use the real-data-frame endpoint
-      image = `${baseUrl}/api/real-data-frame?type=7d`;
+      // Use static images that we KNOW work
+      image = `${baseUrl}/images/7d.png`;
       
-      // Fetch data as backup
+      // Fetch data just for the share functionality
       try {
         await fetchTraderData('7d');
       } catch (e) {
