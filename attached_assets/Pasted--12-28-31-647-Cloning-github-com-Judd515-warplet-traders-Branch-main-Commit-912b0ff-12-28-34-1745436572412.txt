@@ -1,0 +1,36 @@
+[12:28:31.647] Cloning github.com/Judd515/warplet-traders (Branch: main, Commit: 912b0ff)
+[12:28:34.709] Cloning completed: 3.062s
+[12:28:34.837] Found .vercelignore
+[12:28:34.857] Removed 42 ignored files defined in .vercelignore
+[12:28:34.960] Restored build cache from previous deployment (4oqJFW1nYMrsfyUBhcYGqEgpDQGP)
+[12:28:35.104] Running build in Washington, D.C., USA (East) – iad1
+[12:28:35.806] Running "vercel build"
+[12:28:36.406] Vercel CLI 41.6.2
+[12:28:36.634] WARN! When using Next.js, it is recommended to place JavaScript Functions inside of the `pages/api` (provided by Next.js) directory instead of `api` (provided by Vercel). Other languages (Python, Go, etc) should still go in the `api` directory.
+[12:28:36.634] Learn More: https://nextjs.org/docs/api-routes/introduction
+[12:28:39.430] Running "install" command: `npm ci --omit=dev`...
+[12:28:54.814] 
+[12:28:54.815] added 395 packages, and audited 396 packages in 15s
+[12:28:54.816] 
+[12:28:54.817] 52 packages are looking for funding
+[12:28:54.817]   run `npm fund` for details
+[12:28:54.819] 
+[12:28:54.820] 1 moderate severity vulnerability
+[12:28:54.820] 
+[12:28:54.820] To address all issues, run:
+[12:28:54.821]   npm audit fix
+[12:28:54.821] 
+[12:28:54.822] Run `npm audit` for details.
+[12:28:55.107] Skipping build step
+[12:28:55.157] Installing dependencies...
+[12:28:57.505] npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+[12:28:57.568] npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+[12:28:59.920] 
+[12:28:59.920] added 94 packages in 5s
+[12:28:59.921] 
+[12:28:59.922] 61 packages are looking for funding
+[12:28:59.922]   run `npm fund` for details
+[12:29:01.922] Build Completed in /vercel/output [23s]
+[12:29:02.108] Deploying outputs...
+[12:29:03.364] Error: No more than 12 Serverless Functions can be added to a Deployment on the Hobby plan. Create a team (Pro plan) to deploy more. Learn More: https://vercel.link/function-count-limit
+[12:29:03.923] 
