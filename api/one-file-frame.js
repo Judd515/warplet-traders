@@ -8,322 +8,173 @@
  * - Dune Analytics for trading data
  */
 
-export default function handler(req, res) {
-  // Set headers for CORS and caching
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  res.setHeader('Cache-Control', 's-maxage=10');
+const axios = require('axios');
+
+// Configuration
+const NEYNAR_API_KEY = process.env.NEYNAR_API_KEY || '';
+const DUNE_API_KEY = process.env.DUNE_API_KEY || '';
+const BASE_URL = 'https://warplet-traders.vercel.app'; // Update this with your Vercel deployment URL
+
+// HTTP Headers
+const FRAME_HEADERS = {
+  'Content-Type': 'text/html',
+  'Cache-Control': 'no-cache, no-store, must-revalidate'
+};
+
+/**
+ * Main handler function
+ */
+module.exports = async function handler(req, res) {
+  console.log(`Frame request received: ${req.method}`);
   
-  // Handle preflight CORS requests
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-  
-  // For GET requests, show the main screen with all four buttons
-  if (req.method === 'GET') {
-    return res.status(200).send(getFrameHtml('main'));
-  }
-  
-  // For POST requests (button clicks), parse the button index and return appropriate frame
-  if (req.method === 'POST') {
-    try {
-      // Simplest possible button extraction
-      let buttonIndex = 1;
-      let requestData = '';
+  try {
+    // Initialize with default state
+    let frameType = 'main';
+    let userFid = null;
+    
+    // Extract data from POST requests (button clicks)
+    if (req.method === 'POST' && req.body?.untrustedData) {
+      const { buttonIndex, fid } = req.body.untrustedData;
+      userFid = fid;
       
-      // Try to get button index from request body
-      if (req.body) {
-        if (typeof req.body === 'string') {
-          try {
-            const parsed = JSON.parse(req.body);
-            buttonIndex = parsed.untrustedData?.buttonIndex || 1;
-          } catch (e) {
-            console.log('Could not parse string body');
-          }
-        } else if (typeof req.body === 'object') {
-          buttonIndex = req.body.untrustedData?.buttonIndex || 1;
-        }
-      }
+      console.log(`Button ${buttonIndex} clicked by user FID: ${fid}`);
       
-      console.log('Button clicked:', buttonIndex);
-      
-      // Get the current frame type to help with context-sensitive buttons
-      const currentFrame = req.body?.untrustedData?.frameType || 'vNext';
-      
-      // Extract additional data from the request if needed
-      const fid = req.body?.untrustedData?.fid || null; // User's FID if available
-      
-      // Determine which frame to return based on button index and current context
-      let frameType = 'main';
-      
-      // Direct share implementation - for consistent handling across all frames
-      const shareUrl = "https://warpcast.com/~/compose?text=Top%20Warplet%20Earners%20(7d)%0A%0A1.%20%40dgfld.eth%20(ETH)%3A%20%244%2C750%20%2F%20%2461.3K%20volume%0A2.%20%40cryptoastro%20(USDC)%3A%20%243%2C980%20%2F%20%2451.2K%20volume%0A3.%20%40lito.sol%20(BTC)%3A%20%243%2C560%20%2F%20%2445.9K%20volume%0A4.%20%40dabit3%20(ARB)%3A%20%242%2C910%20%2F%20%2437.5K%20volume%0A5.%20%40punk6529%20(DEGEN)%3A%20%242%2C350%20%2F%20%2430.2K%20volume%0A%0Ahttps%3A%2F%2Fwarplet-traders.vercel.app";
-      
-      // Direct share link with one click (always button4 except in select cases)
-      if (buttonIndex === 4 && currentFrame !== 'share' && currentFrame !== 'check-me-24h' && currentFrame !== 'check-me') {
-        return res.status(200).send(`
-<!DOCTYPE html>
-<html>
-<head>
-  <meta http-equiv="refresh" content="0;url=${shareUrl}">
-  <meta charset="utf-8">
-  <meta property="fc:frame" content="vNext">
-  <meta property="fc:frame:image" content="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjMwIiBmaWxsPSIjMWUyOTNiIi8+CiAgPHRleHQgeD0iNjAwIiB5PSIzMTUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+T3BlbmluZyBTaGFyZSBDb21wb3Nlci4uLjwvdGV4dD4KPC9zdmc+">
-  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/one-file-frame">
-  <meta property="fc:frame:button:1" content="View 24h Data">
-  <meta property="fc:frame:button:2" content="View 7d Data">
-  <meta property="fc:frame:button:3" content="Check Me">
-  <meta property="fc:frame:button:4" content="Share">
-  <script>window.location.href = "${shareUrl}";</script>
-</head>
-<body>
-  <p>Opening share composer...</p>
-  <p><a href="${shareUrl}">Click here if not redirected</a></p>
-</body>
-</html>
-        `);
-      }
-      
-      // All frames will follow the same button pattern, even the "Check Me" frames
-      // All buttons are handled the same way regardless of which frame is currently shown
+      // Determine which frame to show based on button clicked
       if (buttonIndex === 1) {
-        // Button 1: View 24h Data
-        frameType = 'day';
+        frameType = '24h';
       } else if (buttonIndex === 2) {
-        // Button 2: View 7d Data
-        frameType = 'week';
+        frameType = '7d';
       } else if (buttonIndex === 3) {
-        // Button 3: Check Me - load user's FID data with 24h timeframe as default
-        frameType = 'check-me-24h';
+        frameType = 'checkme';
       } else if (buttonIndex === 4) {
-        // Button 4: Share (already handled by the direct link action)
-        // Only handle the special case for the share view's "Back to Main" button
-        if (currentFrame === 'share') {
-          frameType = 'main';
-        } else {
-          // For all other cases, open the share link directly (handled by button action)
-          return res.status(200).send(`
-<!DOCTYPE html>
-<html>
-<head>
-  <meta http-equiv="refresh" content="0;url=${shareUrl}">
-  <meta charset="utf-8">
-  <meta property="fc:frame" content="vNext">
-  <meta property="fc:frame:image" content="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjMwIiBmaWxsPSIjMWUyOTNiIi8+CiAgPHRleHQgeD0iNjAwIiB5PSIzMTUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+T3BlbmluZyBTaGFyZSBDb21wb3Nlci4uLjwvdGV4dD4KPC9zdmc+">
-  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/one-file-frame">
-  <meta property="fc:frame:button:1" content="View 24h Data">
-  <meta property="fc:frame:button:2" content="View 7d Data">
-  <meta property="fc:frame:button:3" content="Check Me">
-  <meta property="fc:frame:button:4" content="Share">
-  <meta property="fc:frame:button:4:action" content="link">
-  <meta property="fc:frame:button:4:target" content="${shareUrl}">
-  <script>window.location.href = "${shareUrl}";</script>
-</head>
-<body>
-  <p>Opening share composer...</p>
-  <p><a href="${shareUrl}">Click here if not redirected</a></p>
-</body>
-</html>
-          `);
-        }
+        frameType = 'share';
       }
-      
-      // Return the appropriate frame HTML
-      return res.status(200).send(getFrameHtml(frameType));
-    } catch (error) {
-      console.error('Error handling frame action:', error);
-      return res.status(200).send(getFrameHtml('error'));
     }
+    
+    // For user-specific data, capture the FID
+    if (frameType === 'checkme' && userFid) {
+      console.log(`Showing data for user FID: ${userFid}`);
+      return res.status(200).send(getFrameHtml('loading', { userFid }));
+    }
+    
+    // For share action, redirect to the composer
+    if (frameType === 'share') {
+      return getRedirectFrame();
+    }
+    
+    // Return the appropriate frame HTML
+    return res.status(200).set(FRAME_HEADERS).send(getFrameHtml(frameType));
+    
+  } catch (error) {
+    console.error('Error processing frame request:', error);
+    return res.status(200).set(FRAME_HEADERS).send(getFrameHtml('error'));
   }
-  
-  // Default response - start with user's FID data (24h view)
-  return res.status(200).send(getFrameHtml('check-me-24h'));
-}
+};
 
 /**
  * Generate frame HTML for a specific type
  */
 function getFrameHtml(frameType) {
-  // Base SVG creator function for simple text
-  const createSimpleSvg = (text) => {
-    return `<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
-      <rect width="1200" height="630" fill="#1e293b"/>
-      <text x="600" y="315" font-family="Arial" font-size="60" text-anchor="middle" fill="#ffffff">${text}</text>
-    </svg>`;
-  };
+  // Set frame-specific properties
+  let imageUrl, title, button1Text, button2Text, button3Text;
   
-  // More complex SVG for trader data
-  const createTradersSvg = (title, traders) => {
-    let tradersHtml = '';
-    let yPos = 220;
-    
-    traders.forEach((trader, index) => {
-      tradersHtml += `<text x="600" y="${yPos + (index * 60)}" font-family="Arial" font-size="30" text-anchor="middle" fill="#ffffff">${index + 1}. ${trader.name} (${trader.token}): $${trader.earnings} / $${trader.volume} volume</text>`;
-    });
-    
-    return `<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
-      <rect width="1200" height="630" fill="#1e293b"/>
-      <text x="600" y="120" font-family="Arial" font-size="50" text-anchor="middle" fill="#ffffff">${title}</text>
-      ${tradersHtml}
-    </svg>`;
-  };
+  switch (frameType) {
+    case '24h':
+      imageUrl = `${BASE_URL}/images/traders-24h.png`;
+      title = 'Top Traders (24h)';
+      button1Text = 'View 7d Data';
+      button2Text = 'Check Me';
+      button3Text = 'Share';
+      break;
+      
+    case '7d':
+      imageUrl = `${BASE_URL}/images/traders-7d.png`;
+      title = 'Top Traders (7d)';
+      button1Text = 'View 24h Data';
+      button2Text = 'Check Me';
+      button3Text = 'Share';
+      break;
+      
+    case 'checkme':
+      imageUrl = `${BASE_URL}/images/checking-user.png`;
+      title = 'Checking your follows...';
+      button1Text = 'View 24h Data';
+      button2Text = 'View 7d Data';
+      button3Text = null; // No third button
+      break;
+      
+    case 'loading':
+      imageUrl = `${BASE_URL}/images/loading.png`;
+      title = 'Loading your data...';
+      button1Text = 'View 24h Data';
+      button2Text = 'View 7d Data';
+      button3Text = null; // No third button
+      break;
+      
+    case 'error':
+      imageUrl = `${BASE_URL}/images/error.png`;
+      title = 'Error loading data';
+      button1Text = 'View 24h Data';
+      button2Text = 'View 7d Data';
+      button3Text = 'Try Again';
+      break;
+      
+    default: // main frame
+      imageUrl = `${BASE_URL}/images/traders-main.png`;
+      title = 'Top Warplet Traders';
+      button1Text = 'View 24h Data';
+      button2Text = 'View 7d Data';
+      button3Text = 'Check Me';
+      break;
+  }
   
-  // Base64 encode the SVG
-  const encodeBase64 = (svg) => {
-    return Buffer.from(svg).toString('base64');
-  };
-  
-  // Use consistent trader data for all views
-  // These would be fetched from Dune Analytics in production
-  // For now we use realistic sample data
-  const allTraders24h = [
-    { name: '@dgfld.eth', token: 'ETH', earnings: '3,250', volume: '41.2K' },
-    { name: '@cryptoastro', token: 'USDC', earnings: '2,840', volume: '36.5K' },
-    { name: '@lito.sol', token: 'BTC', earnings: '2,140', volume: '27.3K' },
-    { name: '@dabit3', token: 'ARB', earnings: '1,780', volume: '22.9K' },
-    { name: '@punk6529', token: 'DEGEN', earnings: '1,520', volume: '19.4K' }
-  ];
-  
-  const allTraders7d = [
-    { name: '@dgfld.eth', token: 'ETH', earnings: '4,750', volume: '61.3K' },
-    { name: '@cryptoastro', token: 'USDC', earnings: '3,980', volume: '51.2K' },
-    { name: '@lito.sol', token: 'BTC', earnings: '3,560', volume: '45.9K' },
-    { name: '@dabit3', token: 'ARB', earnings: '2,910', volume: '37.5K' },
-    { name: '@punk6529', token: 'DEGEN', earnings: '2,350', volume: '30.2K' }
-  ];
-  
-  // In a real implementation, we would filter allTraders to just those the user follows
-  // For demo purposes, we'll use the same data for all views to maintain consistency
-  const topTraders24h = allTraders24h;
-  const topTraders7d = allTraders7d;
-  const userTopTraders24h = allTraders24h;
-  const userTopTraders7d = allTraders7d;
-  
-  // Share URL that will be used directly
-  const shareUrl = "https://warpcast.com/~/compose?text=Top%20Warplet%20Earners%20(7d)%0A%0A1.%20%40dgfld.eth%20(ETH)%3A%20%244%2C750%20%2F%20%2461.3K%20volume%0A2.%20%40cryptoastro%20(USDC)%3A%20%243%2C980%20%2F%20%2451.2K%20volume%0A3.%20%40lito.sol%20(BTC)%3A%20%243%2C560%20%2F%20%2445.9K%20volume%0A4.%20%40dabit3%20(ARB)%3A%20%242%2C910%20%2F%20%2437.5K%20volume%0A5.%20%40punk6529%20(DEGEN)%3A%20%242%2C350%20%2F%20%2430.2K%20volume%0A%0Ahttps%3A%2F%2Fwarplet-traders.vercel.app";
-  
-  /**
-   * Generate a special redirect frame that immediately redirects to the share URL
-   */
-  function getRedirectFrame() {
-    return `
-<!DOCTYPE html>
+  // Build the HTML response
+  let html = `<!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="refresh" content="0;url=${shareUrl}">
-  <meta property="fc:frame" content="vNext">
-  <meta property="fc:frame:image" content="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjMwIiBmaWxsPSIjMWUyOTNiIi8+CiAgPHRleHQgeD0iNjAwIiB5PSIzMTUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+UmVkaXJlY3RpbmcgdG8gc2hhcmUuLi48L3RleHQ+Cjwvc3ZnPg==">
-  <meta property="fc:frame:post_url" content="https://warplet-traders.vercel.app/api/one-file-frame">
-  <meta property="fc:frame:button:1" content="View 24h Data">
-  <meta property="fc:frame:button:2" content="View 7d Data">
-  <meta property="fc:frame:button:3" content="Check Me">
-  <meta property="fc:frame:button:4" content="Share">
-  <script>
-    window.location.href = "${shareUrl}";
-  </script>
-</head>
+  <meta property="fc:frame" content="vNext" />
+  <meta property="fc:frame:image" content="${imageUrl}" />
+  <meta property="fc:frame:post_url" content="${BASE_URL}/api/one-file-frame" />
+  <meta property="fc:frame:button:1" content="${button1Text}" />
+  <meta property="fc:frame:button:2" content="${button2Text}" />`;
+  
+  // Add third button if specified
+  if (button3Text) {
+    html += `\n  <meta property="fc:frame:button:3" content="${button3Text}" />`;
+  }
+  
+  // Add share button
+  html += `\n  <meta property="fc:frame:button:4" content="Share" />`;
+  
+  // Close the HTML
+  html += `\n</head>
 <body>
-  <p>Redirecting to share URL...</p>
-  <p><a href="${shareUrl}">Click here if not redirected automatically</a></p>
+  <h1>${title}</h1>
 </body>
-</html>
-    `;
-  }
-  
-  // Frame-specific content
-  let imageContent, button1, button2, button3, button4;
-  
-  // Fixed button order for all frames: 24hr, 7day, Check Me, Share
-  if (frameType === 'main') {
-    imageContent = createSimpleSvg('Warplet Top Traders');
-    button1 = 'View 24h Data';
-    button2 = 'View 7d Data'; 
-    button3 = 'Check Me';
-    button4 = 'Share';
-  } else if (frameType === 'day') {
-    imageContent = createTradersSvg('24h Top Traders', topTraders24h);
-    button1 = 'Back to Main';
-    button2 = 'View 7d Data';
-    button3 = 'Check Me';
-    button4 = 'Share';
-  } else if (frameType === 'week') {
-    imageContent = createTradersSvg('7d Top Traders', topTraders7d);
-    button1 = 'View 24h Data';
-    button2 = 'Back to Main';
-    button3 = 'Check Me';
-    button4 = 'Share';
-  } else if (frameType === 'share') {
-    // Create a different SVG for share so it looks different
-    imageContent = createSimpleSvg('Share Top Traders');
-    button1 = 'View 24h Data';
-    button2 = 'View 7d Data';
-    button3 = 'Check Me';
-    button4 = 'Back to Main';
-  } else if (frameType === 'check-me') {
-    // Show the "Check Me" view with the user's follows for 7 days
-    imageContent = createTradersSvg('Your Top Followed Traders (7d)', userTopTraders7d);
-    button1 = 'View 24h Data';
-    button2 = 'View 7d Data';
-    button3 = 'Check Me';
-    button4 = 'Share';
-  } else if (frameType === 'check-me-24h') {
-    // Show the "Check Me" view with the user's follows for 24 hours
-    imageContent = createTradersSvg('Your Top Followed Traders (24h)', userTopTraders24h);
-    button1 = 'View 24h Data';
-    button2 = 'View 7d Data';
-    button3 = 'Check Me';
-    button4 = 'Share';
-  } else {
-    // Error frame
-    imageContent = createSimpleSvg('Error Occurred');
-    button1 = 'Try Again';
-    button2 = 'View 24h Data';
-    button3 = 'Check Me';
-    button4 = 'Share';
-  }
-  
-  // Generate base64 image string
-  const base64Image = `data:image/svg+xml;base64,${encodeBase64(imageContent)}`;
-  
-  // Post URL that should be included in every frame
-  const postUrl = 'https://warplet-traders.vercel.app/api/one-file-frame';
-  
-  // Construct frame HTML
-  let html = `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta property="fc:frame" content="vNext">
-  <meta property="fc:frame:image" content="${base64Image}">
-  <meta property="fc:frame:post_url" content="${postUrl}">
-  <meta property="fc:frame:button:1" content="${button1}">
-`;
-
-  // Only add buttons if they have content
-  if (button2) {
-    html += `  <meta property="fc:frame:button:2" content="${button2}">\n`;
-  }
-  
-  if (button3) {
-    html += `  <meta property="fc:frame:button:3" content="${button3}">\n`;
-  }
-  
-  if (button4) {
-    html += `  <meta property="fc:frame:button:4" content="${button4}">\n`;
-  }
-  
-  // Add share button action (button 4 in our new order) - direct link to share
-  if (frameType !== 'share') {
-    html += `  <meta property="fc:frame:button:4:action" content="link">\n`;
-    html += `  <meta property="fc:frame:button:4:target" content="${shareUrl}">\n`;
-  }
-  
-  html += `</head>
-<body></body>
 </html>`;
 
   return html;
 }
+
+  /**
+   * Generate a special redirect frame that immediately redirects to the share URL
+   */
+  function getRedirectFrame() {
+    const shareText = encodeURIComponent(
+      `Check out the top Warplet traders on BASE!
+      
+Top 5 Earners (24h):
+1. @dwr.eth: $4,250
+2. @judd.eth: $3,780
+3. @base_god: $2,950
+4. @canto_maximalist: $2,140
+5. @basedtrader: $1,870
+
+https://warplet-traders.vercel.app/api/one-file-frame`
+    );
+    
+    const redirectUrl = `https://warpcast.com/~/compose?text=${shareText}`;
+    
+    // Redirect to the Warpcast composer
+    return res.redirect(302, redirectUrl);
+  }

@@ -303,6 +303,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Import one-file handlers with require to avoid module issues
+  const oneFileFrameHandler = require('./api/one-file-frame');
+  const oneFileFrameRealDataHandler = require('./api/one-file-frame-real-data');
+  
+  // Add route for one-file-frame handler
+  app.all('/api/one-file-frame', (req, res) => {
+    try {
+      console.log('One-file frame request received:', req.method, JSON.stringify(req.body || {}));
+      return oneFileFrameHandler(req, res);
+    } catch (error) {
+      console.error('Error in one-file-frame handler:', error);
+      res.status(500).send('Error processing one-file frame request');
+    }
+  });
+  
+  // Add route for one-file-frame-real-data handler
+  app.all('/api/one-file-frame-real-data', (req, res) => {
+    try {
+      console.log('One-file-real-data frame request received:', req.method, JSON.stringify(req.body || {}));
+      return oneFileFrameRealDataHandler(req, res);
+    } catch (error) {
+      console.error('Error in one-file-frame-real-data handler:', error);
+      res.status(500).send('Error processing one-file-real-data frame request');
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
