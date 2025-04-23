@@ -203,8 +203,8 @@ function formatShareText(traders, timeframe) {
 
 // Generate main frame
 function generateMainFrame(baseUrl) {
-  // Use our own endpoint for the image
-  const imageUrl = `${baseUrl}/api/all-in-one?type=image&view=main&t=${Date.now()}`;
+  // Use static image that we know works
+  const imageUrl = `${baseUrl}/images/main.png`;
   
   return `<!DOCTYPE html>
 <html>
@@ -224,8 +224,8 @@ function generateMainFrame(baseUrl) {
 
 // Generate 24h frame
 function generate24hFrame(baseUrl) {
-  // Use our own endpoint for the image
-  const imageUrl = `${baseUrl}/api/all-in-one?type=image&view=24h&t=${Date.now()}`;
+  // Use static image that we know works
+  const imageUrl = `${baseUrl}/images/24h.png`;
   
   return `<!DOCTYPE html>
 <html>
@@ -245,8 +245,8 @@ function generate24hFrame(baseUrl) {
 
 // Generate 7d frame
 function generate7dFrame(baseUrl) {
-  // Use our own endpoint for the image
-  const imageUrl = `${baseUrl}/api/all-in-one?type=image&view=7d&t=${Date.now()}`;
+  // Use static image that we know works
+  const imageUrl = `${baseUrl}/images/7d.png`;
   
   return `<!DOCTYPE html>
 <html>
