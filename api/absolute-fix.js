@@ -143,7 +143,7 @@ function generateErrorFrame() {
 <html>
 <head>
   <meta property="fc:frame" content="vNext" />
-  <meta property="fc:frame:image" content="${baseUrl}/images/error.png" />
+  <meta property="fc:frame:image" content="${baseUrl}/images/error.svg" />
   <meta property="fc:frame:post_url" content="${baseUrl}/api/absolute-fix" />
   <meta property="fc:frame:button:1" content="Try Again" />
 </head>

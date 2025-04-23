@@ -1,16 +1,11 @@
-<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="1200" height="630" fill="#111827"/>
-  <rect y="0" width="1200" height="80" fill="#1e40af"/>
-  <text x="40" y="50" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="white">Warplet Traders</text>
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <!-- Dark background -->
+  <rect width="1200" height="630" fill="#1e293b" />
   
-  <!-- Error Icon -->
-  <circle cx="600" cy="250" r="80" fill="#ef4444" fill-opacity="0.2" />
-  <text x="600" y="250" font-family="Arial, sans-serif" font-size="60" font-weight="bold" fill="#ef4444" text-anchor="middle" dominant-baseline="middle">!</text>
+  <!-- Error message -->
+  <text x="600" y="280" font-family="Verdana" font-size="40" fill="#ef4444" text-anchor="middle">Error loading data</text>
+  <text x="600" y="340" font-family="Verdana" font-size="28" fill="#94a3b8" text-anchor="middle">Please try again later</text>
   
-  <!-- Error Message -->
-  <text x="600" y="370" font-family="Arial, sans-serif" font-size="28" fill="white" text-anchor="middle">Error loading data</text>
-  <text x="600" y="420" font-family="Arial, sans-serif" font-size="22" fill="#9ca3af" text-anchor="middle">Please try again</text>
-  
-  <!-- Warplet Branding -->
-  <text x="40" y="590" font-family="Arial, sans-serif" font-size="20" fill="#9ca3af">warplet.vercel.app</text>
+  <!-- Footer -->
+  <text x="600" y="580" font-family="Verdana" font-size="24" fill="#94a3b8" text-anchor="middle">Created by 0xJudd</text>
 </svg>

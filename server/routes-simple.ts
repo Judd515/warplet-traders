@@ -164,6 +164,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Add route for the absolute-minimal handler
+  app.all('/api/absolute-minimal', async (req, res) => {
+    try {
+      console.log('Absolute Minimal request received:', req.method, req.body ? JSON.stringify(req.body) : '{}');
+      
+      // Import and use the absolute-minimal handler
+      try {
+        // Dynamic import to avoid ESM/CommonJS compatibility issues
+        const handlerModule = await import('../api/absolute-minimal.js');
+        if (handlerModule && handlerModule.default) {
+          // Call the handler
+          return handlerModule.default(req, res);
+        } else {
+          throw new Error('Absolute minimal handler module not properly exported');
+        }
+      } catch (moduleError) {
+        console.error('Error importing or executing the absolute-minimal handler:', moduleError);
+        
+        // Fallback to basic frame if the module can't be loaded
+        const baseUrl = req.protocol + '://' + req.get('host');
+        
+        return res.status(200).send(`<!DOCTYPE html>
+<html>
+<head>
+  <meta property="fc:frame" content="vNext" />
+  <meta property="fc:frame:image" content="${baseUrl}/images/error.svg" />
+  <meta property="fc:frame:post_url" content="${baseUrl}/api/absolute-minimal" />
+  <meta property="fc:frame:button:1" content="Try Again" />
+</head>
+<body>
+  <h1>Error loading absolute minimal handler</h1>
+</body>
+</html>`);
+      }
+    } catch (error) {
+      console.error('Error in absolute-minimal handler:', error);
+      res.status(500).send('Error processing absolute minimal request');
+    }
+  });
+
   // Add route for the image endpoint
   app.all('/api/image-endpoint', async (req, res) => {
     try {
