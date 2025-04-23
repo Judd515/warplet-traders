@@ -1,235 +1,141 @@
+/**
+ * Neynar API Integration for Warplet Traders
+ * Fetches user profile data, following list, and wallet addresses
+ */
+
 import axios from 'axios';
 
-// Neynar API types
-interface NeynarFollowerResponse {
-  users: NeynarUser[];
+interface NeynarUserParams {
+  fid: number;
 }
 
-interface NeynarUser {
+interface UserProfile {
   fid: number;
   username: string;
-  display_name: string;
-  pfp_url: string;
-  profile: {
-    bio: {
-      text: string;
+  displayName: string;
+  pfp: string;
+  walletAddress?: string;
+  bio?: string;
+}
+
+interface Following {
+  users: UserProfile[];
+  walletAddresses: Record<string, string>;
+}
+
+/**
+ * Fetch user profile data from Neynar API
+ * @param params User parameters (FID)
+ * @param apiKey Neynar API key
+ * @returns User profile data
+ */
+export async function fetchUserProfile(params: NeynarUserParams, apiKey: string): Promise<UserProfile | null> {
+  try {
+    const { fid } = params;
+    
+    console.log(`Fetching user profile for FID: ${fid}`);
+    
+    const response = await axios.get(`https://api.neynar.com/v2/farcaster/user?fid=${fid}`, {
+      headers: {
+        'api_key': apiKey,
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    if (!response.data?.result?.user) {
+      console.error('Failed to fetch user profile from Neynar:', response.data);
+      return null;
+    }
+    
+    const user = response.data.result.user;
+    
+    // Extract the Ethereum address from user.verifications if available
+    let walletAddress = '';
+    if (Array.isArray(user.verifications) && user.verifications.length > 0) {
+      walletAddress = user.verifications[0];
+    } else if (user.verified_addresses?.eth && user.verified_addresses.eth.length > 0) {
+      walletAddress = user.verified_addresses.eth[0];
+    }
+    
+    return {
+      fid: user.fid,
+      username: user.username || '',
+      displayName: user.display_name || user.username || `User #${user.fid}`,
+      pfp: user.pfp?.url || '',
+      walletAddress,
+      bio: user.profile?.bio?.text || ''
     };
-  };
-  follower_count: number;
-  following_count: number;
-  verifications: string[];
-  custody_address?: string; // May be included in some API responses
-}
-
-// Function to fetch followers from Neynar API
-export async function fetchFollowing(fid: number, apiKey: string): Promise<NeynarUser[]> {
-  try {
-    console.log(`Fetching users that FID ${fid} is following...`);
-    
-    // Use the following endpoint to get basic profile information
-    const response = await axios.get(`https://api.neynar.com/v2/farcaster/following`, {
-      params: {
-        fid,
-        limit: 100,
-      },
-      headers: {
-        'accept': 'application/json',
-        'api_key': apiKey
-      }
-    });
-    
-    console.log('Neynar API response status:', response.status);
-    
-    // Check if the API response contains the expected data
-    // Log more details about the response structure to debug
-    console.log('Response structure:', Object.keys(response.data).join(', '));
-    
-    // Handle both possible response formats from Neynar API
-    let users: NeynarUser[] = [];
-    
-    // The Neynar API response format for followers is different from what we expect
-    // It has a structure like: { users: [ { object: "follow", user: { ... user data ... } } ] }
-    if (response.data && response.data.users && Array.isArray(response.data.users)) {
-      console.log('Found "users" array in response with', response.data.users.length, 'items');
-      
-      // Extract the user object from each follower entry
-      users = response.data.users
-        .map((follow: any) => {
-          if (follow && follow.user) {
-            // Most common format - user object nested inside follow object
-            return follow.user;
-          } else if (follow && follow.object === 'user') {
-            // Alternative format - user object directly
-            return follow;
-          } else if (follow && follow.fid && follow.username) {
-            // Minimal format - direct user properties
-            return follow;
-          }
-          return null;
-        })
-        .filter(Boolean);
-        
-      console.log('Extracted user objects from followers:', users.length);
-    } else if (response.data && response.data.result && response.data.result.users) {
-      // Alternative API format - result > users array
-      console.log('Found result.users array in response');
-      users = response.data.result.users.map((follow: any) => {
-        return follow.user || follow;
-      }).filter(Boolean);
-    } else {
-      // Completely different format - log it for debugging
-      console.log('Unknown API response format, logging first 500 chars:');
-      console.log(JSON.stringify(response.data).substring(0, 500) + '...');
-      
-      // Try to extract users from any object that has a list of users
-      for (const key in response.data) {
-        if (Array.isArray(response.data[key])) {
-          console.log(`Found array in response.data.${key} with ${response.data[key].length} items`);
-          const sampleItem = response.data[key][0];
-          console.log('Sample item:', JSON.stringify(sampleItem).substring(0, 200));
-          
-          // Check if this array contains user objects or objects with user property
-          if (sampleItem && (sampleItem.username || (sampleItem.user && sampleItem.user.username))) {
-            users = response.data[key].map((item: any) => item.user || item).filter(Boolean);
-            console.log(`Extracted ${users.length} user objects from ${key} array`);
-            break;
-          }
-        }
-      }
-    }
-    
-    console.log(`Extracted ${users.length} accounts from API response`);
-    
-    // Log the first account to see the structure
-    if (users.length > 0) {
-      console.log('Sample account data:', JSON.stringify(users[0]).substring(0, 200) + '...');
-      
-      // Check if we have valid FIDs
-      const validUsers = users.filter((u: NeynarUser) => u.fid !== undefined && u.fid !== null);
-      console.log(`Found ${validUsers.length} accounts with valid FIDs`);
-      
-      if (validUsers.length > 0) {
-        console.log(`First account FID: ${validUsers[0].fid}`);
-      }
-    }
-    
-    return users;
   } catch (error) {
-    console.error('Error fetching accounts from Neynar API:', error);
-    throw new Error('Failed to fetch accounts from Neynar API');
+    console.error('Error fetching user profile from Neynar:', error);
+    return null;
   }
 }
 
-// Fetch user details including custody address if available
-async function fetchUserDetails(fid: number, apiKey: string): Promise<any> {
+/**
+ * Fetch accounts that a user follows
+ * @param params User parameters (FID)
+ * @param apiKey Neynar API key
+ * @returns List of user profiles of accounts the user follows, along with wallet addresses
+ */
+export async function fetchFollowing(params: NeynarUserParams, apiKey: string): Promise<Following> {
   try {
-    // Using the correct endpoint for the Neynar API with the correct query parameter format
-    const response = await axios.get(`https://api.neynar.com/v2/farcaster/user/bulk`, {
-      params: {
-        fids: fid.toString(), // Convert to string as required by API
-      },
+    const { fid } = params;
+    
+    console.log(`Fetching following list for FID: ${fid}`);
+    
+    // Default return value
+    const result: Following = {
+      users: [],
+      walletAddresses: {}
+    };
+    
+    // Get the user's following list from Neynar
+    const response = await axios.get(`https://api.neynar.com/v2/farcaster/following?fid=${fid}&limit=100`, {
       headers: {
-        'accept': 'application/json',
-        'api_key': apiKey
+        'api_key': apiKey,
+        'Content-Type': 'application/json'
       }
     });
     
-    console.log(`API response for user ${fid}:`, JSON.stringify(response.data).substring(0, 200) + '...');
+    if (!response.data?.result?.users) {
+      console.error('Failed to fetch following list from Neynar:', response.data);
+      return result;
+    }
     
-    // Check for custody address in the response
-    if (response.data?.users && response.data.users.length > 0) {
-      const user = response.data.users[0];
+    const followedUsers = response.data.result.users;
+    console.log(`User follows ${followedUsers.length} accounts`);
+    
+    // Process each followed user
+    for (const user of followedUsers) {
+      // Extract the Ethereum address if available
+      let walletAddress = '';
       
-      // Check if custody address is available
-      if (user.custody_address) {
-        console.log(`Found custody address for FID ${fid}: ${user.custody_address}`);
-      } else {
-        console.log(`No custody address found for FID ${fid}`);
+      if (Array.isArray(user.verifications) && user.verifications.length > 0) {
+        walletAddress = user.verifications[0];
+      } else if (user.verified_addresses?.eth && user.verified_addresses.eth.length > 0) {
+        walletAddress = user.verified_addresses.eth[0];
       }
       
-      return user;
-    }
-    
-    return null;
-  } catch (error: any) {
-    console.error(`Error fetching details for user FID ${fid}:`, error);
-    // Log more detailed error information
-    if (error.response) {
-      console.error(`Status: ${error.response.status}, Data:`, error.response.data);
-    }
-    return null;
-  }
-}
-
-// Extract Warplet addresses from user profiles
-export async function extractWarpletAddresses(users: NeynarUser[], apiKey: string): Promise<Record<string, string>> {
-  const warpletAddresses: Record<string, string> = {};
-  
-  console.log(`Examining ${users.length} accounts for wallet addresses...`);
-  
-  // First check: look for custody_address directly in the user object
-  // This will be present if our enhanced API call worked
-  users.forEach(user => {
-    if (user.custody_address) {
-      warpletAddresses[user.username] = user.custody_address;
-      console.log(`Found custody address for @${user.username}: ${user.custody_address}`);
-    }
-  });
-  
-  // Second check: look for wallet addresses in profile text
-  users.forEach(user => {
-    // Skip if we already have an address for this user
-    if (warpletAddresses[user.username]) return;
-    
-    // Check multiple places for Ethereum addresses
-    // 1. Look in bio
-    const bioText = user.profile?.bio?.text || '';
-    // 2. Look in display name
-    const displayName = user.display_name || '';
-    // 3. Look in username (sometimes people append their address)
-    const username = user.username || '';
-    
-    // Combine all text fields to search for addresses
-    const combinedText = `${bioText} ${displayName} ${username}`;
-    
-    // Basic regex to find Ethereum addresses
-    const ethAddressRegex = /0x[a-fA-F0-9]{40}/gi;
-    const matches = combinedText.match(ethAddressRegex);
-    
-    if (matches && matches.length > 0) {
-      // Take the first address found
-      warpletAddresses[user.username] = matches[0];
-      console.log(`Found wallet address in profile for @${user.username}: ${matches[0]}`);
-    }
-  });
-  
-  // We don't need the third pass anymore since we should have all custody addresses
-  // from the enhanced API call, but keep it as a fallback just in case
-  if (Object.keys(warpletAddresses).length === 0) {
-    // Filter out users with undefined FIDs
-    const usersToCheck = users
-      .slice(0, 5)
-      .filter(user => user.fid !== undefined && user.fid !== null);
-    
-    console.log(`No addresses found yet. Checking details for ${usersToCheck.length} users...`);
-    
-    for (const user of usersToCheck) {
-      try {
-        const userDetails = await fetchUserDetails(user.fid, apiKey);
+      // Only include users with a wallet address
+      if (walletAddress) {
+        result.users.push({
+          fid: user.fid,
+          username: user.username || '',
+          displayName: user.display_name || user.username || `User #${user.fid}`,
+          pfp: user.pfp?.url || '',
+          walletAddress
+        });
         
-        if (userDetails && userDetails.custody_address) {
-          warpletAddresses[user.username] = userDetails.custody_address;
-          console.log(`Found custody address for @${user.username}: ${userDetails.custody_address}`);
-        }
-      } catch (error: any) {
-        console.error(`Error fetching details for user ${user.username}:`, error);
+        // Store the wallet address mapped to username for easy lookup
+        result.walletAddresses[user.username || `fid:${user.fid}`] = walletAddress;
       }
     }
+    
+    console.log(`Found ${result.users.length} followed accounts with wallet addresses`);
+    
+    return result;
+  } catch (error) {
+    console.error('Error fetching following list from Neynar:', error);
+    return { users: [], walletAddresses: {} };
   }
-  
-  const walletCount = Object.keys(warpletAddresses).length;
-  const percentage = users.length > 0 ? (walletCount / users.length * 100).toFixed(1) : '0';
-  console.log(`Found ${walletCount} wallet addresses (${percentage}% of accounts you follow)`);
-  
-  return warpletAddresses;
 }

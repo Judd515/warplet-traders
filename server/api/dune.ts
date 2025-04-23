@@ -1,142 +1,125 @@
+/**
+ * Dune Analytics API Integration for Warplet Traders
+ * Fetches real trading data based on wallet addresses
+ */
+
 import axios from 'axios';
 
-interface DuneQueryParameters {
+interface DuneQueryParams {
   timeframe: string;
   walletAddresses: string[];
 }
 
-interface DuneQueryResult {
-  rows: Array<{
-    wallet_address: string;
-    username: string;
-    top_token: string;
-    earnings: number;
-    volume: number;
-  }>;
-}
-
-// Function to fetch trading data from Dune Analytics
-export async function fetchTradingData(
-  params: DuneQueryParameters, 
-  duneApiKey: string
-): Promise<DuneQueryResult> {
+/**
+ * Fetch trading data from Dune Analytics
+ * @param params Query parameters (timeframe and wallet addresses)
+ * @param apiKey Dune API key
+ * @returns Trading data for the specified wallets
+ */
+export async function fetchTradingData(params: DuneQueryParams, apiKey: string) {
   try {
-    console.log('Fetching trading data with parameters:', JSON.stringify(params));
+    const { timeframe, walletAddresses } = params;
     
-    // Since we're in development and may not have a working Dune query yet,
-    // we'll return sample data that matches our expected format
-    // This will be replaced with actual API calls in production
+    console.log(`Fetching trading data for ${walletAddresses.length} addresses with timeframe ${timeframe}`);
     
-    // Generate deterministic sample data based on wallet addresses
-    const sampleData: DuneQueryResult = {
-      rows: params.walletAddresses.map((address) => {
-        // Sample tokens that might be traded on BASE
-        const tokens = ['USDC', 'ETH', 'BTC', 'ARB', 'DEGEN', 'OP'];
-        
-        // Use wallet address to deterministically generate token and PnL
-        // This ensures the same wallet gets consistent results
-        const hashValue = address
-          .split('')
-          .reduce((acc, char) => acc + char.charCodeAt(0), 0);
-        
-        // Use the hash to pick a token
-        const tokenIndex = hashValue % tokens.length;
-        const token = tokens[tokenIndex];
-        
-        // Generate earnings data (always positive, in USD)
-        const baseEarnings = (hashValue % 5000) + 500; // Between $500 and $5500
-        const timeframeMultiplier = params.timeframe === '24h' ? 1 : 7; // 7x more for 7d
-        const earnings = baseEarnings * timeframeMultiplier;
-        
-        // Generate volume data (in USD)
-        const baseVolume = (hashValue % 50000) + 10000; // Between $10k and $60k
-        const volume = baseVolume * timeframeMultiplier;
-        
-        return {
-          wallet_address: address,
-          username: `trader${tokenIndex + 1}`,
-          top_token: token,
-          earnings: parseFloat(earnings.toFixed(2)),
-          volume: parseFloat(volume.toFixed(2))
-        };
-      })
-    };
+    // Prepare the wallet addresses for the Dune API
+    // Convert all to lowercase for consistent matching
+    const addresses = walletAddresses.map(addr => addr.toLowerCase());
     
-    console.log('Generated sample data for development:', JSON.stringify(sampleData));
+    // Determine which query ID to use based on the timeframe
+    // These are pre-created queries in Dune Analytics for Warplet traders
+    const queryId = timeframe === '24h' ? '2786632' : '2786637';
     
-    // In production, replace this section with the actual Dune API call:
-    /*
-    // Use a specific query ID for BASE traders
-    const queryId = 2958505; // This should be your actual Dune query ID
+    console.log(`Using Dune query ID: ${queryId}`);
     
-    // Step 1: Execute the query with parameters
+    // First, execute the query
     const executeResponse = await axios.post(
       `https://api.dune.com/api/v1/query/${queryId}/execute`,
-      {
-        query_parameters: {
-          timeframe: params.timeframe,
-          wallets: params.walletAddresses.join(',')
+      { 
+        parameters: {
+          address_list: `{${addresses.join(',')}}` 
         }
       },
       {
         headers: {
-          'x-dune-api-key': duneApiKey
+          'x-dune-api-key': apiKey,
+          'Content-Type': 'application/json'
         }
       }
     );
     
+    // Check if the execution was started successfully
+    if (!executeResponse.data?.execution_id) {
+      console.error('Failed to start Dune query execution:', executeResponse.data);
+      throw new Error('Failed to start Dune query execution');
+    }
+    
     const executionId = executeResponse.data.execution_id;
+    console.log(`Dune query execution started with ID: ${executionId}`);
     
-    // Step 2: Poll for the query results
-    let status = 'pending';
-    let results: DuneQueryResult = { rows: [] };
+    // Poll for the query results
+    let statusResponse;
+    let attempts = 0;
+    const maxAttempts = 10;
     
-    while (status === 'pending') {
-      await new Promise(resolve => setTimeout(resolve, 2000)); // Wait for 2 seconds
+    do {
+      // Wait to avoid hitting rate limits
+      await new Promise(resolve => setTimeout(resolve, 2000));
       
-      const statusResponse = await axios.get(
+      // Check execution status
+      statusResponse = await axios.get(
         `https://api.dune.com/api/v1/execution/${executionId}/status`,
         {
           headers: {
-            'x-dune-api-key': duneApiKey
+            'x-dune-api-key': apiKey
           }
         }
       );
       
-      status = statusResponse.data.state;
+      attempts++;
+      console.log(`Checking Dune query status (${attempts}/${maxAttempts}): ${statusResponse.data?.state}`);
       
-      if (status === 'completed') {
-        const resultsResponse = await axios.get(
-          `https://api.dune.com/api/v1/execution/${executionId}/results`,
-          {
-            headers: {
-              'x-dune-api-key': duneApiKey
-            }
-          }
-        );
-        
-        results = resultsResponse.data;
-      } else if (status === 'failed') {
-        throw new Error('Dune query execution failed');
-      }
+    } while (
+      statusResponse.data?.state !== 'QUERY_STATE_COMPLETED' && 
+      statusResponse.data?.state !== 'QUERY_STATE_FAILED' &&
+      attempts < maxAttempts
+    );
+    
+    // If the query failed or timed out
+    if (statusResponse.data?.state !== 'QUERY_STATE_COMPLETED') {
+      console.error('Dune query execution failed or timed out:', statusResponse.data);
+      throw new Error('Dune query execution failed or timed out');
     }
     
-    return results;
-    */
+    // Get the query results
+    const resultsResponse = await axios.get(
+      `https://api.dune.com/api/v1/execution/${executionId}/results`,
+      {
+        headers: {
+          'x-dune-api-key': apiKey
+        }
+      }
+    );
     
-    // For development, just return our sample data
-    // Remove this and uncomment the above code for production
-    return sampleData;
+    // Check if the results contain rows
+    if (!resultsResponse.data?.result?.rows) {
+      console.error('No rows in Dune query results:', resultsResponse.data);
+      return { rows: [] };
+    }
     
+    console.log(`Retrieved ${resultsResponse.data.result.rows.length} rows of trading data from Dune`);
+    
+    // Process and format data from Dune
+    const formattedRows = resultsResponse.data.result.rows.map((row: any) => ({
+      wallet_address: row.wallet_address.toLowerCase(),
+      earnings: parseFloat(row.profit_loss).toFixed(2),
+      volume: parseFloat(row.volume).toFixed(2),
+      top_token: row.top_token
+    }));
+    
+    return { rows: formattedRows };
   } catch (error) {
-    console.error('Error fetching data from Dune Analytics:', error);
-    throw new Error('Failed to fetch trading data from Dune Analytics');
+    console.error('Error fetching data from Dune:', error);
+    return { rows: [] };
   }
-}
-
-// For cases where real API can't be used, fallback to mock data
-export function processTradingData(addresses: Record<string, string>, timeframe: string): any[] {
-  // This would normally process the Dune results, but for now just return
-  // empty array that would be populated by real data from Dune
-  return [];
 }
